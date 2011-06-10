@@ -79,6 +79,7 @@
               var viewerDiv = document.getElementById('current_user_id'),
                   viewerThumbnailImg = document.getElementById('viewerThumbnailImg');
               viewerDiv.innerHTML += viewerData.displayName;
+              viewerThumbnailImg.attributes.getNamedItem("src").nodeValue=viewerData.thumbnailUrl;
               gadgets.window.adjustHeight();
            };
       });
@@ -88,7 +89,7 @@
       gadgets.util.registerOnLoadHandler(init);
       </script>
 
-      <p>Your name is: <span id="name"></span></p>
+      <p>Your name is: <span id="current_user_id"></span></p>
       <p>Your thumbnail is <img id="viewerThumbnailImg" src=""></img></p>
 
       ]]>
