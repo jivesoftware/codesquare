@@ -86,12 +86,23 @@
       
       }
 
+      function getBadgeInfo() {
+
+      <!--Getting the json data-->
+      var url = 'Url to the server';
+      var params = {'href': url,'format' : 'json', 'authz' : 'none'};
+      osapi.http.get(params).execute(function(result) {
+         result.content; //returns json object?
+      
+         }
+      )};
+      
       gadgets.util.registerOnLoadHandler(init);
       </script>
 
       <p>Your name is: <span id="current_user_id"></span></p>
       <p>Your thumbnail is <img id="viewerThumbnailImg" src=""></img></p>
-
+      <button type="button" onclick="getBadgeInfo()">Get stuff</button>
       ]]>
   </Content>
 
