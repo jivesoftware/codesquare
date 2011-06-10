@@ -3,7 +3,7 @@
   <ModulePrefs title="codesquare"
                description="TODO: Replace with real description of codesquare inside app.xml: Module/ModulePrefs/description"
                author="Eric Ren"
-               author_affiliation="Company Name"
+               author_affiliation="Jive Software"
                author_email="eric.ren@jivesoftware.com"
                height="300">
 
@@ -67,11 +67,31 @@
   -->
 
   <!-- To begin development, remove the hello view and uncomment the home and canvas views below -->
-  <Content type="html" view="home,canvas" href="hello.html" />
 
-  <!--
-  <Content type="html" view="home" href="home.html" />
-  <Content type="html" view="canvas" href="canvas.html" />
-  -->
+  <Content type="html" view="home,canvas">
+    <![CDATA[
+      <script src="javascripts/json2.js" type="text/javascript"></script>
+      <script  type="text/javascript">
+	
+      function init() {
+      osapi.people.getViewer().execute(function(viewerData) {
+           if (!viewerData.error) {
+              var viewerDiv = document.getElementById('current_user_id'),
+                  viewerThumbnailImg = document.getElementById('viewerThumbnailImg');
+              viewerDiv.innerHTML += viewerData.displayName;
+              gadgets.window.adjustHeight();
+           };
+      });
+      
+      }
+
+      gadgets.util.registerOnLoadHandler(init);
+      </script>
+
+      <p>Your name is: <span id="name"></span></p>
+      <p>Your thumbnail is <img id="viewerThumbnailImg" src=""></img></p>
+
+      ]]>
+  </Content>
 
 </Module>
