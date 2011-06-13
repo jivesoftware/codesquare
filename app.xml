@@ -61,9 +61,10 @@
       
     <!--Getting the json data-->
   
-              var name += viewerData.displayName;
+    <!--              var name += viewerData.displayName;
               name = name.replace(/\s+/, '_');
               document.getElementById('test').innerHTML = name;
+	      -->
            }
          });
       }
