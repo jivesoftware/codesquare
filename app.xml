@@ -62,7 +62,7 @@
       
               var name = viewerData.displayName;
               name = name.replace(/\s+/, '_');
-              document.getElementById('tes').innerHTML = viewerData.displayName;
+              document.getElementById('test').innerHTML = viewerData.displayName;
 	 
            };
          });
