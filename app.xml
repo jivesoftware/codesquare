@@ -8,6 +8,7 @@
                height="300">
 
     <!-- Commonly used features -->
+    <Require feature="opensocial-1.0" />
     <Require feature="dynamic-height" />
     <Require feature="jive-core-v2" />
     <Require feature="osapi"/>
@@ -69,7 +70,7 @@
          });
       }
 
-
+<!--
       function loadBadges() {
               var url = 'http://some.server.com?name=' + name;
       
@@ -92,7 +93,7 @@
               });
       
            }
-
+-->
 
       
       gadgets.util.registerOnLoadHandler(init);
