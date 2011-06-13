@@ -67,7 +67,7 @@
 
               document.getElementById('test').innerHTML += name +"<br />" + url;
       
-              var params = {'href' : url, 'format' : json', 'authz' : 'none' };
+              var params = {'href' : url, 'format' : 'json', 'authz' : 'none' };
               osapi.http.get(params).execute(function(response) {
                  if (response.error) {
                     alert("response error"); // Deal with this...
