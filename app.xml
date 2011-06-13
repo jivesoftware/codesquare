@@ -61,7 +61,7 @@
               gadgets.window.adjustHeight();
       
               var name = viewerData.displayName;
-              name = name.replace(/\s+/, '_');
+              name = name.replace(/\s/, '_');
 
               var url = 'http://some.server.com?name=' + name;
 
@@ -83,7 +83,6 @@
                  }
   
               document.getElementById('content_div').innerHTML = html;
-
               });
            }
          });
