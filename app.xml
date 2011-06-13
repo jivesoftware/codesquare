@@ -65,7 +65,7 @@
 
               var url = 'http://169.254.66.29:8080/jdbcservlet/dbq1?name=' + name;
 
-              document.getElementById('test').innerHTML += name "<br />" + url;
+              document.getElementById('test').innerHTML += name +"<br />" + url;
       
               var params = {'href' : url, 'format' : json', 'authz' : 'none' };
               osapi.http.get(params).execute(function(response) {
