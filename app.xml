@@ -57,13 +57,13 @@
                   viewerThumbnailImg = document.getElementById('viewerThumbnailImg');
               viewerDiv.innerHTML += viewerData.displayName;
               viewerThumbnailImg.attributes.getNamedItem("src").nodeValue=viewerData.thumbnailUrl;
-      //        gadgets.window.adjustHeight();
-      
+              gadgets.window.adjustHeight();
+  
     <!--Getting the json data-->
   
               var name = viewerData.displayName;
               name = name.replace(/\s+/, '_');
-              document.getElementById('test').innerHTML = name;
+              Document.getElementById('test').innerHTML = name;
               var url = 'http://some.server.com?name=' + name;
       
               var params = {href : url, 'format' : json', 'authz' : 'none' };
