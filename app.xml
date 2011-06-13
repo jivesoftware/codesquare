@@ -64,7 +64,7 @@
               name = name.replace(/\s/, '_');
               document.getElementById('test').innerHTML = name;
 	   
-              var url = 'http://some.server.com?name=' + name;
+/*              var url = 'http://some.server.com?name=' + name;
       
               var params = {href : url, 'format' : json', 'authz' : 'none' };
               osapi.http.get(params).execute(function(response) {
@@ -83,6 +83,7 @@
   
               document.getElementById('content_div').innerHTML = html;
              });
+*/
            }
          });
       }
