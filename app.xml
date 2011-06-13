@@ -8,6 +8,9 @@
                height="300">
 
     <!-- Commonly used features -->
+    <Require feature="jive-connects-v1">
+      <Param name="alias:badges|title:Badges Service">https://some.server.com</Param>
+    </Require>
     <Require feature="dynamic-height" />
     <Require feature="jive-core-v2" />
     <Require feature="osapi"/>
@@ -18,15 +21,6 @@
     <Link rel="Icon"       href="images/icon16.png" />
     <Link rel="MediumIcon" href="images/icon48.png" />
     <Link rel="LargeIcon"  href="images/icon128.png" />
-
-    <!-- Screenshots: 600w x 400h, should include at least 1 and up to 5 -->
-    <!--
-    <Link rel="Screenshot1" href="images/screenshot1.png" />
-    <Link rel="Screenshot2" href="images/screenshot2.png" />
-    <Link rel="Screenshot3" href="images/screenshot3.png" />
-    <Link rel="Screenshot4" href="images/screenshot4.png" />
-    <Link rel="Screenshot5" href="images/screenshot5.png" />
-    -->
 
     <!-- OAuth Services: https://developers.jivesoftware.com/community/docs/DOC-1161 -->
     <!--
@@ -52,20 +46,6 @@
 
   </ModulePrefs>
 
-  <!-- User Preferences: http://code.google.com/apis/gadgets/docs/reference.html#Userprefs_Ref -->
-  <!--
-  <UserPref name="where_i_live" display_name="Where I Live" datatype="string" default_value="" required="false" />
-  <UserPref name="where_i_work" display_name="Where I Work" datatype="bool"   default_value="" required="false" />
-  <UserPref name="difficulty"
-       display_name="Difficulty"
-       datatype="enum"
-       default_value="2">
-    <EnumValue value="1" display_value="Easy"/>
-    <EnumValue value="2" display_value="Medium"/>
-    <EnumValue value="3" display_value="Hard"/>
-  </UserPref>
-  -->
-
   <!-- To begin development, remove the hello view and uncomment the home and canvas views below -->
 
   <Content type="html" view="home,canvas">
@@ -86,23 +66,40 @@
       
       }
 
-      function getBadgeInfo() {
-
       <!--Getting the json data-->
-      var url = 'Url to the server';
-      var params = {'href': url,'format' : 'json', 'authz' : 'none'};
-      osapi.http.get(params).execute(function(result) {
-         result.content; //returns json object?
-      
-         }
+
+      function loadBadges() {
+
+        var empID = '42';
+
+        var params = {alias : 'badges', href : "/badges/", params : {'id' : empID };
+        osapi.jive.connects.get(params).execute(function(response) {
+           if (response.error) {
+               alert("response error"); // Deal with this...
+           }
+           else {
+               // use the data 
+               var jsondata = response.content;
+               var html = "";
+               for (var key in jsondata) {
+                 var value = jsondata[key];
+                 html += key + ": " + value + "<br />";
+               }
+           }
+        }
+        document.getElementById('content_div').innerHTML = html;
       )};
       
       gadgets.util.registerOnLoadHandler(init);
       </script>
-
+      
       <p>Your name is: <span id="current_user_id"></span></p>
       <p>Your thumbnail is <img id="viewerThumbnailImg" src=""></img></p>
-      <button type="button" onclick="getBadgeInfo()">Get stuff</button>
+      <br />
+
+      <div id="content_div"></div>
+
+      <button type="button" onclick="loadBadges()">Get stuff</button>
       ]]>
   </Content>
 
