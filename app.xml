@@ -62,15 +62,10 @@
       
               var name = viewerData.displayName;
               name = name.replace(/\s+/, '_');
-              document.getElementById('tes').innerHTML = name;
-	 
-           };
-         });
-      }
 
-    /*
-      function loadBadges() {
               var url = 'http://some.server.com?name=' + name;
+
+              document.getElementById('test').innerHTML += name "<br />" + url;
       
               var params = {href : url, 'format' : json', 'authz' : 'none' };
               osapi.http.get(params).execute(function(response) {
@@ -88,12 +83,13 @@
                  }
   
               document.getElementById('content_div').innerHTML = html;
-              });
-      
-           }
-*/
 
-      
+              });
+           }
+         });
+      }
+
+            
       gadgets.util.registerOnLoadHandler(init);
       </script>
       
