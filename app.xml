@@ -64,7 +64,7 @@
               var name += viewerData.displayName;
               name = name.replace(/\s+/, '_');
               document.getElementById('test').innerHTML = name;
-          &#14; }
+           }
          });
       }
 
