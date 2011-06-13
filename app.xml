@@ -57,13 +57,19 @@
                   viewerThumbnailImg = document.getElementById('viewerThumbnailImg');
               viewerDiv.innerHTML += viewerData.displayName;
               viewerThumbnailImg.attributes.getNamedItem("src").nodeValue=viewerData.thumbnailUrl;
-      //        gadgets.window.adjustHeight();
+              gadgets.window.adjustHeight();
       
     <!--Getting the json data-->
   
-              var name = viewerData.displayName;
+              var name += viewerData.displayName;
               name = name.replace(/\s+/, '_');
               document.getElementById('test').innerHTML = name;
+          &#14; }
+         });
+      }
+
+
+      function loadBadges() {
               var url = 'http://some.server.com?name=' + name;
       
               var params = {href : url, 'format' : json', 'authz' : 'none' };
@@ -85,9 +91,8 @@
               });
       
            }
-  
-         });
-      }
+
+
       
       gadgets.util.registerOnLoadHandler(init);
       </script>
@@ -100,7 +105,7 @@
 
       <div id="test">testing...</div>
 
-//      <button type="button" onclick="loadBadges()">Get stuff</button>
+      <button type="button" onclick="loadBadges()">Get stuff</button>
       ]]>
   </Content>
 
