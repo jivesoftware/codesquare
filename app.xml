@@ -60,17 +60,17 @@
               viewerThumbnailImg.attributes.getNamedItem("src").nodeValue=viewerData.thumbnailUrl;
               gadgets.window.adjustHeight();
       
-    <!--Getting the json data-->
+  /*  <!--Getting the json data-->
   
     <!--              var name += viewerData.displayName;
               name = name.replace(/\s+/, '_');
               document.getElementById('test').innerHTML = name;
-	      -->
+	      -->*/
            };
          });
       }
 
-<!--
+    /*
       function loadBadges() {
               var url = 'http://some.server.com?name=' + name;
       
@@ -93,7 +93,7 @@
               });
       
            }
--->
+*/
 
       
       gadgets.util.registerOnLoadHandler(init);
@@ -107,7 +107,7 @@
 
       <div id="test">testing...</div>
 
-      <button type="button" onclick="loadBadges()">Get stuff</button>
+      <!-- <button type="button" onclick="loadBadges()">Get stuff</button> -->
       ]]>
   </Content>
 
