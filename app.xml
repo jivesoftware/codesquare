@@ -67,7 +67,6 @@
              
               var url = 'http://some.server.com?name=' + name;
 
-/*
               document.getElementById('test').innerHTML += url;
       
               var params = {href : url, 'format' : json', 'authz' : 'none' };
@@ -87,12 +86,10 @@
   
               document.getElementById('content_div').innerHTML = html;
              });
-*/
+
            }
          });
       }
-      
-
 
       
       gadgets.util.registerOnLoadHandler(init);
