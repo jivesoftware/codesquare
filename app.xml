@@ -61,8 +61,8 @@
               gadgets.window.adjustHeight();
       
               var name = viewerData.displayName;
-              name = name.replace(/\s+/, '_');
-              document.getElementById('test').innerHTML = viewerData.displayName;
+              name = name.replace(/\s/, '_');
+              document.getElementById('test').innerHTML = name;
 	 
            };
          });
