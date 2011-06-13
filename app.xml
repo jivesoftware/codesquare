@@ -65,7 +65,7 @@
               name = name.replace(/\s+/, '_');
               document.getElementById('test').innerHTML = name;
 	      -->
-           }
+           };
          });
       }
 
