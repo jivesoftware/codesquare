@@ -63,13 +63,7 @@
               var name = viewerData.displayName;
               name = name.replace(/\s/, '_');
               document.getElementById('test').innerHTML = name;
-	 
-           };
-         });
-      }
-
-    /*
-      function loadBadges() {
+	   
               var url = 'http://some.server.com?name=' + name;
       
               var params = {href : url, 'format' : json', 'authz' : 'none' };
@@ -88,10 +82,12 @@
                  }
   
               document.getElementById('content_div').innerHTML = html;
-              });
-      
+             });
            }
-*/
+         });
+      }
+      
+
 
       
       gadgets.util.registerOnLoadHandler(init);
