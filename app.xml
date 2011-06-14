@@ -63,7 +63,7 @@
               var name = viewerData.displayName;
               name = name.replace(/\s/, '_');
 
-              var url = 'http://10.45.111.64:8080/jdbcservlet/dbq1?name' + name;
+              var url = 'http://10.45.111.64:8080/jdbcservlet/dbq1?name=' + name;
 
               document.getElementById('test').innerHTML += name +"<br />" + url;
       
