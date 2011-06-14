@@ -89,7 +89,7 @@
                  }
   
               document.getElementById('content_div').innerHTML = html;
-	      glObj.t = setTimeout("getBadges(glObj.name)", glObj.refreshTime);
+	      glObj.t = setTimeout("getBadges()", glObj.refreshTime);
               });
         }
 
