@@ -50,27 +50,33 @@
     <![CDATA[
       <script src="javascripts/json2.js" type="text/javascript"></script>
       <script  type="text/javascript">
-	
-      function init() {
-         osapi.people.getViewer().execute(function(viewerData) {
-           if (!viewerData.error) {
-              var viewerDiv = document.getElementById('current_user_id'),
-                  viewerThumbnailImg = document.getElementById('viewerThumbnailImg');
-              viewerDiv.innerHTML += viewerData.displayName;
-              viewerThumbnailImg.attributes.getNamedItem("src").nodeValue=viewerData.thumbnailUrl;
-              gadgets.window.adjustHeight();
-      
-              var name = viewerData.displayName;
-              name = name.replace(/\s/, '_');
 
-              var url = 'http://10.45.111.64:8080/jdbcservlet/dbq1?name=' + name;
+	var glObj = {};
+	glObj.timer_is_on = 0;
+	glObj.refreshTime = 3000;
 
-              document.getElementById('test').innerHTML += name +"<br />" + url;
-      
+	//continually request data from server
+	function startBadges() {
+	   if (!glObj.timer_is_on) {
+	      glObj.timer_is_on = 1;
+	      document.getElementById('button').innerHTML = "Stop requesting";
+	      getBadges();
+	   } 
+	   else {
+	      glObj.timer_is_on = 0;
+	      document.getElementById('button').innerHTML = "Continue requesting";
+	      clearTimeout(glObj.t);
+	   }
+	}
+
+	function getBadges() {
+	      var url = 'http://10.45.111.64:8080/jdbcservlet/dbq1?name=' + glObj.name;
+              //document.getElementById('test').innerHTML += name +"<br />" + url;
               var params = {'href' : url, 'format' : 'json', 'authz' : 'none' };
+
               osapi.http.get(params).execute(function(response) {
                  if (response.error) {
-                    alert("response error"); // Deal with this...
+                    alert("Error: " + response.error.message + "\nbetter debug it..."); // Deal with this...
                  }
                  else {
                     // use the data 
@@ -83,24 +89,43 @@
                  }
   
               document.getElementById('content_div').innerHTML = html;
+	      glObj.t = setTimeout("getBadges(glObj.name)", glObj.refreshTime);
               });
-           }
-         });
-      }
+        }
 
-            
-      gadgets.util.registerOnLoadHandler(init);
-      </script>
+	function init() {
+           osapi.people.getViewer().execute(function(viewerData) {
+              if (!viewerData.error) {
+                 var viewerDiv = document.getElementById('current_user_id'),
+                     viewerThumbnailImg = document.getElementById('viewerThumbnailImg');
+                 viewerDiv.innerHTML += viewerData.displayName;
+                 viewerThumbnailImg.attributes.getNamedItem("src").nodeValue=viewerData.thumbnailUrl;
       
+                 var user = viewerData.displayName;
+                 glObj.user = user.replace(/\s/, '_');
+
+	         gadgets.window.adjustHeight();
+              }
+           })
+        }
+      
+	
+	gadgets.util.registerOnLoadHandler(init);
+	
+ 
+	         
+
+      </script>
+      blahblahblah - Eric was here...
       <p>Your name is: <span id="current_user_id"></span></p>
       <p>Your thumbnail is <img id="viewerThumbnailImg" src=""></img></p>
       <br />
 
       <div id="content_div"></div>
 
-      <div id="test">testing...</div>
+      <!-- <div id="test">testing...</div> -->
 
-      <!-- <button type="button" onclick="loadBadges()">Get stuff</button> -->
+      <button id="button" type="button" onclick="startBadges()">Begin</button>
       ]]>
   </Content>
 
