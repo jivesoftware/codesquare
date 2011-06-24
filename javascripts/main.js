@@ -23,7 +23,7 @@ function startBadges() {
 }
 
 function getBadges() {
-    var url = 'http://10.45.111.64:8080/CodeSquare/FrontEndServlet?name=' + glObj.name;
+    var url = 'http://10.45.120.176:8080/CodeSquare/FrontEndServlet?name=' + glObj.name;
     //document.getElementById('test').innerHTML += name +"<br />" + url;
     var params = {'href' : url, 'format' : 'json', 'authz' : 'none' };
     
