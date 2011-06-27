@@ -91,11 +91,11 @@ public class FrontEndServlet extends HttpServlet {
 		
 		HTable table = new HTable(conf,"EmpBadges");
 	
-		String[] badges = getBadges(table,email);
+		String[] badges = getBadges(table,email); //Elements in array have this invariant: {BadgeNumber1,Badge1Description,BadgeNumber2,Badge2Description,etc.}
 		
 		
 		if(badges == null){
-			
+			return;
 		}else{
 			JSONObject j = convertOutputToJSON(badges);
 		
