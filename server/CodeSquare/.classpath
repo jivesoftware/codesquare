@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/JVM Contents (MacOS X Default)">
+		<attributes>
+			<attribute name="owner.project.facets" value="java"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v7.0">
+		<attributes>
+			<attribute name="owner.project.facets" value="jst.web"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Documents/workspace/CodeSquare/WebContent/WEB-INF/lib/jaxws-rt.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Documents/workspace/CodeSquare/WebContent/WEB-INF/lib/json.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Downloads/hadoop/hadoop-0.20.2-cdh3u0-ant.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Downloads/hadoop/hadoop-0.20.2-cdh3u0-core.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Downloads/hadoop/hadoop-0.20.2-cdh3u0-examples.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Downloads/hadoop/hadoop-0.20.2-cdh3u0-test.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Downloads/hadoop/hadoop-0.20.2-cdh3u0-tools.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Downloads/hadoop/hadoop-ant-0.20.2-cdh3u0.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Downloads/hadoop/hadoop-ant.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Downloads/hadoop/hadoop-core-0.20.2-cdh3u0.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Downloads/hadoop/hadoop-core.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Downloads/hadoop/hadoop-examples-0.20.2-cdh3u0.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Downloads/hadoop/hadoop-examples.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Downloads/hadoop/hadoop-test-0.20.2-cdh3u0.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Downloads/hadoop/hadoop-test.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Downloads/hadoop/hadoop-tools-0.20.2-cdh3u0.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Downloads/hadoop/hadoop-tools.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Documents/workspace/jdbcservlet/WebContent/WEB-INF/lib/mysql.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Downloads/jars/json.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Downloads/jars/mysql.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Documents/workspace/CodeSquare/WebContent/WEB-INF/lib/hbase-0.90.3.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Documents/workspace/CodeSquare/WebContent/WEB-INF/lib/zookeeper-3.3.2.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Documents/workspace/CodeSquare/WebContent/WEB-INF/lib/log4j-1.2.15.jar"/>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>
