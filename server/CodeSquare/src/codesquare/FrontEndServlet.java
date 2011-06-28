@@ -128,13 +128,13 @@ public class FrontEndServlet extends HttpServlet {
 			
 			
 			JSONObject j2 = new JSONObject();
-			j2.append("Name", badgeInfo[1]);
-			j2.append("Description", badgeInfo[2]);
-			j2.append("IconURL", badgeInfo[3]);
-
+			j2.put("Name", badgeInfo[1]);
+			j2.put("Description", badgeInfo[2]);
+			j2.put("IconURL", badgeInfo[3]);
+			j2.put("CustomMsg", badges[i+1]);
 			System.out.println(j2.toString());
 			
-			j.append(badges[i], j2.toString());
+			j.put(badges[i], j2);
 			
 		}
 
