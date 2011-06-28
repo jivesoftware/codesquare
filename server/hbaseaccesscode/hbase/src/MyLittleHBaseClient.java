@@ -33,13 +33,13 @@ public class MyLittleHBaseClient {
 		//Create a table
 		try {
 			HBaseAdmin admin = new HBaseAdmin(config);
-			if (!admin.tableExists("CodeSquare")) {
-				admin.createTable( new HTableDescriptor("CodeSquare"));
+			if (!admin.tableExists("EmpBadges")) {
+				admin.createTable( new HTableDescriptor("EmpBadges"));
 			}
-			admin.disableTable("CodeSquare");
-			admin.addColumn("CodeSquare", new HColumnDescriptor("info"));
-		    admin.addColumn("CodeSquare", new HColumnDescriptor("badges"));
-			admin.enableTable("CodeSquare");
+			admin.disableTable("EmpBadges");
+			admin.addColumn("EmpBadges", new HColumnDescriptor("Info"));
+		    admin.addColumn("EmpBadges", new HColumnDescriptor("Badge"));
+			admin.enableTable("EmpBadges");
 		} catch (MasterNotRunningException e1) {
 			System.err.println(e1.getMessage());
 		} catch (ZooKeeperConnectionException e1) {
@@ -51,30 +51,51 @@ public class MyLittleHBaseClient {
 
 		HTable table;
 		try {
-			table = new HTable(config, "CodeSquare");
+			table = new HTable(config, "EmpBadges");
+			deleteRow(table, "justin.kikuchi@jivesoftware.com");
 			String[] badges = {"2", "desc2", "4", "desc4", "6", "desc6"};
-			add_row(table, "justin.kikuchi@jivesoftware.com", "boss@gmail.com", badges);
+			addRow(table, "justin.kikuchi@jivesoftware.com", "boss@gmail.com", "1999-6-13", 4, 5, 6, badges);
 			String[] badges1 = {"1","desc1"};
-			add_row(table, "justin.kikuchi@jivesoftware.com", "boss@gmail.com", badges1);
-			//delete_row(table, "justin.kikuchi@jivesoftware.com");
-			String[] badges_awarded = get_badges(table, "justin.kikuchi@jivesoftware.com");
+			addRow(table, "justin.kikuchi@jivesoftware.com", "boss@gmail.com", "1999-6-13", 4, 5, 6, badges1);
+			//updateBadges(table, "justin.kikuchi@jivesoftware.com", badges1);
+			updateBoss(table, "justin.kikuchi@jivesoftware.com", "newboss@gmail.com");
+
+			String[] badges_awarded = getBadges(table, "justin.kikuchi@jivesoftware.com");
 			for(int i=0;i<badges_awarded.length;i++)
 				System.out.println(badges_awarded[i]);
+			System.out.println(getField(table, "justin.kikuchi@jivesoftware.com", "numBugs"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-	public static void add_row(HTable table,  String email, String bossEmail, String[] badges){
+	public static void addRow(HTable table,  String email, String bossEmail, String lastCommit, int badgesWeek, int numBugs, int numCommits, String[] badges){
+		Get get = new Get(Bytes.toBytes(email));
+		Result data = null;
+		try {
+		     data = table.get(get);
+		} catch(Exception e) {
+			System.err.println();
+		}
+		 
+		if (!data.isEmpty()) {
+			System.out.println("Already Exists");
+			return;
+		}
 		
 		Put row = new Put(Bytes.toBytes(email));
 		
-		row.add(Bytes.toBytes("info"),Bytes.toBytes("bossEmail"),Bytes.toBytes(bossEmail));
-		for(int i=0; i < badges.length-1; i=i+2){
-			row.add(Bytes.toBytes("badges"),Bytes.toBytes(badges[i]),Bytes.toBytes(badges[i+1]));
+		row.add(Bytes.toBytes("Info"),Bytes.toBytes("bossEmail"),Bytes.toBytes(bossEmail));
+		row.add(Bytes.toBytes("Info"),Bytes.toBytes("lastCommit"),Bytes.toBytes(lastCommit));
+		row.add(Bytes.toBytes("Info"),Bytes.toBytes("badgesWeek"),Bytes.toBytes(badgesWeek));
+		row.add(Bytes.toBytes("Info"),Bytes.toBytes("numBugs"),Bytes.toBytes(numBugs));
+		row.add(Bytes.toBytes("Info"),Bytes.toBytes("numCommits"),Bytes.toBytes(numCommits));
+		if(badges != null){
+			for(int i=0; i < badges.length-1; i=i+2){
+				row.add(Bytes.toBytes("Badge"),Bytes.toBytes(badges[i]),Bytes.toBytes(badges[i+1]));
+			}
 		}
-		
 		try {
 		    table.put(row);
 		} catch(Exception e) {
@@ -82,7 +103,7 @@ public class MyLittleHBaseClient {
 		}
 	}
 	
-	public static void delete_row(HTable table, String email){
+	public static void deleteRow(HTable table, String email){
 		Delete d = new Delete(Bytes.toBytes(email));
 			 
 		try {
@@ -92,11 +113,12 @@ public class MyLittleHBaseClient {
 		}
 	}
 	
-	public static void add_badges(HTable table, String email, String[] badges){
+	public static void updateBadges(HTable table, String email, String[] badges){
+		
 		Put row = new Put(Bytes.toBytes(email));
 		
 		for(int i=0; i < badges.length-1; i=i+2){
-			row.add(Bytes.toBytes("badges"),Bytes.toBytes(badges[i]),Bytes.toBytes(badges[i+1]));
+			row.add(Bytes.toBytes("Badge"),Bytes.toBytes(badges[i]),Bytes.toBytes(badges[i+1]));
 		}
 		
 		try {
@@ -105,8 +127,7 @@ public class MyLittleHBaseClient {
 			System.err.println();
 		}
 	}
-	
-	public static String[] get_badges(HTable table, String email){
+	public static String[] getBadges(HTable table, String email){
 		Get get = new Get(Bytes.toBytes(email));	 
 		Result data = null;
 		ArrayList<String> resultingBadges = new ArrayList<String>();
@@ -118,6 +139,7 @@ public class MyLittleHBaseClient {
 		 
 		if (data == null) {
 			System.out.println("Not found");
+			return null;
 		}
 		 
 		byte[] badges = Bytes.toBytes("badges");
@@ -131,7 +153,7 @@ public class MyLittleHBaseClient {
 		result = resultingBadges.toArray(result);
 		
 		for(int i=0; i<result.length; i++){
-			String customDescription = new String(data.getValue(Bytes.toBytes("badges"), Bytes.toBytes(result[i])));
+			String customDescription = new String(data.getValue(Bytes.toBytes("Badge"), Bytes.toBytes(result[i])));
 			int currentBadgeIndex = resultingBadges.indexOf(result[i]);
 			resultingBadges.add(currentBadgeIndex+1, customDescription);
 		}
@@ -140,5 +162,57 @@ public class MyLittleHBaseClient {
 		result =  new String[resultingBadges.size()];
 		return resultingBadges.toArray(result);
 	}
+	public static void updateBoss(HTable table, String email, String bossEmail){
+		Put row = new Put(Bytes.toBytes(email));
+		
+
+		row.add(Bytes.toBytes("Info"),Bytes.toBytes("bossEmail"),Bytes.toBytes(bossEmail));
+		
+		try {
+		    table.put(row);
+		} catch(Exception e) {
+			System.err.println();
+		}
+	}
+	public static String getLastCommit(HTable table, String email){
+		Get get = new Get(Bytes.toBytes(email));	 
+		Result data = null;
+
+		try {
+		     data = table.get(get);
+		} catch(Exception e) {
+			System.err.println();
+		}
+		 
+		if (data.isEmpty()) {
+			return null;
+		}
+		
+		return new String(data.getValue(Bytes.toBytes("Info"), Bytes.toBytes("lastCommit")));
+	}
+	public static int getField(HTable table, String email, String field){
+		Get get = new Get(Bytes.toBytes(email));	 
+		Result data = null;
+
+		try {
+		     data = table.get(get);
+		} catch(Exception e) {
+			System.err.println();
+		}
+		 
+		if (data.isEmpty()) {
+			return 0;
+		}
+		String test = new String(data.getValue(Bytes.toBytes("Info"), Bytes.toBytes(field)));
+		System.out.println("adf" + test);
+		return Integer.parseInt(test);
+	}
+	public static void updateRow(HTable table,  String email, String bossEmail, String lastCommit, int badgesWeek, int numBugs, int numCommits, String[] badges){
+		updateBoss(table, email, bossEmail);
+		updateBadges(table, email, badges);
+		
+		
+		
 	
+	}
 }
