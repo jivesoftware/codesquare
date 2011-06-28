@@ -56,7 +56,6 @@ public class MyLittleHBaseClient {
 			String[] badges = {"2", "desc2", "4", "desc4", "6", "desc6"};
 			addRow(table, "justin.kikuchi@jivesoftware.com", "boss@gmail.com", "1999-6-13", 4, 5, 6, badges);
 			String[] badges1 = {"1","desc1"};
-			addRow(table, "justin.kikuchi@jivesoftware.com", "boss@gmail.com", "1999-6-13", 4, 5, 6, badges1);
 			//updateBadges(table, "justin.kikuchi@jivesoftware.com", badges1);
 			updateBoss(table, "justin.kikuchi@jivesoftware.com", "newboss@gmail.com");
 
@@ -64,6 +63,14 @@ public class MyLittleHBaseClient {
 			for(int i=0;i<badges_awarded.length;i++)
 				System.out.println(badges_awarded[i]);
 			System.out.println(getField(table, "justin.kikuchi@jivesoftware.com", "numBugs"));
+			System.out.println(getLastCommit(table, "justin.kikuchi@jivesoftware.com"));
+			System.out.println(getField(table, "justin.kikuchi@jivesoftware.com", "badgesWeek"));
+			System.out.println(getField(table, "justin.kikuchi@jivesoftware.com", "numCommits"));
+			updateRow(table,  "justin.kikuchi@jivesoftware.com", "newboss@blah.com", "2000-7-19", 1, 1, 1, badges1);
+			System.out.println(getField(table, "justin.kikuchi@jivesoftware.com", "numBugs"));
+			System.out.println(getLastCommit(table, "justin.kikuchi@jivesoftware.com"));
+			System.out.println(getField(table, "justin.kikuchi@jivesoftware.com", "badgesWeek"));
+			System.out.println(getField(table, "justin.kikuchi@jivesoftware.com", "numCommits"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -79,10 +86,10 @@ public class MyLittleHBaseClient {
 			System.err.println();
 		}
 		 
-		if (!data.isEmpty()) {
+		/*if (!data.isEmpty()) {
 			System.out.println("Already Exists");
 			return;
-		}
+		}*/
 		
 		Put row = new Put(Bytes.toBytes(email));
 		
@@ -203,16 +210,22 @@ public class MyLittleHBaseClient {
 		if (data.isEmpty()) {
 			return 0;
 		}
-		String test = new String(data.getValue(Bytes.toBytes("Info"), Bytes.toBytes(field)));
-		System.out.println("adf" + test);
-		return Integer.parseInt(test);
+		return byteArrayToInt(data.getValue(Bytes.toBytes("Info"), Bytes.toBytes(field)), 0);
 	}
-	public static void updateRow(HTable table,  String email, String bossEmail, String lastCommit, int badgesWeek, int numBugs, int numCommits, String[] badges){
-		updateBoss(table, email, bossEmail);
-		updateBadges(table, email, badges);
-		
-		
-		
 	
+	public static int byteArrayToInt(byte[] b, int offset) {
+        int value = 0;
+        for (int i = 0; i < 4; i++) {
+            int shift = (4 - 1 - i) * 8;
+            value += (b[i + offset] & 0x000000FF) << shift;
+        }
+        return value;
+    }
+	
+	public static void updateRow(HTable table,  String email, String bossEmail, String lastCommit, int badgesWeek, int numBugs, int numCommits, String[] badges){
+		int badgesWeekOld = getField(table, email, "badgesWeek");
+		int numBugsOld = getField(table, email, "numBugs");
+		int numCommitsOld = getField(table, email, "numCommits");
+		addRow(table,  email, bossEmail, lastCommit, badgesWeek + badgesWeekOld, numBugs + numBugsOld, numCommits + numCommitsOld, badges);
 	}
 }
