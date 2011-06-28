@@ -80,9 +80,21 @@ public class FrontEndServlet extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 
 		// Get parameter info from Jive App
-		String email = request.getParameter("email");
-		if (email == null || email.length() == 0) {
-			email = "noEmail@nomail.com";
+
+		String[] emails = request.getParameterValues("email");
+		String email = "";
+		String bossEmail = "";
+
+		if (emails == null || emails.length == 0) {
+			return;
+
+		} else if (emails.length == 2) {
+			email = emails[0];
+			bossEmail = emails[1];
+		} else if (emails.length == 1) {
+			email = emails[0];
+			bossEmail = "noBoss@nomail.com";
+		} else {
 			return;
 		}
 
@@ -103,13 +115,16 @@ public class FrontEndServlet extends HttpServlet {
 			return;
 		} else {
 			try {
-				JSONObject j = convertOutputToJSON(badgesWithDescription);
-				// Output Area
-				response.setContentType("application/json");
-				OutputStream out = response.getOutputStream();
-				response.setContentLength(j.toString().length());
-				out.write(j.toString().getBytes());
-				out.close(); // Closes the output stream
+				if (email.length() != 0) {
+					JSONObject j = convertOutputToJSON(badgesWithDescription);
+					// Output Area
+					response.setContentType("application/json");
+					OutputStream out = response.getOutputStream();
+					response.setContentLength(j.toString().length());
+					out.write(j.toString().getBytes());
+					out.close(); // Closes the output stream
+				}
+
 			} catch (JSONException e) {
 				System.out.println(e.getMessage());
 			}
@@ -121,31 +136,30 @@ public class FrontEndServlet extends HttpServlet {
 		JSONObject j = new JSONObject();
 
 		HTable BadgeTable = new HTable("Badges");
-		
+
 		for (int i = 0; i < badges.length; i = i + 2) {
 			System.out.println("Processing Badge No: " + badges[i]);
 			String[] badgeInfo = getBadgeInfo(BadgeTable, badges[i]);
-			
-			
+
 			JSONObject j2 = new JSONObject();
 			j2.put("Name", badgeInfo[1]);
 			j2.put("Description", badgeInfo[2]);
 			j2.put("IconURL", badgeInfo[3]);
-			j2.put("CustomMsg", badges[i+1]);
-			System.out.println(j2.toString());	
+			j2.put("CustomMsg", badges[i + 1]);
+			System.out.println(j2.toString());
 			j.put(badges[i], j2);
-			
+
 		}
-		
+
 		JSONObject j3 = new JSONObject();
-			j3.put("Name", "Unobtained");
-			j3.put("Description", "Click to learn how to obtain");
-			j3.put("IconURL", "images/unobtained.png");
-			j3.put("CustomMsg", "");
-		
-		for(Integer i = new Integer(1); i <= 30;i++){
-			
-			if(!j.has(i.toString())){
+		j3.put("Name", "Unobtained");
+		j3.put("Description", "Click to learn how to obtain");
+		j3.put("IconURL", "images/unobtained.png");
+		j3.put("CustomMsg", "");
+
+		for (Integer i = new Integer(1); i <= 30; i++) {
+
+			if (!j.has(i.toString())) {
 				j.put(i.toString(), j3);
 			}
 		}
