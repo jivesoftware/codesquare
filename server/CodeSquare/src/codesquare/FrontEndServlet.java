@@ -132,8 +132,7 @@ public class FrontEndServlet extends HttpServlet {
 			j2.put("Description", badgeInfo[2]);
 			j2.put("IconURL", badgeInfo[3]);
 			j2.put("CustomMsg", badges[i+1]);
-			System.out.println(j2.toString());
-			
+			System.out.println(j2.toString());	
 			j.put(badges[i], j2);
 			
 		}
