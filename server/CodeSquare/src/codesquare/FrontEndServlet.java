@@ -24,6 +24,7 @@ import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.json.*;
+
 /**
  * Servlet implementation class FrontEndServlet
  */
@@ -79,78 +80,154 @@ public class FrontEndServlet extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 
 		// Get parameter info from Jive App
-		String email = request.getParameter("email");
-		if (email == null || email.length() == 0) {
-			email = "noEmail@nomail.com";
-			return;
-		}
-		
-		Configuration conf = HBaseConfiguration.create();
-		conf.addResource(new Path("/Users/diivanand.ramalingam/Downloads/hbase/conf/hbase-site.xml"));
-		
-		
-		HTable table = new HTable(conf,"EmpBadges");
-	
-		String[] badges = getBadges(table,email); //Elements in array have this invariant: {BadgeNumber1,Badge1Description,BadgeNumber2,Badge2Description,etc.}
-		
-		
-		if(badges == null){
-			return;
-		}else{
-			JSONObject j = convertOutputToJSON(badges);
-		
-		//Output Area
-		response.setContentType("application/json");
-		OutputStream out = response.getOutputStream();
-		response.setContentLength(j.toString().length());
-		out.write(j.toString().getBytes());
-		out.close(); // Closes the output stream
-		}
-		
-	}
 
-	public JSONObject convertOutputToJSON(String[] badges){
-		JSONObject j = new JSONObject();
-		
-		for(int i = 0;i < badges.length;i++){
+		String[] emails = request.getParameterValues("email");
+		String email = "";
+		String bossEmail = "";
+
+		if (emails == null || emails.length == 0) {
+			return;
+
+		} else if (emails.length == 2) {
+			email = emails[0];
+			bossEmail = emails[1];
+		} else if (emails.length == 1) {
+			email = emails[0];
+			bossEmail = "noBoss@nomail.com";
+		} else {
+			return;
+		}
+
+		Configuration conf = HBaseConfiguration.create();
+		conf.addResource(new Path(
+				"/Users/diivanand.ramalingam/Downloads/hbase/conf/hbase-site.xml"));
+
+		HTable table = new HTable(conf, "EmpBadges");
+
+		String[] badgesWithDescription = getBadges(table, email); // Elements in
+																	// array
+																	// have this
+																	// invariant:
+																	// {BadgeNumber1,Badge1Description,BadgeNumber2,Badge2Description,etc.}
+		System.out.println();
+
+		if (badgesWithDescription == null) {
+			return;
+		} else {
 			try {
-				j.append(badges[i], "1");
+				if (email.length() != 0) {
+					JSONObject j = convertOutputToJSON(badgesWithDescription);
+					// Output Area
+					response.setContentType("application/json");
+					OutputStream out = response.getOutputStream();
+					response.setContentLength(j.toString().length());
+					out.write(j.toString().getBytes());
+					out.close(); // Closes the output stream
+				}
+
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				System.out.println(e.getMessage());
 			}
 		}
-		
+	}
+
+	public JSONObject convertOutputToJSON(String[] badges)
+			throws JSONException, IOException {
+		JSONObject j = new JSONObject();
+
+		HTable BadgeTable = new HTable("Badges");
+
+		for (int i = 0; i < badges.length; i = i + 2) {
+			System.out.println("Processing Badge No: " + badges[i]);
+			String[] badgeInfo = getBadgeInfo(BadgeTable, badges[i]);
+
+			JSONObject j2 = new JSONObject();
+			j2.put("Name", badgeInfo[1]);
+			j2.put("Description", badgeInfo[2]);
+			j2.put("IconURL", badgeInfo[3]);
+			j2.put("CustomMsg", badges[i + 1]);
+			System.out.println(j2.toString());
+			j.put(badges[i], j2);
+
+		}
+
+		JSONObject j3 = new JSONObject();
+		j3.put("Name", "Unobtained");
+		j3.put("Description", "Click to learn how to obtain");
+		j3.put("IconURL", "images/unobtained.png");
+		j3.put("CustomMsg", "");
+
+		for (Integer i = new Integer(1); i <= 30; i++) {
+
+			if (!j.has(i.toString())) {
+				j.put(i.toString(), j3);
+			}
+		}
+
 		return j;
 	}
 
-	public String[] getBadges(HTable table, String email){
-		Get get = new Get(Bytes.toBytes(email));	 
+	public String[] getBadges(HTable table, String email) {
+		Get get = new Get(Bytes.toBytes(email));
 		Result data = null;
 		ArrayList<String> resultingBadges = new ArrayList<String>();
-		
 		try {
-		     data = table.get(get);
-		} catch(Exception e) {
-			System.err.println(e.getMessage());
-			return null;
+			data = table.get(get);
+		} catch (Exception e) {
+			System.err.println();
 		}
-		 
-		
+
 		if (data.isEmpty()) {
 			System.out.println("Not found");
 			return null;
 		}
-		 
+
 		byte[] badges = Bytes.toBytes("Badge");
-		
-		NavigableSet<byte[]> badges_awarded = data.getFamilyMap(badges).descendingKeySet();
-		for(byte[] badge: badges_awarded){
+
+		NavigableSet<byte[]> badges_awarded = data.getFamilyMap(badges)
+				.descendingKeySet();
+		for (byte[] badge : badges_awarded) {
 			resultingBadges.add(new String(badge));
 		}
+
 		String[] result = new String[resultingBadges.size()];
+		result = resultingBadges.toArray(result);
+
+		for (int i = 0; i < result.length; i++) {
+			String customDescription = new String(data.getValue(
+					Bytes.toBytes("Badge"), Bytes.toBytes(result[i])));
+			int currentBadgeIndex = resultingBadges.indexOf(result[i]);
+			resultingBadges.add(currentBadgeIndex + 1, customDescription);
+		}
+
+		result = new String[resultingBadges.size()];
 		return resultingBadges.toArray(result);
 	}
-	
+
+	public static String[] getBadgeInfo(HTable table, String badgeNumber) {
+		Get get = new Get(Bytes.toBytes(badgeNumber));
+		Result data = null;
+
+		try {
+			data = table.get(get);
+		} catch (Exception e) {
+			System.err.println();
+		}
+
+		if (data.isEmpty()) {
+			return null;
+		}
+
+		String[] result = new String[4];
+		result[0] = badgeNumber;
+		result[1] = new String(data.getValue(Bytes.toBytes("Info"),
+				Bytes.toBytes("name")));
+		result[2] = new String(data.getValue(Bytes.toBytes("Info"),
+				Bytes.toBytes("description")));
+		result[3] = new String(data.getValue(Bytes.toBytes("Info"),
+				Bytes.toBytes("iconURL")));
+
+		return result;
+	}
 
 }
