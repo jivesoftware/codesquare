@@ -1,12 +1,32 @@
 /* main.css for codesquare styling */
 
+/*
 body {
      /*background-color:#b0c4de;*/
      text-align:center;     
 }
+*/
 
-th {
-   padding:0px 50px 0px 0px;
+td {
+   width: 100%;
+
 }
 
-    
+
+td  p {
+   height: 40px; 
+   width: 100px;  
+   text-align: center;
+   background-color:yellow;
+
+   
+}
+
+th {
+   padding: 0px 75px 0px 0px;
+}
+
+table {
+   //   width: 600px;
+   table-layout: fixed;
+}
