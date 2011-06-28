@@ -136,6 +136,19 @@ public class FrontEndServlet extends HttpServlet {
 			j.put(badges[i], j2);
 			
 		}
+		
+		JSONObject j3 = new JSONObject();
+			j3.put("Name", "Unobtained");
+			j3.put("Description", "Click to learn how to obtain");
+			j3.put("IconURL", "images/unobtained.png");
+			j3.put("CustomMsg", "");
+		
+		for(Integer i = new Integer(1); i <= 30;i++){
+			
+			if(!j.has(i.toString())){
+				j.put(i.toString(), j3);
+			}
+		}
 
 		return j;
 	}
