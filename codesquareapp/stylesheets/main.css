@@ -6,27 +6,26 @@ body {
      text-align:center;     
 }
 */
-
 td {
    width: 100%;
-
 }
 
+img {
+   width: 100px;
+   height: 100px;
+}
 
 td  p {
    height: 40px; 
    width: 100px;  
    text-align: center;
-   background-color:yellow;
-
-   
 }
 
 th {
-   padding: 0px 75px 0px 0px;
+   padding: 0px 75px 50px 0px;
+   font-size: 1.5em;
 }
 
 table {
-   //   width: 600px;
    table-layout: fixed;
 }

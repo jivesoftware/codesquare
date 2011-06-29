@@ -1,4 +1,4 @@
-var themeAry = [ 'Commits', 'Holidays', 'Viral Vids'];
+var themeAry = [ 'Commits', 'Holidays', 'Time/Date', 'Viral Vids', 'Boss and Peers', 'Basic'];
 var glObj = {};
 glObj.timer_is_on = 0;
 glObj.refreshTime = 3000;
@@ -54,11 +54,12 @@ function makeBadgeTable() {
 		//sort the json data
 		for (key = 1; key <= Object.size(obj); key++) {
 		     value = obj[key];
+		     console.log(value);
 		     if (key % 5 == 1) {
 			 html += "<tr><th>" + themeAry[themeNum] + "</th>";
 			 themeNum++;
 		     }
-		     html += "<td><img src=" + value.IconURL + "/><p>" + value.name + "</p></td>";
+		     html += "<td><img src=" + value.IconURL + "/><p>" + value.Name + "</p></td>";
 		     if (key % 5 == 0) {
 			 html += "</tr>";
 		     }
