@@ -94,14 +94,14 @@ public class InternalProcessing {
 		if((badges.size()+fieldValues[0]) > 7){
 				badges.add("16");
 		}
-		String[] results = new String[badges.size()];
-		System.out.println("size: " + badges.size());
+		
 		ArrayList<String> aquiredBadges = new ArrayList<String>(getBadges(table, email));
 		for(int i=0;i<badges.size();i++){
 			if(aquiredBadges.contains(badges.get(i))){
 				badges.remove(i--);
 			}
 		}
+		String[] results = new String[badges.size()];
 		addRow(table,  email, bossEmail, date, badges.size() + fieldValues[0], fieldValues[1], fieldValues[2], consecCommits[0], badges.toArray(results));
 		
 		test(table, email);
@@ -268,7 +268,10 @@ public class InternalProcessing {
 		 
 		if (data == null) {
 			System.out.println("Not found");
-			return null;
+			return resultingBadges;
+		}
+		if(data.isEmpty()){
+			return resultingBadges;
 		}
 		 
 		byte[] badges = Bytes.toBytes("Badge");
