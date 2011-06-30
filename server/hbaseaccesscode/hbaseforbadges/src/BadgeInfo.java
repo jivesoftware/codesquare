@@ -33,12 +33,12 @@ public class BadgeInfo {
 		//Create a table
 		try {
 			HBaseAdmin admin = new HBaseAdmin(config);
-			if (!admin.tableExists("BadgeInfo")) {
-				admin.createTable( new HTableDescriptor("BadgeInfo"));
+			if (!admin.tableExists("Badges")) {
+				admin.createTable( new HTableDescriptor("Badges"));
 			}
-			admin.disableTable("BadgeInfo");
-			admin.addColumn("BadgeInfo", new HColumnDescriptor("info"));
-			admin.enableTable("BadgeInfo");
+			admin.disableTable("Badges");
+			admin.addColumn("Badges", new HColumnDescriptor("Info"));
+			admin.enableTable("Badges");
 		} catch (MasterNotRunningException e1) {
 			System.err.println(e1.getMessage());
 		} catch (ZooKeeperConnectionException e1) {
@@ -50,7 +50,7 @@ public class BadgeInfo {
 
 		HTable table;
 		try {
-			table = new HTable(config, "BadgeInfo");
+			table = new HTable(config, "Badges");
 			deleteRow(table, "1");
 			addBadge(table, "1", "First Commit", "file:///blah/blah/foo.png", "This badge says your a rookie.");
 			String[] badges_awarded = getBadgeInfo(table, "1");
@@ -71,9 +71,9 @@ public class BadgeInfo {
 		
 		Put row = new Put(Bytes.toBytes(badgeNumber));
 		
-		row.add(Bytes.toBytes("info"),Bytes.toBytes("badgeName"),Bytes.toBytes(badgeName));
-		row.add(Bytes.toBytes("info"),Bytes.toBytes("iconURL"),Bytes.toBytes(iconURL));
-		row.add(Bytes.toBytes("info"),Bytes.toBytes("description"),Bytes.toBytes(description));
+		row.add(Bytes.toBytes("Info"),Bytes.toBytes("name"),Bytes.toBytes(badgeName));
+		row.add(Bytes.toBytes("Info"),Bytes.toBytes("iconURL"),Bytes.toBytes(iconURL));
+		row.add(Bytes.toBytes("Info"),Bytes.toBytes("description"),Bytes.toBytes(description));
 		
 		
 		try {
@@ -109,9 +109,9 @@ public class BadgeInfo {
 		
 		String[] result = new String[4];
 		result[0] = badgeNumber;
-		result[1] = new String(data.getValue(Bytes.toBytes("info"), Bytes.toBytes("badgeName")));
-		result[2] = new String(data.getValue(Bytes.toBytes("info"), Bytes.toBytes("description")));
-		result[3] = new String(data.getValue(Bytes.toBytes("info"), Bytes.toBytes("iconURL")));
+		result[1] = new String(data.getValue(Bytes.toBytes("Info"), Bytes.toBytes("name")));
+		result[2] = new String(data.getValue(Bytes.toBytes("Info"), Bytes.toBytes("description")));
+		result[3] = new String(data.getValue(Bytes.toBytes("Info"), Bytes.toBytes("iconURL")));
 
 		return result;
 	}
