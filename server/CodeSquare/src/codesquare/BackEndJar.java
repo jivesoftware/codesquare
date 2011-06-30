@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 
+import org.apache.hadoop.conf.Configuration;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -203,6 +204,20 @@ public class BackEndJar {
 		}
 		return jObs;
 	}
+	
+	//HDFS methods
+	
+	public static void insertCommitsIntoHDFS(ArrayList<Commit> commits){
+		//Connect to HDFS
+		Configuration config = new Configuration();
+		config.set("fs.default.name","hdfs://10.45.111.143:8020");
+		
+		
+	}
+	
+	 
+	
+	//End HDFS methods
 
 	public static void main(String[] args) {
 		if (args.length != 1) {
