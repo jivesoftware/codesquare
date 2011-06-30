@@ -1,6 +1,10 @@
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.NavigableSet;
 import java.util.StringTokenizer;
 
@@ -35,11 +39,15 @@ public class InternalProcessing {
 		System.out.println("==============================");
 		test();*/
 
-		checkUpdateBadges("justin.kikuchi@jivesoftware.com", "boss@gmail.com", "Mon 1999-04-5", "10 6 28", "this is a message", 0);
-		checkUpdateBadges("justin.kikuchi@jivesoftware.com", "boss@gmail.com", "Sat 1999-04-6", "10 6 28", "this is a message1", 1);
-		checkUpdateBadges("justin.kikuchi@jivesoftware.com", "boss@gmail.com", "Fri 1999-04-6", "10 6 28", "jive this is a message1", 1);
+		checkUpdateBadges("justin.kikuchi@jivesoftware.com", "boss@gmail.com", "1999-04-5", "Mon", "10", "this is a message", 0);
+		checkUpdateBadges("justin.kikuchi@jivesoftware.com", "boss@gmail.com", "1999-04-6", "Sat", "10", "this is a message1", 1);
+		checkUpdateBadges("justin.kikuchi@jivesoftware.com", "boss@gmail.com", "1999-04-7", "Fri", "10", "jive this is a message2", 1);
+		checkUpdateBadges("justin.kikuchi@jivesoftware.com", "boss@gmail.com", "1999-04-8", "Tues", "10", "this is a message3", 1);
+		checkUpdateBadges("justin.kikuchi@jivesoftware.com", "boss@gmail.com", "1999-04-9", "Mon", "5", "this is a message4", 1);
+		checkUpdateBadges("justin.kikuchi@jivesoftware.com", "boss@gmail.com", "1999-04-10", "Tues", "10", "this is a message3", 1);
+		checkUpdateBadges("justin.kikuchi@jivesoftware.com", "boss@gmail.com", "1999-04-11", "Mon", "5", "this is a message4", 1);
 	}
-	public static void checkUpdateBadges(String email, String bossEmail, String date, String time, String message, int numBugs){
+	public static void checkUpdateBadges(String email, String bossEmail, String date, String dayofWeek, String hour, String message, int numBugs){
 
 		Configuration config = HBaseConfiguration.create();
 		//config.addResource(new Path("/Users/diivanand.ramalingam/Downloads/hbase/conf/hbase-site.xml"));
@@ -49,11 +57,11 @@ public class InternalProcessing {
 			HBaseAdmin admin = new HBaseAdmin(config);
 			if (!admin.tableExists("EmpBadges")) {
 				admin.createTable( new HTableDescriptor("EmpBadges"));
+				admin.disableTable("EmpBadges");
+				admin.addColumn("EmpBadges", new HColumnDescriptor("Info"));
+				admin.addColumn("EmpBadges", new HColumnDescriptor("Badge"));
+				admin.enableTable("EmpBadges");
 			}
-			admin.disableTable("EmpBadges");
-			admin.addColumn("EmpBadges", new HColumnDescriptor("Info"));
-		    admin.addColumn("EmpBadges", new HColumnDescriptor("Badge"));
-			admin.enableTable("EmpBadges");
 		} catch (MasterNotRunningException e1) {
 			System.err.println(e1.getMessage());
 		} catch (ZooKeeperConnectionException e1) {
@@ -76,8 +84,7 @@ public class InternalProcessing {
 		String[] fields = {"badgesWeek", "numBugs", "numCommits", "consecCommits"};
 		int[] fieldValues = getFields(table, email, fields);
 		String lastCommit = getLastCommit(table, email);
-		ArrayList<String> badges = testDateTimeBadges(date, time);
-		System.out.println("lastcommit: " + lastCommit);
+		ArrayList<String> badges = testDateTimeBadges(date, dayofWeek, hour);
 		if(lastCommit == null){
 			lastCommit = "";
 		}
@@ -87,7 +94,7 @@ public class InternalProcessing {
 		int[] consecCommits = checkConsecCommits(table, email, date,  lastCommit, fieldValues[3]);
 		
 		
-		badges.addAll(checkNumericalBadges(table, email, fieldValues, consecCommits, date));
+		badges.addAll(checkNumericalBadges(fieldValues, consecCommits));
 		if(message.toLowerCase().contains("jive")){
 			badges.add("26");
 		}
@@ -107,10 +114,8 @@ public class InternalProcessing {
 		test(table, email);
 	}
 
-	public static ArrayList<String> testDateTimeBadges(String date, String time){
+	public static ArrayList<String> testDateTimeBadges(String date, String dayofWeek,String hour){
 		ArrayList<String> badges = new ArrayList<String>();
-		StringTokenizer st = new StringTokenizer(time);
-		String hour = st.nextToken();
 		
 		if(date.contains("-03-17")){
 			badges.add("7");
@@ -128,31 +133,33 @@ public class InternalProcessing {
 			badges.add("10");
 		}
 
-		if(date.contains("Mon") && Integer.parseInt(hour) <= 5){
+		if(dayofWeek.equals("Mon") && Integer.parseInt(hour) <= 5){
 			badges.add("18");
 		}
-		else if(date.contains("Fri") && Integer.parseInt(hour) >= 4){
+		else if(dayofWeek.equals("Fri") && Integer.parseInt(hour) >= 4){
 			badges.add("19");
 		}
-		else if(date.contains("Sat") || date.contains("Sun")){
+		else if(dayofWeek.equals("Sat") || dayofWeek.equals("Sun")){
 			badges.add("29");
 		}
-		if(Integer.parseInt(hour) >= 10){
-			badges.add("12");
-		}
-		if(Integer.parseInt(hour) <= 6){
-			badges.add("13");
+		if(!hour.isEmpty()){
+			if(Integer.parseInt(hour) >= 10){
+				badges.add("12");
+			}
+			if(Integer.parseInt(hour) <= 6){
+				badges.add("13");
+			}
 		}
 		
 		return badges;
 	}
-	public static ArrayList<String> checkNumericalBadges(HTable table, String email, int[] fieldValues, int[] consecCommits, String commitDate){
+	public static ArrayList<String> checkNumericalBadges(int[] fieldValues, int[] consecCommits){
 		ArrayList<String> badges = new ArrayList<String>();
 		int totNumBugs = fieldValues[1];
 		int totNumCommits = fieldValues[2];
 		
-		//result[0] is commited person, and result[1] is (value = 1)2 commits in a day or (value = 2)2 commits in >5 days: 0 is none
-		if(consecCommits[0] > 7){
+		//consecCommits[0] is commited person, and consecCommits[1] is (value = 1)2 commits in a day or (value = 2)2 commits in >5 days: 0 is none
+		if(consecCommits[0] >= 7){
 			badges.add("30");
 		}
 		if(consecCommits[1] == 1){
@@ -281,7 +288,7 @@ public class InternalProcessing {
 			resultingBadges.add(new String(badge));
 		}
 		
-		/*
+		/* checks for personal message, not used at the moment
 		String[] result =  new String[resultingBadges.size()];
 		result = resultingBadges.toArray(result);
 		
@@ -354,38 +361,41 @@ public class InternalProcessing {
 
 	public static int[] checkConsecCommits(HTable table, String email, String commitDate, String lastCommit, int consecCommitsOld){
 		int[] result = new int[2]; //result[0] is commited person, and result[1] is (value = 1)2 commits in a day or (value = 2)2 commits in >5 days: 0 is none
-		
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		DateFormat dfcheck = new SimpleDateFormat("dd");
+		Date check = null;
+		Date date =  null;
+	    Date dateOld = null;
+	   
 		result[0] = 1;
 		result[1] = 0;
-		if(lastCommit != ""){
-			StringTokenizer st = new StringTokenizer(lastCommit);
-			String dayof=st.nextToken();
-			String yearOld = st.nextToken("-");
-			String monthOld = st.nextToken("-");
-			String dayOld = st.nextToken("-");
-	
-			st = new StringTokenizer(commitDate);
-			dayof=st.nextToken();
-			String year = st.nextToken("-");
-			String month = st.nextToken("-");
-			String day = st.nextToken("-");
-			
-			System.out.println("OLD: "+yearOld + monthOld + dayOld);
-			System.out.println("NEW: "+year + month + day);
-			if(year.equals(yearOld) && month.equals(monthOld)){
-				if((Integer.parseInt(day)-1) == Integer.parseInt(dayOld)){
-					System.out.println("HERE ");
-					result[0] = consecCommitsOld + 1;
-				}
-				else if(day.equals(dayOld)){
-					System.out.println("HERE 1");
-					result[0]= consecCommitsOld;
-					result[1] = 1;
-				}
-				else if((Integer.parseInt(day) - Integer.parseInt(dayOld)) > 4){
-					result[1] = 2;
-				}
-			}
+		if(lastCommit.isEmpty()){
+			return result;
+		}
+	    try {
+	    	date =  df.parse(commitDate);
+			dateOld = df.parse(lastCommit);
+			check = dfcheck.parse("02");
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		if((date.getTime()-dateOld.getTime()) < check.getTime() && date.getTime() != dateOld.getTime()){
+			result[0] = consecCommitsOld + 1;
+		}
+		else if(date.getTime() == dateOld.getTime()){
+			result[0]= consecCommitsOld;
+			result[1] = 1;
+		}
+		try {
+			check = dfcheck.parse("05");
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if(date.getTime()-dateOld.getTime() > check.getTime()){
+			result[1] = 2;
 		}
 		return result;
 	}
@@ -405,6 +415,12 @@ public class InternalProcessing {
 		System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 	}
 }
+
+
+
+
+
+
 	/*
 	public static void updateRow(HTable table,  String email, String bossEmail, String lastCommit, int badgesWeek, int numBugs, int numCommits, int consecCommits, String[] badges){
 		String[] fields = {"badgesWeek", "numBugs", "numCommits"};
