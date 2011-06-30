@@ -13,6 +13,7 @@ import java.util.StringTokenizer;
 public class Commit {
 	private String id;
 	private String msg;
+	private String empEmail;
 	
 	private String day;
 	private String date;
@@ -42,11 +43,11 @@ public class Commit {
 	 * @param day @param date @param hour 
 	 * @param minute @param second
 	 */
-	public Commit(String id, String msg, int numFilesChanged, 
-			String fileString, int insertions, int deletions,
+	public Commit(String id, String empEmail, String msg, int numFilesChanged, 
+			ArrayList<String> filesChanged, int insertions, int deletions,
 			String day, String date, int hour, int minute, int second ) {
-		this.id = id; this.msg = msg; this.numFilesChanged = numFilesChanged;
-		this.filesChanged = parseFilesChanged(fileString);
+		this.id = id; this.msg = msg; this.numFilesChanged = numFilesChanged;this.empEmail = empEmail;
+		this.filesChanged = filesChanged;
 		this.insertions = insertions; this.deletions = deletions;
 		this.day = day; this.date = date; this.hour = hour;
 		this.minute = minute; this.second = second;
@@ -207,6 +208,7 @@ public class Commit {
 		this. filesChanged.clear();}
 	
 	
+	/*
 	private ArrayList<String> parseFilesChanged(String filesChanged) {
 		ArrayList<String> toBeFilled = new ArrayList<String>();
 		StringTokenizer s = new StringTokenizer(filesChanged, " ");
@@ -215,10 +217,11 @@ public class Commit {
 		}
 		return toBeFilled;
 	}
+	*/
 	
 	public String toString(){
-		return id + " " + msg + " " + day + " " + date + " " + hour + " " + minute
+		return id + " " + empEmail + " " + day + " " + date + " " + hour + " " + minute
 		 + " " + second + " " + numFilesChanged + " " + filesChanged.toString() + " " + insertions
-		 + " " + deletions;
+		 + " " + deletions + " " + "\"" + msg + "\"";
 	}
 }
