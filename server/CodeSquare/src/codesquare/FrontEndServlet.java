@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NavigableSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -76,6 +78,16 @@ public class FrontEndServlet extends HttpServlet {
 
 	}
 
+	/**
+	 * Takes in parameters sent by URL and uses parameters to pull out the
+	 * badges obtained by the user or to add the user is the user is using
+	 * CodeSquare for the first time
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
 	protected void doGetOrPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
@@ -98,37 +110,57 @@ public class FrontEndServlet extends HttpServlet {
 			return;
 		}
 
-		Configuration conf = HBaseConfiguration.create();
-		conf.addResource(new Path(
-				"/Users/diivanand.ramalingam/Downloads/hbase/conf/hbase-site.xml"));
+		Pattern p = Pattern.compile(".+@.+\\.[a-z]+");
+		Matcher m = p.matcher(email);
+		Matcher m2 = p.matcher(bossEmail);
+		boolean matchFound = m.matches();
+		boolean match2Found = m2.matches();
+		
+		if (matchFound && match2Found) {
 
-		HTable table = new HTable(conf, "EmpBadges");
+			Configuration conf = HBaseConfiguration.create();
+			//conf.addResource(new Path(
+			//		"/Users/diivanand.ramalingam/Downloads/hbase/conf/hbase-site.xml"));
 
-		String[] badgesWithDescription = getBadges(table, email); // Elements in
-																	// array
-																	// have this
-																	// invariant:
-																	// {BadgeNumber1,Badge1Description,BadgeNumber2,Badge2Description,etc.}
-		System.out.println();
+			
+			
+			HTable table = new HTable(conf, "EmpBadges1");
+			
+			addUserOrUpdateBoss(table,email,bossEmail);
 
-		if (badgesWithDescription == null) {
-			return;
-		} else {
-			try {
-				if (email.length() != 0) {
-					JSONObject j = convertOutputToJSON(badgesWithDescription);
-					// Output Area
-					response.setContentType("application/json");
-					OutputStream out = response.getOutputStream();
-					response.setContentLength(j.toString().length());
-					out.write(j.toString().getBytes());
-					out.close(); // Closes the output stream
+			String[] badgesWithDescription = getBadges(table, email); // Elements
+																		// in
+																		// array
+																		// have
+																		// this
+																		// invariant:
+																		// {BadgeNumber1,Badge1Description,BadgeNumber2,Badge2Description,etc.}
+			System.out.println();
+
+			if (badgesWithDescription == null) {
+				return;
+			} else {
+				try {
+					if (email.length() != 0) {
+						JSONObject j = convertOutputToJSON(badgesWithDescription);
+						// Output Area
+						response.setContentType("application/json");
+						OutputStream out = response.getOutputStream();
+						response.setContentLength(j.toString().length());
+						out.write(j.toString().getBytes());
+						out.close(); // Closes the output stream
+					}
+
+				} catch (JSONException e) {
+					System.out.println(e.getMessage());
 				}
-
-			} catch (JSONException e) {
-				System.out.println(e.getMessage());
 			}
+
+		} else {
+			System.out.println("Invalid email address");
+			return;
 		}
+
 	}
 
 	public JSONObject convertOutputToJSON(String[] badges)
@@ -228,6 +260,20 @@ public class FrontEndServlet extends HttpServlet {
 				Bytes.toBytes("iconURL")));
 
 		return result;
+	}
+
+	public static void addUserOrUpdateBoss(HTable table, String email,
+			String bossEmail) {
+		Put row = new Put(Bytes.toBytes(email));
+
+		row.add(Bytes.toBytes("Info"), Bytes.toBytes("bossEmail"),
+				Bytes.toBytes(bossEmail));
+
+		try {
+			table.put(row);
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+		}
 	}
 
 }
