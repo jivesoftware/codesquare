@@ -229,5 +229,21 @@ public class FrontEndServlet extends HttpServlet {
 
 		return result;
 	}
+	
+	public static void add_row(HTable table,  String email, String bossEmail, String[] badges){
+		
+		Put row = new Put(Bytes.toBytes(email));
+		
+		row.add(Bytes.toBytes("info"),Bytes.toBytes("bossEmail"),Bytes.toBytes(bossEmail));
+		for(int i=0; i < badges.length-1; i=i+2){
+			row.add(Bytes.toBytes("badges"),Bytes.toBytes(badges[i]),Bytes.toBytes(badges[i+1]));
+		}
+		
+		try {
+		    table.put(row);
+		} catch(Exception e) {
+			System.err.println();
+		}
+	}
 
 }
