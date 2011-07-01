@@ -53,8 +53,8 @@ public class MyLittleHBaseClient {
 		try {
 			table = new HTable(config, "EmpBadges");
 			deleteRow(table, "justin.kikuchi@jivesoftware.com");
-			String[] badges = {"2", "desc2", "4", "desc4", "6", "desc6"};
-			addRow(table, "justin.kikuchi@jivesoftware.com", "boss@gmail.com", "1999-6-13", 4, 5, 6, badges);
+			String[] badges = {};
+			addRow(table, "justin.kikuchi@jivesoftware.com", "boss@gmail.com", "", 0, 0, 0, badges);
 			String[] badges1 = {"1","desc1"};
 			//updateBadges(table, "justin.kikuchi@jivesoftware.com", badges1);
 			updateBoss(table, "justin.kikuchi@jivesoftware.com", "newboss@gmail.com");
@@ -103,6 +103,31 @@ public class MyLittleHBaseClient {
 				row.add(Bytes.toBytes("Badge"),Bytes.toBytes(badges[i]),Bytes.toBytes(badges[i+1]));
 			}
 		}
+		try {
+		    table.put(row);
+		} catch(Exception e) {
+			System.err.println();
+		}
+	}
+	
+	public static void addRow(HTable table,  String email, String bossEmail){
+		Get get = new Get(Bytes.toBytes(email));
+		Result data = null;
+		try {
+		     data = table.get(get);
+		} catch(Exception e) {
+			System.err.println();
+		}
+		 
+		if (!data.isEmpty()) {
+			System.out.println("Already Exists");
+			return;
+		}
+		
+		Put row = new Put(Bytes.toBytes(email));
+		
+		row.add(Bytes.toBytes("Info"),Bytes.toBytes("bossEmail"),Bytes.toBytes(bossEmail));
+
 		try {
 		    table.put(row);
 		} catch(Exception e) {
