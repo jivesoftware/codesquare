@@ -1,4 +1,6 @@
 
+import BackEnd.BackEndJar;
+import BackEnd.Commit;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -38,16 +40,21 @@ public class InternalProcessing {
 		}
 		System.out.println("==============================");
 		test();*/
-
-		checkUpdateBadges("justin.kikuchi@jivesoftware.com", "boss@gmail.com", "1999-04-5", "Mon", "10", "this is a message", 0);
-		checkUpdateBadges("justin.kikuchi@jivesoftware.com", "boss@gmail.com", "1999-04-6", "Sat", "10", "this is a message1", 1);
-		checkUpdateBadges("justin.kikuchi@jivesoftware.com", "boss@gmail.com", "1999-04-7", "Fri", "10", "jive this is a message2", 1);
-		checkUpdateBadges("justin.kikuchi@jivesoftware.com", "boss@gmail.com", "1999-04-8", "Tues", "10", "this is a message3", 1);
-		checkUpdateBadges("justin.kikuchi@jivesoftware.com", "boss@gmail.com", "1999-04-9", "Mon", "5", "this is a message4", 1);
-		checkUpdateBadges("justin.kikuchi@jivesoftware.com", "boss@gmail.com", "1999-04-10", "Tues", "10", "this is a message3", 1);
-		checkUpdateBadges("justin.kikuchi@jivesoftware.com", "boss@gmail.com", "1999-04-11", "Mon", "5", "this is a message4", 1);
+		ArrayList<Commit> output = BackEndJar.parseGitInput(args[0]);
+		for(Commit c:output){
+			System.out.println(c.getDate());
+		}
+		BackEndJar.insertCommitsIntoHDFS(output);
+		
+		checkUpdateBadges("justin.kikuchi@jivesoftware.com",  "1999-04-5", "Mon", "10", "this is a message", 0);
+		checkUpdateBadges("justin.kikuchi@jivesoftware.com",  "1999-04-6", "Sat", "10", "this is a message1", 1);
+		checkUpdateBadges("justin.kikuchi@jivesoftware.com",  "1999-04-7", "Fri", "10", "jive this is a message2", 1);
+		checkUpdateBadges("justin.kikuchi@jivesoftware.com",  "1999-04-8", "Tues", "10", "this is a message3", 1);
+		checkUpdateBadges("justin.kikuchi@jivesoftware.com",  "1999-04-9", "Mon", "5", "this is a message4", 1);
+		checkUpdateBadges("justin.kikuchi@jivesoftware.com",  "1999-04-10", "Tues", "10", "this is a message3", 1);
+		checkUpdateBadges("justin.kikuchi@jivesoftware.com",  "1999-04-11", "Mon", "5", "this is a message4", 1);
 	}
-	public static void checkUpdateBadges(String email, String bossEmail, String date, String dayofWeek, String hour, String message, int numBugs){
+	public static void checkUpdateBadges(String email, String date, String dayofWeek, String hour, String message, int numBugs){
 
 		Configuration config = HBaseConfiguration.create();
 		//config.addResource(new Path("/Users/diivanand.ramalingam/Downloads/hbase/conf/hbase-site.xml"));
@@ -109,7 +116,7 @@ public class InternalProcessing {
 			}
 		}
 		String[] results = new String[badges.size()];
-		addRow(table,  email, bossEmail, date, badges.size() + fieldValues[0], fieldValues[1], fieldValues[2], consecCommits[0], badges.toArray(results));
+		addRow(table,  email, date, badges.size() + fieldValues[0], fieldValues[1], fieldValues[2], consecCommits[0], badges.toArray(results));
 		
 		test(table, email);
 	}
@@ -205,7 +212,7 @@ public class InternalProcessing {
 		return badges;
 	}
 	
-	public static void addRow(HTable table,  String email, String bossEmail, String lastCommit, int badgesWeek, int numBugs, int numCommits, int consecCommits, String[] badges){
+	public static void addRow(HTable table,  String email, String lastCommit, int badgesWeek, int numBugs, int numCommits, int consecCommits, String[] badges){
 		Get get = new Get(Bytes.toBytes(email));
 		Result data = null;
 		try {
@@ -221,7 +228,6 @@ public class InternalProcessing {
 		
 		Put row = new Put(Bytes.toBytes(email));
 		
-		row.add(Bytes.toBytes("Info"),Bytes.toBytes("bossEmail"),Bytes.toBytes(bossEmail));
 		row.add(Bytes.toBytes("Info"),Bytes.toBytes("lastCommit"),Bytes.toBytes(lastCommit));
 		row.add(Bytes.toBytes("Info"),Bytes.toBytes("badgesWeek"),Bytes.toBytes(badgesWeek));
 		row.add(Bytes.toBytes("Info"),Bytes.toBytes("numBugs"),Bytes.toBytes(numBugs));
