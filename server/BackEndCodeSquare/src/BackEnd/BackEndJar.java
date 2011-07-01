@@ -35,20 +35,21 @@ public class BackEndJar {
 
 		// format the input into a valid JSON String
 		tbp = tbp.substring(5);
+		
 		tbp = "{" + tbp;
-
 		try {
 			JSONObject bigJOb = new JSONObject(tbp);
 			Iterator<String> iter = bigJOb.keys();
 			while (iter.hasNext()) {
-				upc.add(bigJOb.get(iter.next()).toString());
+				String jString = bigJOb.get(iter.next()).toString();
+				upc.add(jString);
 			}
 
 			// Retrieve and store each JSON Commit string as a JSON Object in an
 			// ArrayList
 			ArrayList<JSONObject> jObs = getCommits(upc);
 			for (JSONObject j : jObs) {
-
+				
 				// Retrieve JSON values from Commit JSON Object
 				String dateString = j.getString("date");
 				String statString = j.getString("stats");
