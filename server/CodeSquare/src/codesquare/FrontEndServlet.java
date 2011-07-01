@@ -130,6 +130,7 @@ public class FrontEndServlet extends HttpServlet {
 			
 			
 			HTable table = new HTable(conf, "EmpBadges");
+			HTable badgeTable = new HTable(conf,"Badges");
 			
 			addUserOrUpdateBoss(table,email,bossEmail);
 
@@ -147,7 +148,7 @@ public class FrontEndServlet extends HttpServlet {
 			} else {
 				try {
 					if (email.length() != 0) {
-						JSONObject j = convertOutputToJSON(badgesWithDescription);
+						JSONObject j = convertOutputToJSON(badgesWithDescription,badgeTable);
 						// Output Area
 						response.setContentType("application/json");
 						OutputStream out = response.getOutputStream();
@@ -168,11 +169,11 @@ public class FrontEndServlet extends HttpServlet {
 
 	}
 
-	public JSONObject convertOutputToJSON(String[] badges)
+	public JSONObject convertOutputToJSON(String[] badges,HTable badgeTable)
 			throws JSONException, IOException {
 		JSONObject j = new JSONObject();
 
-		HTable BadgeTable = new HTable("Badges");
+		HTable BadgeTable = badgeTable;
 
 		for (int i = 0; i < badges.length; i = i + 2) {
 			System.out.println("Processing Badge No: " + badges[i]);
