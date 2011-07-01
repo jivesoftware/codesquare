@@ -15,7 +15,7 @@
 	<classpathentry kind="lib" path="/Users/justin.kikuchi/Documents/HBase/hbase-0.90.3/lib/slf4j-api-1.5.8.jar"/>
 	<classpathentry kind="lib" path="/Users/justin.kikuchi/Documents/HBase/hbase-0.90.3/lib/slf4j-log4j12-1.5.8.jar"/>
 	<classpathentry kind="lib" path="/Users/justin.kikuchi/Documents/hadoop/lib/commons-logging-api-1.0.4.jar"/>
-	<classpathentry kind="lib" path="/Users/justin.kikuchi/Desktop/GitParser.jar"/>
 	<classpathentry kind="lib" path="/Users/justin.kikuchi/Documents/githubfinal/codesquare/server/CodeSquare/WebContent/WEB-INF/lib/json.jar"/>
+	<classpathentry kind="lib" path="/Users/justin.kikuchi/Desktop/GitParser.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

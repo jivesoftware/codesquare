@@ -41,18 +41,20 @@ public class InternalProcessing {
 		System.out.println("==============================");
 		test();*/
 		ArrayList<Commit> output = BackEndJar.parseGitInput(args[0]);
-		for(Commit c:output){
-			System.out.println(c.getDate());
-		}
+
 		BackEndJar.insertCommitsIntoHDFS(output);
 		
-		checkUpdateBadges("justin.kikuchi@jivesoftware.com",  "1999-04-5", "Mon", "10", "this is a message", 0);
+		for(Commit c:output){
+			System.out.println(c.getDate());
+			checkUpdateBadges(c.getEmail(), c.getDate(), c.getDay(), new Integer(c.getHour()).toString(), c.getMessage(), 0);
+		}
+		/*checkUpdateBadges("justin.kikuchi@jivesoftware.com",  "1999-04-5", "Mon", "10", "this is a message", 0);
 		checkUpdateBadges("justin.kikuchi@jivesoftware.com",  "1999-04-6", "Sat", "10", "this is a message1", 1);
 		checkUpdateBadges("justin.kikuchi@jivesoftware.com",  "1999-04-7", "Fri", "10", "jive this is a message2", 1);
 		checkUpdateBadges("justin.kikuchi@jivesoftware.com",  "1999-04-8", "Tues", "10", "this is a message3", 1);
 		checkUpdateBadges("justin.kikuchi@jivesoftware.com",  "1999-04-9", "Mon", "5", "this is a message4", 1);
 		checkUpdateBadges("justin.kikuchi@jivesoftware.com",  "1999-04-10", "Tues", "10", "this is a message3", 1);
-		checkUpdateBadges("justin.kikuchi@jivesoftware.com",  "1999-04-11", "Mon", "5", "this is a message4", 1);
+		checkUpdateBadges("justin.kikuchi@jivesoftware.com",  "1999-04-11", "Mon", "5", "this is a message4", 1);*/
 	}
 	public static void checkUpdateBadges(String email, String date, String dayofWeek, String hour, String message, int numBugs){
 
@@ -150,7 +152,7 @@ public class InternalProcessing {
 			badges.add("29");
 		}
 		if(!hour.isEmpty()){
-			if(Integer.parseInt(hour) >= 10){
+			if(Integer.parseInt(hour) >= 22){
 				badges.add("12");
 			}
 			if(Integer.parseInt(hour) <= 6){
