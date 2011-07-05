@@ -48,23 +48,23 @@ public class BadgeInfo {
 			System.err.println();
 		}
 
-		HTable table;
+		HTable table = null;
 		try {
 			table = new HTable(config, "Badges");
-			deleteRow(table, "1");
-			addBadge(table, "1", "First Commit", "file:///blah/blah/foo.png", "This badge says your a rookie.");
-			String[] badges_awarded = getBadgeInfo(table, "1");
-			if(badges_awarded != null)
-				for(int i=0;i<badges_awarded.length;i++)
-					System.out.println(badges_awarded[i]);
-			String[] badges_awarded1 = getBadgeInfo(table, "2");
-			if(badges_awarded1 != null)
-				for(int i=0;i<badges_awarded1.length;i++)
-					System.out.println(badges_awarded1[i]);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		deleteRow(table, "1");
+		addBadge(table, "1", "First Commit", "file:///blah/blah/foo.png", "This badge says your a rookie.");
+		String[] badges_awarded = getBadgeInfo(table, "1");
+		if(badges_awarded != null)
+			for(int i=0;i<badges_awarded.length;i++)
+				System.out.println(badges_awarded[i]);
+		String[] badges_awarded1 = getBadgeInfo(table, "2");
+		if(badges_awarded1 != null)
+			for(int i=0;i<badges_awarded1.length;i++)
+				System.out.println(badges_awarded1[i]);
 	}
 	
 	public static void addBadge(HTable table,  String badgeNumber, String badgeName, String iconURL, String description){
