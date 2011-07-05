@@ -86,14 +86,8 @@ public class BadgeInfo {
 		}
 		
 		
-		
-<<<<<<< HEAD
-=======
-		
-		addBadge(table, "1", "First Commit", "file:///blah/blah/foo.png", "This badge says your a rookie.");
 		*/
 		
->>>>>>> branch 'master' of https://justinkikuchi@github.com/jivesoftware/codesquare.git
 		String[] badges_awarded = getBadgeInfo(table, "1");
 		if(badges_awarded != null)
 			for(int i=0;i<badges_awarded.length;i++)
