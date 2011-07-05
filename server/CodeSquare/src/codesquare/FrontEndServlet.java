@@ -92,7 +92,7 @@ public class FrontEndServlet extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 
 		// Get parameter info from Jive App
-
+		
 		String[] emails = request.getParameterValues("email");
 		String email = "";
 		String bossEmail = "";
@@ -130,26 +130,30 @@ public class FrontEndServlet extends HttpServlet {
 			//Create a table
 			
 			
-			HTable table = new HTable(conf, "EmpBadges");
-			HTable BadgeTable = new HTable(conf, "Badges");
+			HTable table = new HTable(conf, "EmpBadges"); //Employee table
+			HTable BadgeTable = new HTable(conf, "Badges"); //Badges table
 			
 			addUserOrUpdateBoss(table,email,bossEmail);
 
-			String[] badgesWithDescription = getBadges(table, email); // Elements
+			Object[] badgeInfo = getBadges(table,email);
+			
+			String[] badgesWithDescription = (String[]) badgeInfo[0]; // Elements
 																		// in
 																		// array
 																		// have
 																		// this
 																		// invariant:
 																		// {BadgeNumber1,Badge1Description,BadgeNumber2,Badge2Description,etc.}
-			System.out.println();
+			String newBadges = (String) badgeInfo[1];
+			
+			
 
 			if (badgesWithDescription == null) {
 				return;
 			} else {
 				try {
 					if (email.length() != 0) {
-						JSONObject j = convertOutputToJSON(badgesWithDescription, BadgeTable);
+						JSONObject j = convertOutputToJSON(badgesWithDescription, BadgeTable, newBadges);
 						// Output Area
 						response.setContentType("application/json");
 						OutputStream out = response.getOutputStream();
@@ -162,6 +166,8 @@ public class FrontEndServlet extends HttpServlet {
 					System.out.println(e.getMessage());
 				}
 			}
+			
+			resetNewBadges(table,email);
 
 		} else {
 			System.out.println("Invalid email address");
@@ -169,20 +175,28 @@ public class FrontEndServlet extends HttpServlet {
 		}
 
 	}
+	
+	
 
-	public JSONObject convertOutputToJSON(String[] badges, HTable BadgeTable)
+	public JSONObject convertOutputToJSON(String[] badges, HTable BadgeTable, String newBadges)
 			throws JSONException, IOException {
 		JSONObject j = new JSONObject();
 
 		for (int i = 0; i < badges.length; i = i + 2) {
 			System.out.println("Processing Badge No: " + badges[i]);
 			String[] badgeInfo = getBadgeInfo(BadgeTable, badges[i]);
-
+			
+			
+			
 			JSONObject j2 = new JSONObject();
 			j2.put("Name", badgeInfo[1]);
 			j2.put("Description", badgeInfo[2]);
 			j2.put("IconURL", badgeInfo[3]);
-			j2.put("CustomMsg", badges[i + 1]);
+			if(newBadges.contains(badges[i])){
+				j2.put("New", true);
+			}else{
+				j2.put("New", false);
+			}
 			System.out.println(j2.toString());
 			j.put(badges[i], j2);
 
@@ -192,7 +206,7 @@ public class FrontEndServlet extends HttpServlet {
 		j3.put("Name", "Unobtained");
 		j3.put("Description", "Click to learn how to obtain");
 		j3.put("IconURL", "images/unobtained.png");
-		j3.put("CustomMsg", "");
+		j3.put("New", false);
 
 		for (Integer i = new Integer(1); i <= 30; i++) {
 
@@ -204,41 +218,57 @@ public class FrontEndServlet extends HttpServlet {
 		return j;
 	}
 
-	public String[] getBadges(HTable table, String email) {
-		Get get = new Get(Bytes.toBytes(email));
+	public static Object[] getBadges(HTable table, String email){
+		Get get = new Get(Bytes.toBytes(email));	 
 		Result data = null;
+		Object[] output = new Object[2];
 		ArrayList<String> resultingBadges = new ArrayList<String>();
+		String newBadges = "";
+		output[0] = resultingBadges;
+		output[1] = newBadges;
 		try {
-			data = table.get(get);
-		} catch (Exception e) {
+		     data = table.get(get);
+		} catch(Exception e) {
 			System.err.println();
 		}
-
-		if (data.isEmpty()) {
+		
+		 System.out.println("Please work");
+		 
+		if (data == null) {
 			System.out.println("Not found");
-			return null;
+			return output;
 		}
-
+		if(data.isEmpty()){
+			return output;
+		}
+		 
 		byte[] badges = Bytes.toBytes("Badge");
 
-		NavigableSet<byte[]> badges_awarded = data.getFamilyMap(badges)
-				.descendingKeySet();
-		for (byte[] badge : badges_awarded) {
+		
+		NavigableSet<byte[]> badges_awarded = data.getFamilyMap(badges).descendingKeySet();
+		
+		
+		
+		for(byte[] badge: badges_awarded){
 			resultingBadges.add(new String(badge));
 		}
-
+		newBadges = new String(data.getValue(Bytes.toBytes("Info"), Bytes.toBytes("newBadges")));
+		
+		/* checks for personal message, not used at the moment
+		String[] result =  new String[resultingBadges.size()];
+		result = resultingBadges.toArray(result);
+		
+		for(int i=0; i<result.length; i++){
+			String customDescription = new String(data.getValue(Bytes.toBytes("Badge"), Bytes.toBytes(result[i])));
+			int currentBadgeIndex = resultingBadges.indexOf(result[i]);
+			resultingBadges.add(currentBadgeIndex+1, customDescription);
+		}*/
+		
 		String[] result = new String[resultingBadges.size()];
 		result = resultingBadges.toArray(result);
-
-		for (int i = 0; i < result.length; i++) {
-			String customDescription = new String(data.getValue(
-					Bytes.toBytes("Badge"), Bytes.toBytes(result[i])));
-			int currentBadgeIndex = resultingBadges.indexOf(result[i]);
-			resultingBadges.add(currentBadgeIndex + 1, customDescription);
-		}
-
-		result = new String[resultingBadges.size()];
-		return resultingBadges.toArray(result);
+		output[0] = result;
+		output[1] = newBadges;
+		return output;
 	}
 
 	public static String[] getBadgeInfo(HTable table, String badgeNumber) {
@@ -279,6 +309,23 @@ public class FrontEndServlet extends HttpServlet {
 		} catch (IOException e) {
 			System.err.println(e.getMessage());
 		}
+	}
+	
+	public static void resetNewBadges(HTable table, String email){
+		Put row = new Put(Bytes.toBytes(email));
+		
+
+		row.add(Bytes.toBytes("Info"),Bytes.toBytes("newBadges"),Bytes.toBytes(""));
+		
+		try {
+		    table.put(row);
+		} catch(Exception e) {
+			System.err.println();
+		}
+	}
+	public static void test(){
+		System.out.println("++++++++++++++");
+		return;
 	}
 
 }
