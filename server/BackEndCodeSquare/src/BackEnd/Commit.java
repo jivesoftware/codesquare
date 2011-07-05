@@ -1,7 +1,6 @@
 package BackEnd;
 
 import java.util.ArrayList;
-import java.util.StringTokenizer;
 
 /**
  * An abstraction used to simplify and organize the access of instance variables
@@ -59,6 +58,14 @@ public class Commit {
 	 */
 	public String getId() {
 		return id; }
+	
+	/**
+	 * 
+	 * @return the email of the employee who made this commit
+	 */
+	public String getEmail(){
+		return empEmail;
+	}
 	
 	/**
 	 * 
@@ -207,6 +214,13 @@ public class Commit {
 	public void clearFilesChanged(String file) {
 		this. filesChanged.clear();}
 	
+	/**
+	 * 
+	 * @return the message associated with this commit
+	 */
+	public String getMessage(){
+		return msg;
+	}
 	
 	/*
 	private ArrayList<String> parseFilesChanged(String filesChanged) {
