@@ -310,9 +310,12 @@ public class InternalProcessing {
 		for (byte[] badge : badges_awarded) {
 			resultingBadges.add(new String(badge));
 		}
-		newBadges = new String(data.getValue(Bytes.toBytes("Info"),
+		try{
+			newBadges = new String(data.getValue(Bytes.toBytes("Info"),
 				Bytes.toBytes("newBadges")));
-
+		}catch(java.lang.NullPointerException e){
+			newBadges = "";
+		}
 		/* checks for personal message, not used at the moment
 		String[] result =  new String[resultingBadges.size()];
 		result = resultingBadges.toArray(result);
