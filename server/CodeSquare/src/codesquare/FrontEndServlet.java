@@ -126,11 +126,7 @@ public class FrontEndServlet extends HttpServlet {
 	        conf.set("hbase.hregion.max.filesize", "1073741824");
 			//conf.addResource(new Path(
 			//		"/Users/diivanand.ramalingam/Downloads/hbase/conf/hbase-site.xml"));
-			conf.set("hbase.cluster.distributed", "true");
-			conf.set("hbase.rootdir", "hdfs://hadoopdev008.eng.jiveland.com:54310/hbase");
-			conf.set("hbase.zookeeper.quorum","hadoopdev008.eng.jiveland.com,hadoopdev002.eng.jiveland.com,hadoopdev001.eng.jiveland.com");
-			conf.set("hbase.zookeeper.property.clientPort","2181");
-			conf.set("hbase.hregion.max.filesize", "1073741824");
+
 			//Create a table
 			
 			
