@@ -73,7 +73,7 @@ public class BadgeInfo {
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
 			// Read File Line By Line
 			for(int i=0; i<31;i++){
-				addBadge(table, i+"", br.readLine(), "file:///blah/blah/" +i+".png", br.readLine());
+				addBadge(table, (i+1)+"", br.readLine(), "file:///blah/blah/" +(i+1)+".png", br.readLine());
 			}
 			// Close the input stream
 			in.close();
@@ -83,8 +83,6 @@ public class BadgeInfo {
 		
 		
 		
-		
-		addBadge(table, "1", "First Commit", "file:///blah/blah/foo.png", "This badge says your a rookie.");
 		String[] badges_awarded = getBadgeInfo(table, "1");
 		if(badges_awarded != null)
 			for(int i=0;i<badges_awarded.length;i++)
