@@ -114,15 +114,17 @@ public class InternalProcessing {
 		if((badges.size()+fieldValues[0]) > 7){
 				badges.add("16");
 		}
-		
-		ArrayList<String> aquiredBadges = new ArrayList<String>(getBadges(table, email));
+		Object[] badgeList = getBadges(table, email);
+		@SuppressWarnings("unchecked")
+		ArrayList<String> aquiredBadges = (ArrayList<String>)badgeList[0];
 		for(int i=0;i<badges.size();i++){
 			if(aquiredBadges.contains(badges.get(i))){
 				badges.remove(i--);
 			}
 		}
+		String newBadges = (String)badgeList[1];
 		String[] results = new String[badges.size()];
-		addRow(table,  email, date, badges.size() + fieldValues[0], fieldValues[1], fieldValues[2], consecCommits[0], badges.toArray(results));
+		addRow(table,  email, date, badges.size() + fieldValues[0], fieldValues[1], fieldValues[2], consecCommits[0], newBadges, badges.toArray(results));
 		
 		test(table, email);
 	}
@@ -218,7 +220,7 @@ public class InternalProcessing {
 		return badges;
 	}
 	
-	public static void addRow(HTable table,  String email, String lastCommit, int badgesWeek, int numBugs, int numCommits, int consecCommits, String[] badges){
+	public static void addRow(HTable table,  String email, String lastCommit, int badgesWeek, int numBugs, int numCommits, int consecCommits, String newBadges, String[] badges){
 		Get get = new Get(Bytes.toBytes(email));
 		Result data = null;
 		try {
@@ -231,6 +233,9 @@ public class InternalProcessing {
 			System.out.println("Already Exists");
 			return;
 		}*/
+		for(int i=0; i < badges.length; i++){
+			newBadges = newBadges + " " + badges[i];
+		}
 		
 		Put row = new Put(Bytes.toBytes(email));
 		
@@ -239,6 +244,7 @@ public class InternalProcessing {
 		row.add(Bytes.toBytes("Info"),Bytes.toBytes("numBugs"),Bytes.toBytes(numBugs));
 		row.add(Bytes.toBytes("Info"),Bytes.toBytes("numCommits"),Bytes.toBytes(numCommits));
 		row.add(Bytes.toBytes("Info"),Bytes.toBytes("consecCommits"),Bytes.toBytes(consecCommits));
+		row.add(Bytes.toBytes("Info"),Bytes.toBytes("newBadges"),Bytes.toBytes(newBadges));
 		if(badges != null){
 			for(int i=0; i < badges.length; i++){
 				row.add(Bytes.toBytes("Badge"),Bytes.toBytes(badges[i]),Bytes.toBytes("1"));
@@ -275,10 +281,14 @@ public class InternalProcessing {
 			System.err.println();
 		}
 	}
-	public static ArrayList<String> getBadges(HTable table, String email){
+	public static Object[] getBadges(HTable table, String email){
 		Get get = new Get(Bytes.toBytes(email));	 
 		Result data = null;
+		Object[] output = new Object[2];
 		ArrayList<String> resultingBadges = new ArrayList<String>();
+		String newBadges = "";
+		output[0] = resultingBadges;
+		output[1] = newBadges;
 		try {
 		     data = table.get(get);
 		} catch(Exception e) {
@@ -287,10 +297,10 @@ public class InternalProcessing {
 		 
 		if (data == null) {
 			System.out.println("Not found");
-			return resultingBadges;
+			return output;
 		}
 		if(data.isEmpty()){
-			return resultingBadges;
+			return output;
 		}
 		 
 		byte[] badges = Bytes.toBytes("Badge");
@@ -299,6 +309,7 @@ public class InternalProcessing {
 		for(byte[] badge: badges_awarded){
 			resultingBadges.add(new String(badge));
 		}
+		newBadges = new String(data.getValue(Bytes.toBytes("Info"), Bytes.toBytes("newBadges")));
 		
 		/* checks for personal message, not used at the moment
 		String[] result =  new String[resultingBadges.size()];
@@ -310,8 +321,9 @@ public class InternalProcessing {
 			resultingBadges.add(currentBadgeIndex+1, customDescription);
 		}*/
 
-		
-		return resultingBadges;
+		output[0] = resultingBadges;
+		output[1] = newBadges;
+		return output;
 	}
 	public static void updateBoss(HTable table, String email, String bossEmail){
 		Put row = new Put(Bytes.toBytes(email));
@@ -414,7 +426,10 @@ public class InternalProcessing {
 	
 	public static void test(HTable table, String email){
 		System.out.println("Pringting data........................................................");
-		ArrayList<String> badges_awarded = getBadges(table, email);
+		@SuppressWarnings("unchecked")
+		ArrayList<String> badges_awarded = (ArrayList<String>)(getBadges(table, email))[0];
+		String newBadges = (String)(getBadges(table, email))[1];
+		System.out.println("newBadges: "+ newBadges);
 		for(int i=0;i<badges_awarded.size();i++)
 			System.out.println("Badges=\t" +badges_awarded.get(i));
 		String[] fields = {"badgesWeek", "numBugs", "numCommits", "consecCommits"};
