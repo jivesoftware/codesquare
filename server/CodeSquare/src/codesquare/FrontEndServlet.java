@@ -136,6 +136,7 @@ public class FrontEndServlet extends HttpServlet {
 			addUserOrUpdateBoss(table,email,bossEmail);
 
 			Object[] badgeInfo = getBadges(table,email);
+			
 			String[] badgesWithDescription = (String[]) badgeInfo[0]; // Elements
 																		// in
 																		// array
@@ -174,6 +175,8 @@ public class FrontEndServlet extends HttpServlet {
 		}
 
 	}
+	
+	
 
 	public JSONObject convertOutputToJSON(String[] badges, HTable BadgeTable, String newBadges)
 			throws JSONException, IOException {
@@ -182,6 +185,7 @@ public class FrontEndServlet extends HttpServlet {
 		for (int i = 0; i < badges.length; i = i + 2) {
 			System.out.println("Processing Badge No: " + badges[i]);
 			String[] badgeInfo = getBadgeInfo(BadgeTable, badges[i]);
+			
 			
 			
 			JSONObject j2 = new JSONObject();
@@ -227,6 +231,8 @@ public class FrontEndServlet extends HttpServlet {
 		} catch(Exception e) {
 			System.err.println();
 		}
+		
+		 System.out.println("Please work");
 		 
 		if (data == null) {
 			System.out.println("Not found");
@@ -238,7 +244,11 @@ public class FrontEndServlet extends HttpServlet {
 		 
 		byte[] badges = Bytes.toBytes("Badge");
 
+		
 		NavigableSet<byte[]> badges_awarded = data.getFamilyMap(badges).descendingKeySet();
+		
+		
+		
 		for(byte[] badge: badges_awarded){
 			resultingBadges.add(new String(badge));
 		}
@@ -253,8 +263,10 @@ public class FrontEndServlet extends HttpServlet {
 			int currentBadgeIndex = resultingBadges.indexOf(result[i]);
 			resultingBadges.add(currentBadgeIndex+1, customDescription);
 		}*/
-
-		output[0] = resultingBadges;
+		
+		String[] result = new String[resultingBadges.size()];
+		result = resultingBadges.toArray(result);
+		output[0] = result;
 		output[1] = newBadges;
 		return output;
 	}
