@@ -84,6 +84,10 @@ public class InternalProcessing {
 		String[] fields = { "badgesWeek", "numBugs", "numCommits",
 				"consecCommits" };
 		int[] fieldValues = getFields(table, email, fields);
+		//person does not exist
+		if(fieldValues == null){
+			return;
+		}
 		String lastCommit = getLastCommit(table, email);
 		ArrayList<String> badges = testDateTimeBadges(date, dayofWeek, hour);
 		if (lastCommit == null) {
@@ -96,11 +100,9 @@ public class InternalProcessing {
 				lastCommit, fieldValues[3]);
 
 		badges.addAll(checkNumericalBadges(fieldValues, consecCommits));
+		//checks for jive in the message
 		if (message.toLowerCase().contains("jive")) {
 			badges.add("26");
-		}
-		if ((badges.size() + fieldValues[0]) > 7) {
-			badges.add("16");
 		}
 		Object[] badgeList = getBadges(table, email);
 		@SuppressWarnings("unchecked")
@@ -109,6 +111,10 @@ public class InternalProcessing {
 			if (aquiredBadges.contains(badges.get(i))) {
 				badges.remove(i--);
 			}
+		}
+		//checks to see if there are more than 7 new badges in the week
+		if ((badges.size() + fieldValues[0]) > 7) {
+			badges.add("16");
 		}
 		String newBadges = (String) badgeList[1];
 		String[] results = new String[badges.size()];
@@ -365,7 +371,7 @@ public class InternalProcessing {
 		}
 
 		if (data.isEmpty()) {
-			return results;
+			return null;
 		}
 
 		for (int i = 0; i < fields.length; i++) {
