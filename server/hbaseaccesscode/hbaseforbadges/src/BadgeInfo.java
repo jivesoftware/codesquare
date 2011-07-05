@@ -41,12 +41,15 @@ public class BadgeInfo {
 		//Create a table
 		try {
 			HBaseAdmin admin = new HBaseAdmin(config);
+			
+			/*
 			if (!admin.tableExists("Badges")) {
 				admin.createTable( new HTableDescriptor("Badges"));
 			}
 			admin.disableTable("Badges");
 			admin.addColumn("Badges", new HColumnDescriptor("Info"));
 			admin.enableTable("Badges");
+			*/
 		} catch (MasterNotRunningException e1) {
 			System.err.println(e1.getMessage());
 		} catch (ZooKeeperConnectionException e1) {
@@ -64,6 +67,7 @@ public class BadgeInfo {
 			e.printStackTrace();
 		}
 
+		/*
 		try {
 			// Open the file that is the first
 			// command line parameter
@@ -83,6 +87,13 @@ public class BadgeInfo {
 		
 		
 		
+<<<<<<< HEAD
+=======
+		
+		addBadge(table, "1", "First Commit", "file:///blah/blah/foo.png", "This badge says your a rookie.");
+		*/
+		
+>>>>>>> branch 'master' of https://justinkikuchi@github.com/jivesoftware/codesquare.git
 		String[] badges_awarded = getBadgeInfo(table, "1");
 		if(badges_awarded != null)
 			for(int i=0;i<badges_awarded.length;i++)
