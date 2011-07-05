@@ -130,8 +130,8 @@ public class FrontEndServlet extends HttpServlet {
 			//Create a table
 			
 			
-			HTable table = new HTable(conf, "EmpBadges");
-			HTable BadgeTable = new HTable(conf, "Badges");
+			HTable table = new HTable(conf, "EmpBadges"); //Employee table
+			HTable BadgeTable = new HTable(conf, "Badges"); //Badges table
 			
 			addUserOrUpdateBoss(table,email,bossEmail);
 
@@ -143,16 +143,16 @@ public class FrontEndServlet extends HttpServlet {
 																		// this
 																		// invariant:
 																		// {BadgeNumber1,Badge1Description,BadgeNumber2,Badge2Description,etc.}
+			String newBadges = (String) badgeInfo[1];
 			
 			
-			System.out.println();
 
 			if (badgesWithDescription == null) {
 				return;
 			} else {
 				try {
 					if (email.length() != 0) {
-						JSONObject j = convertOutputToJSON(badgesWithDescription, BadgeTable);
+						JSONObject j = convertOutputToJSON(badgesWithDescription, BadgeTable, newBadges);
 						// Output Area
 						response.setContentType("application/json");
 						OutputStream out = response.getOutputStream();
@@ -165,6 +165,8 @@ public class FrontEndServlet extends HttpServlet {
 					System.out.println(e.getMessage());
 				}
 			}
+			
+			resetNewBadges(table,email);
 
 		} else {
 			System.out.println("Invalid email address");
@@ -173,19 +175,25 @@ public class FrontEndServlet extends HttpServlet {
 
 	}
 
-	public JSONObject convertOutputToJSON(String[] badges, HTable BadgeTable)
+	public JSONObject convertOutputToJSON(String[] badges, HTable BadgeTable, String newBadges)
 			throws JSONException, IOException {
 		JSONObject j = new JSONObject();
 
 		for (int i = 0; i < badges.length; i = i + 2) {
 			System.out.println("Processing Badge No: " + badges[i]);
 			String[] badgeInfo = getBadgeInfo(BadgeTable, badges[i]);
-
+			
+			System.out.println("This never prints");
+			
 			JSONObject j2 = new JSONObject();
 			j2.put("Name", badgeInfo[1]);
 			j2.put("Description", badgeInfo[2]);
 			j2.put("IconURL", badgeInfo[3]);
-			j2.put("CustomMsg", badges[i + 1]);
+			if(newBadges.contains(badges[i])){
+				j2.put("New", true);
+			}else{
+				j2.put("New", false);
+			}
 			System.out.println(j2.toString());
 			j.put(badges[i], j2);
 
@@ -195,7 +203,7 @@ public class FrontEndServlet extends HttpServlet {
 		j3.put("Name", "Unobtained");
 		j3.put("Description", "Click to learn how to obtain");
 		j3.put("IconURL", "images/unobtained.png");
-		j3.put("CustomMsg", "");
+		j3.put("New", false);
 
 		for (Integer i = new Integer(1); i <= 30; i++) {
 
