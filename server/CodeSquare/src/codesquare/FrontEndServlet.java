@@ -135,13 +135,16 @@ public class FrontEndServlet extends HttpServlet {
 			
 			addUserOrUpdateBoss(table,email,bossEmail);
 
-			String[] badgesWithDescription = getBadges(table, email); // Elements
+			Object[] badgeInfo = getBadges(table,email);
+			String[] badgesWithDescription = (String[]) badgeInfo[0]; // Elements
 																		// in
 																		// array
 																		// have
 																		// this
 																		// invariant:
 																		// {BadgeNumber1,Badge1Description,BadgeNumber2,Badge2Description,etc.}
+			
+			
 			System.out.println();
 
 			if (badgesWithDescription == null) {
@@ -204,41 +207,49 @@ public class FrontEndServlet extends HttpServlet {
 		return j;
 	}
 
-	public String[] getBadges(HTable table, String email) {
-		Get get = new Get(Bytes.toBytes(email));
+	public static Object[] getBadges(HTable table, String email){
+		Get get = new Get(Bytes.toBytes(email));	 
 		Result data = null;
+		Object[] output = new Object[2];
 		ArrayList<String> resultingBadges = new ArrayList<String>();
+		String newBadges = "";
+		output[0] = resultingBadges;
+		output[1] = newBadges;
 		try {
-			data = table.get(get);
-		} catch (Exception e) {
+		     data = table.get(get);
+		} catch(Exception e) {
 			System.err.println();
 		}
-
-		if (data.isEmpty()) {
+		 
+		if (data == null) {
 			System.out.println("Not found");
-			return null;
+			return output;
 		}
-
+		if(data.isEmpty()){
+			return output;
+		}
+		 
 		byte[] badges = Bytes.toBytes("Badge");
 
-		NavigableSet<byte[]> badges_awarded = data.getFamilyMap(badges)
-				.descendingKeySet();
-		for (byte[] badge : badges_awarded) {
+		NavigableSet<byte[]> badges_awarded = data.getFamilyMap(badges).descendingKeySet();
+		for(byte[] badge: badges_awarded){
 			resultingBadges.add(new String(badge));
 		}
-
-		String[] result = new String[resultingBadges.size()];
+		newBadges = new String(data.getValue(Bytes.toBytes("Info"), Bytes.toBytes("newBadges")));
+		
+		/* checks for personal message, not used at the moment
+		String[] result =  new String[resultingBadges.size()];
 		result = resultingBadges.toArray(result);
-
-		for (int i = 0; i < result.length; i++) {
-			String customDescription = new String(data.getValue(
-					Bytes.toBytes("Badge"), Bytes.toBytes(result[i])));
+		
+		for(int i=0; i<result.length; i++){
+			String customDescription = new String(data.getValue(Bytes.toBytes("Badge"), Bytes.toBytes(result[i])));
 			int currentBadgeIndex = resultingBadges.indexOf(result[i]);
-			resultingBadges.add(currentBadgeIndex + 1, customDescription);
-		}
+			resultingBadges.add(currentBadgeIndex+1, customDescription);
+		}*/
 
-		result = new String[resultingBadges.size()];
-		return resultingBadges.toArray(result);
+		output[0] = resultingBadges;
+		output[1] = newBadges;
+		return output;
 	}
 
 	public static String[] getBadgeInfo(HTable table, String badgeNumber) {
@@ -278,6 +289,19 @@ public class FrontEndServlet extends HttpServlet {
 			table.put(row);
 		} catch (IOException e) {
 			System.err.println(e.getMessage());
+		}
+	}
+	
+	public static void resetNewBadges(HTable table, String email){
+		Put row = new Put(Bytes.toBytes(email));
+		
+
+		row.add(Bytes.toBytes("Info"),Bytes.toBytes("newBadges"),Bytes.toBytes(""));
+		
+		try {
+		    table.put(row);
+		} catch(Exception e) {
+			System.err.println();
 		}
 	}
 
