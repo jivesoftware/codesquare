@@ -423,6 +423,18 @@ public class InternalProcessing {
 		}
 		return result;
 	}
+	public static void resetNewBadges(HTable table, String email){
+		Put row = new Put(Bytes.toBytes(email));
+		
+
+		row.add(Bytes.toBytes("Info"),Bytes.toBytes("newBadges"),Bytes.toBytes(""));
+		
+		try {
+		    table.put(row);
+		} catch(Exception e) {
+			System.err.println();
+		}
+	}
 	
 	public static void test(HTable table, String email){
 		System.out.println("Pringting data........................................................");

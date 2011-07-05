@@ -33,7 +33,11 @@ public class BadgeInfo {
 	public static void main(String[] args){
 		Configuration config = HBaseConfiguration.create();
 		//config.addResource(new Path("/Users/diivanand.ramalingam/Downloads/hbase/conf/hbase-site.xml"));
-		 
+		config.set("hbase.cluster.distributed", "true");
+		config.set("hbase.rootdir", "hdfs://hadoopdev008.eng.jiveland.com:54310/hbase");
+		config.set("hbase.zookeeper.quorum","hadoopdev008.eng.jiveland.com,hadoopdev002.eng.jiveland.com,hadoopdev001.eng.jiveland.com");
+		config.set("hbase.zookeeper.property.clientPort","2181");
+		config.set("hbase.hregion.max.filesize", "1073741824");
 		//Create a table
 		try {
 			HBaseAdmin admin = new HBaseAdmin(config);
@@ -63,11 +67,10 @@ public class BadgeInfo {
 		try {
 			// Open the file that is the first
 			// command line parameter
-			FileInputStream fstream = new FileInputStream("textfile.txt");
+			FileInputStream fstream = new FileInputStream("/Users/justin.kikuchi/Documents/githubfinal/codesquare/server/badgedescriptions");
 			// Get the object of DataInputStream
 			DataInputStream in = new DataInputStream(fstream);
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
-			String strLine;
 			// Read File Line By Line
 			for(int i=0; i<31;i++){
 				addBadge(table, i+"", br.readLine(), "file:///blah/blah/" +i+".png", br.readLine());
