@@ -17,5 +17,18 @@
 	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Downloads/hbase/hbase-0.90.3.jar"/>
 	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Downloads/hbase/lib/zookeeper-3.3.2.jar"/>
 	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Documents/workspace/CodeSquare/WebContent/WEB-INF/lib/json.jar"/>
+	<classpathentry kind="lib" path="/Users/justin.kikuchi/Documents/hadoop/lib/commons-cli-1.2.jar"/>
+	<classpathentry kind="lib" path="/Users/justin.kikuchi/Documents/hadoop/lib/commons-codec-1.4.jar"/>
+	<classpathentry kind="lib" path="/Users/justin.kikuchi/Documents/hadoop/lib/commons-daemon-1.0.1.jar"/>
+	<classpathentry kind="lib" path="/Users/justin.kikuchi/Documents/hadoop/lib/commons-el-1.0.jar"/>
+	<classpathentry kind="lib" path="/Users/justin.kikuchi/Documents/hadoop/lib/commons-httpclient-3.0.1.jar"/>
+	<classpathentry kind="lib" path="/Users/justin.kikuchi/Documents/hadoop/lib/commons-logging-1.0.4.jar"/>
+	<classpathentry kind="lib" path="/Users/justin.kikuchi/Documents/hadoop/lib/commons-logging-api-1.0.4.jar"/>
+	<classpathentry kind="lib" path="/Users/justin.kikuchi/Documents/hadoop/lib/commons-net-1.4.1.jar"/>
+	<classpathentry kind="lib" path="/Users/justin.kikuchi/Documents/hadoop/lib/log4j-1.2.15.jar"/>
+	<classpathentry kind="lib" path="/Users/justin.kikuchi/Documents/hadoop/lib/slf4j-api-1.4.3.jar"/>
+	<classpathentry kind="lib" path="/Users/justin.kikuchi/Documents/hadoop/lib/slf4j-log4j12-1.4.3.jar"/>
+	<classpathentry kind="lib" path="/Users/justin.kikuchi/Documents/hadoop/hadoop-core.jar"/>
+	<classpathentry kind="lib" path="/Users/justin.kikuchi/Documents/githubfinal/codesquare/server/CodeSquare/WebContent/WEB-INF/lib/json.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

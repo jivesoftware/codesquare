@@ -66,7 +66,7 @@ public class MyLittleHBaseClient {
 			System.out.println(getLastCommit(table, "justin.kikuchi@jivesoftware.com"));
 			System.out.println(getField(table, "justin.kikuchi@jivesoftware.com", "badgesWeek"));
 			System.out.println(getField(table, "justin.kikuchi@jivesoftware.com", "numCommits"));
-			updateRow(table,  "justin.kikuchi@jivesoftware.com", "newboss@blah.com", "2000-7-19", 1, 1, 1, badges1);
+			addRow(table,  "justin.kikuchi@jivesoftware.com", "newboss@blah.com");
 			System.out.println(getField(table, "justin.kikuchi@jivesoftware.com", "numBugs"));
 			System.out.println(getLastCommit(table, "justin.kikuchi@jivesoftware.com"));
 			System.out.println(getField(table, "justin.kikuchi@jivesoftware.com", "badgesWeek"));
