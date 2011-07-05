@@ -67,7 +67,7 @@ public class BadgeInfo {
 			e.printStackTrace();
 		}
 
-		/*
+		
 		try {
 			// Open the file that is the first
 			// command line parameter
@@ -77,7 +77,7 @@ public class BadgeInfo {
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
 			// Read File Line By Line
 			for(int i=0; i<31;i++){
-				addBadge(table, (i+1)+"", br.readLine(), "file:///blah/blah/" +(i+1)+".png", br.readLine());
+				addBadge(table, (i+1)+"", br.readLine(), "images/" +(i+1)+".png", br.readLine());
 			}
 			// Close the input stream
 			in.close();
@@ -86,7 +86,7 @@ public class BadgeInfo {
 		}
 		
 		
-		*/
+		
 		
 		String[] badges_awarded = getBadgeInfo(table, "1");
 		if(badges_awarded != null)
