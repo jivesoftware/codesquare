@@ -121,10 +121,16 @@ public class FrontEndServlet extends HttpServlet {
 			Configuration conf = HBaseConfiguration.create();
 			//conf.addResource(new Path(
 			//		"/Users/diivanand.ramalingam/Downloads/hbase/conf/hbase-site.xml"));
-
+			conf.set("hbase.cluster.distributed", "true");
+			conf.set("hbase.rootdir", "hdfs://hadoopdev008.eng.jiveland.com:54310/hbase");
+			conf.set("hbase.zookeeper.quorum","hadoopdev008.eng.jiveland.com,hadoopdev002.eng.jiveland.com,hadoopdev001.eng.jiveland.com");
+			conf.set("hbase.zookeeper.property.clientPort","2181");
+			conf.set("hbase.hregion.max.filesize", "1073741824");
+			//Create a table
 			
 			
-			HTable table = new HTable(conf, "EmpBadges1");
+			HTable table = new HTable(conf, "EmpBadges");
+			HTable BadgeTable = new HTable(conf, "Badges");
 			
 			addUserOrUpdateBoss(table,email,bossEmail);
 
@@ -142,7 +148,7 @@ public class FrontEndServlet extends HttpServlet {
 			} else {
 				try {
 					if (email.length() != 0) {
-						JSONObject j = convertOutputToJSON(badgesWithDescription);
+						JSONObject j = convertOutputToJSON(badgesWithDescription, BadgeTable);
 						// Output Area
 						response.setContentType("application/json");
 						OutputStream out = response.getOutputStream();
@@ -163,11 +169,9 @@ public class FrontEndServlet extends HttpServlet {
 
 	}
 
-	public JSONObject convertOutputToJSON(String[] badges)
+	public JSONObject convertOutputToJSON(String[] badges, HTable BadgeTable)
 			throws JSONException, IOException {
 		JSONObject j = new JSONObject();
-
-		HTable BadgeTable = new HTable("Badges");
 
 		for (int i = 0; i < badges.length; i = i + 2) {
 			System.out.println("Processing Badge No: " + badges[i]);
