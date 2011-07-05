@@ -27,6 +27,7 @@ import org.apache.hadoop.conf.Configuration;
 // Class that has nothing but a main.
 // Does a Put, Get and a Scan against an hbase table.
 public class InternalProcessing {
+	private static int flag1=0;
 	public static void main(String[] args) {
 		ArrayList<Commit> output = BackEndJar.parseGitInput(args[0]);
 
@@ -80,14 +81,19 @@ public class InternalProcessing {
 			e.printStackTrace();
 			return;
 		}
-
+		//delete row first for testing purposes
+		if(flag1==0){
+			System.out.println("only once");
+			flag1 =1;
+			deleteRow(table, email);
+		}
 		String[] fields = { "badgesWeek", "numBugs", "numCommits",
 				"consecCommits" };
 		int[] fieldValues = getFields(table, email, fields);
 		//person does not exist
-		if(fieldValues == null){
+		/*if(fieldValues == null){
 			return;
-		}
+		}*/
 		String lastCommit = getLastCommit(table, email);
 		ArrayList<String> badges = testDateTimeBadges(date, dayofWeek, hour);
 		if (lastCommit == null) {
@@ -310,12 +316,9 @@ public class InternalProcessing {
 		for (byte[] badge : badges_awarded) {
 			resultingBadges.add(new String(badge));
 		}
-		try{
-			newBadges = new String(data.getValue(Bytes.toBytes("Info"),
+		newBadges = new String(data.getValue(Bytes.toBytes("Info"),
 				Bytes.toBytes("newBadges")));
-		}catch(java.lang.NullPointerException e){
-			newBadges = "";
-		}
+
 		/* checks for personal message, not used at the moment
 		String[] result =  new String[resultingBadges.size()];
 		result = resultingBadges.toArray(result);
@@ -374,7 +377,8 @@ public class InternalProcessing {
 		}
 
 		if (data.isEmpty()) {
-			return null;
+			//return null;
+			return results;
 		}
 
 		for (int i = 0; i < fields.length; i++) {
@@ -454,7 +458,7 @@ public class InternalProcessing {
 
 	public static void test(HTable table, String email) {
 		System.out
-				.println("Pringting data........................................................");
+				.println("Printing data........................................................");
 		@SuppressWarnings("unchecked")
 		ArrayList<String> badges_awarded = (ArrayList<String>) (getBadges(
 				table, email))[0];
