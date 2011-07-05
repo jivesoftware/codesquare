@@ -183,7 +183,6 @@ public class FrontEndServlet extends HttpServlet {
 			System.out.println("Processing Badge No: " + badges[i]);
 			String[] badgeInfo = getBadgeInfo(BadgeTable, badges[i]);
 			
-			System.out.println("This never prints");
 			
 			JSONObject j2 = new JSONObject();
 			j2.put("Name", badgeInfo[1]);
