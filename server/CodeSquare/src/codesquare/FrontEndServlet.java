@@ -311,5 +311,9 @@ public class FrontEndServlet extends HttpServlet {
 			System.err.println();
 		}
 	}
+	public static void test(){
+		System.out.println("++++++++++++++");
+		return;
+	}
 
 }
