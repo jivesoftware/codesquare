@@ -92,7 +92,7 @@ public class FrontEndServlet extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 
 		// Get parameter info from Jive App
-
+		
 		String[] emails = request.getParameterValues("email");
 		String email = "";
 		String bossEmail = "";
