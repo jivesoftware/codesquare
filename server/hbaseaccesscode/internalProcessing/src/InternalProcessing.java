@@ -169,7 +169,7 @@ public class InternalProcessing {
 	public static ArrayList<String> checkNumericalBadges(int[] fieldValues,
 			int[] consecCommits) {
 		ArrayList<String> badges = new ArrayList<String>();
-		int totNumBugs = fieldValues[1];
+		//int totNumBugs = fieldValues[1];
 		int totNumCommits = fieldValues[2];
 
 		// consecCommits[0] is commited person, and consecCommits[1] is (value =
@@ -218,18 +218,6 @@ public class InternalProcessing {
 	public static void addRow(HTable table, String email, String lastCommit,
 			int badgesWeek, int numBugs, int numCommits, int consecCommits,
 			String newBadges, String[] badges) {
-		Get get = new Get(Bytes.toBytes(email));
-		Result data = null;
-		try {
-			data = table.get(get);
-		} catch (Exception e) {
-			System.err.println();
-		}
-		 
-		/*if (!data.isEmpty()) {
-			System.out.println("Already Exists");
-			return;
-		}*/
 		for (int i = 0; i < badges.length; i++) {
 			newBadges = newBadges + " " + badges[i];
 		}
@@ -318,16 +306,6 @@ public class InternalProcessing {
 		}
 		newBadges = new String(data.getValue(Bytes.toBytes("Info"),
 				Bytes.toBytes("newBadges")));
-
-		/* checks for personal message, not used at the moment
-		String[] result =  new String[resultingBadges.size()];
-		result = resultingBadges.toArray(result);
-		
-		for(int i=0; i<result.length; i++){
-			String customDescription = new String(data.getValue(Bytes.toBytes("Badge"), Bytes.toBytes(result[i])));
-			int currentBadgeIndex = resultingBadges.indexOf(result[i]);
-			resultingBadges.add(currentBadgeIndex+1, customDescription);
-		}*/
 
 		output[0] = resultingBadges;
 		output[1] = newBadges;
