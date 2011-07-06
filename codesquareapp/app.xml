@@ -19,32 +19,11 @@
     <Link rel="Icon"       href="images/icon16.png" />
     <Link rel="MediumIcon" href="images/icon48.png" />
     <Link rel="LargeIcon"  href="images/icon128.png" />
-
-    <!-- OAuth Services: https://developers.jivesoftware.com/community/docs/DOC-1161 -->
-    <!--
-    <OAuth>
-      <Service name="example">
-        <Access url="http://api.example.com/oauth/access_token" method="POST" />
-        <Request url="http://api.example.com/oauth/request_token" method="POST" />
-        <Authorization url="http://api.example.com/oauth/authorize" />
-      </Service>
-    </OAuth>
-    -->
-
-    <!-- Lifecycle Events: https://developers.jivesoftware.com/community/docs/DOC-1119 -->
-    <!--
-    <link rel="event.addapp" href="http://www.example.com/add" />
-    <link rel="event.removeapp" href="http://www.example.com/remove" />
-    -->
-
-    <!-- Preloaded Content: http://wiki.opensocial.org/index.php?title=Remote_Data_Requests_%28v0.9%29#Preloading_data -->
-    <!--
-    <Preload href="http://www.example.com" />
-    -->
+    <Link rel="1" href="images/1.png" />
 
   </ModulePrefs>
 
   <Content type="html" view="home" href="home.html" />
   <Content type="html" view="canvas" href="canvas.html" />
-
+  
 </Module>

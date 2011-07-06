@@ -1,13 +1,17 @@
 var glObj = {};
 glObj.timer_is_on = 0;
 glObj.refreshTime = 3000;
+<<<<<<< HEAD
+glObj.baseURL;
+glObj.themeAry = [ 'Commits', 'Holidays', 'Time/Date', 'Viral Vids', 'Boss and Peers', 'Basic'];
+=======
 glObj.themeAry = [ 'Commits', 'Holidays', 'Time/Date', 'Viral Vids', 'Boss and Peers', 'Basic'];
 glObj.baseURL = "http://apphosting.jivesoftware.com/apps/dev/codesquareapp/";
-//glObj.baseURL = "http://localhost/~eric.ren/codesquareapp/";
-
+>>>>>>> livedev/rencire
 //alert(glObj.timer_is_on); //test
 
-// An utility function to get the size of an object
+
+// Get the size of an object
 Object.size = function(obj) {
     var size = 0, key;
     for (key in obj) {
@@ -17,7 +21,7 @@ Object.size = function(obj) {
 };
 
 
-// Function used to continually request data from server
+//continually request data from server
 function startBadges() {
     if (!glObj.timer_is_on) {
 	glObj.timer_is_on = 1;
@@ -34,10 +38,8 @@ function startBadges() {
     }
 }
 
-
-// Does what you think it does...
+//change for testing
 function makeBadgeTable() {
-    // included dummy data for testing
     //    var url = 'http://10.45.120.176:8080/CodeSquare/FrontEndServlet?email=' + glObj.name;
     //var url = 'http://10.45.120.176:8080/CodeSquare/FrontEndServlet?email=diivanand.ramalingam@jivesoftware.com';
     /*
@@ -54,7 +56,6 @@ function makeBadgeTable() {
 		    themeNum = 0,
 		    html = "";
 
-    // dummy data
     var obj = {
 	"1": {
 	    "Name": "Commit 1 Badge",
@@ -237,8 +238,9 @@ function makeBadgeTable() {
 	    "CustomMsg": ""
 	}
     };
-    //console.log(obj);
-    //sort the json data
+    console.log(obj);
+		//1. 6. 11
+		//sort the json data
 		for (key = 1; key <= Object.size(obj); key++) {
 		     value = obj[key];
 		     //console.log(value);
@@ -246,14 +248,16 @@ function makeBadgeTable() {
 			 html += "<tr><th>" + glObj.themeAry[themeNum] + "</th>";
 			 themeNum++;
 		     }
-
+<<<<<<< HEAD
+		     var imgURL = baseURL + value.IconURL;
+		     html += "<td><a class='extLink' href='popup.html?imgURL=" + imgURL  + "&name=" + value.Name + "&desc=" + value.Description + ">" +
+			 "<img src=" + imgURL + "/ ></a><p>" + value.Name + "</p></td>";
+=======
 		     var imgURL = glObj.baseURL + value.IconURL;
-		     html += "<td><form action='" + glObj.baseURL +"badgePopup.php' method='POST'>" +
-			     "<input type='hidden' name='imgURL' value='" + imgURL + "'/>" +
-			     "<input type='hidden' name='name' value='" + value.Name + "'/>" +
-			     "<input type='hidden' name='desc' value='" + value.Description + "'/>" +
-			     "<input type='image' src='" + imgURL + "' value='Popup!' alt='Show badge info'/></form></td>"
-
+		     html += "<td><a class='extLink' href='" + glObj.baseURL + "popup.html?imgURL=" + imgURL + "&name=" + value.Name + "&desc=" + value.Description + "'>" +
+			 "<img src='" + imgURL + "' /></a><p>" + value.Name + "</p></td>";
+		     //console.log(value.IconURL);
+>>>>>>> livedev/rencire
 		     if (key % 5 == 0) {
 			 html += "</tr>";
 		     }
@@ -265,8 +269,7 @@ function makeBadgeTable() {
 	    //	    alert(document.getElementById('badgeTable').innerHTML);
 	    //glObj.t = setTimeout("getBadges()", glObj.refreshTime);
 }
-/* commenting out for testing on localhost
-// function to be initiated when gadget loads the canvas view
+
 function init() {
     osapi.people.getViewer().execute(function(viewerData) {
 	    if (!viewerData.error) {
@@ -279,12 +282,15 @@ function init() {
 		glObj.user = user.replace(/\s/, '_');
 		
 		makeBadgeTable();
-
+<<<<<<< HEAD
 		//gadgets.window.adjustHeight();
+=======
+		//		gadgets.window.adjustHeight();
+>>>>>>> livedev/rencire
 	    }
 	})
 }
 
 gadgets.util.registerOnLoadHandler(init);
 gadgets.window.adjustHeight();
-*/
+

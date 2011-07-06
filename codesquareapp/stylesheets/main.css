@@ -1,16 +1,10 @@
-/* main.css for codesquare styling */
-
+/* main.css */
 /*
-body {
-     /*background-color:#b0c4de;*/
-     text-align:center;     
-}
-*/
 td {
    width: 100%;
 }
-
-img {
+*/
+input[type="image"] {
    width: 100px;
    height: 100px;
 }
