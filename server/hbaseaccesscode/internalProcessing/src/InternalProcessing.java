@@ -1,4 +1,3 @@
-
 import BackEnd.BackEndJar;
 import BackEnd.Commit;
 import java.io.IOException;
@@ -23,11 +22,18 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.conf.Configuration;
 
-
 // Class that has nothing but a main.
 // Does a Put, Get and a Scan against an hbase table.
 public class InternalProcessing {
-	private static int flag1=0;
+	private static int flag1 = 0;
+
+	/***
+	 * This is the main method for the back end processing, it calls the git
+	 * parser and receives an array of Commits. From ther it calls the
+	 * checkUpdateBadges to update the HBase.
+	 * 
+	 * @param args consists of a string that contains unparsed commit data
+	 */
 	public static void main(String[] args) {
 		ArrayList<Commit> output = BackEndJar.parseGitInput(args[0]);
 
@@ -40,6 +46,24 @@ public class InternalProcessing {
 		}
 	}
 
+	/***
+	 * This method takes various information from a recent commit, and uses it
+	 * to check for basic badges. It updates the row in the HBase with the
+	 * appropriate badges, and information.
+	 * 
+	 * @param email
+	 *            unique identifier for the row in the HBase
+	 * @param date
+	 *            date of commit
+	 * @param dayofWeek
+	 *            day of the week that user committed
+	 * @param hour
+	 *            hour in the day that user committed
+	 * @param message
+	 *            commit message
+	 * @param numBugs
+	 *            number of bugs the user fixed, currently not in use
+	 */
 	public static void checkUpdateBadges(String email, String date,
 			String dayofWeek, String hour, String message, int numBugs) {
 
@@ -81,19 +105,19 @@ public class InternalProcessing {
 			e.printStackTrace();
 			return;
 		}
-		//delete row first for testing purposes
-		if(flag1==0){
+		// delete row first for testing purposes
+		if (flag1 == 0) {
 			System.out.println("only once");
-			flag1 =1;
+			flag1 = 1;
 			deleteRow(table, email);
 		}
 		String[] fields = { "badgesWeek", "numBugs", "numCommits",
 				"consecCommits" };
 		int[] fieldValues = getFields(table, email, fields);
-		//person does not exist
-		/*if(fieldValues == null){
+		// person does not exist
+		if(fieldValues == null){
 			return;
-		}*/
+		}
 		String lastCommit = getLastCommit(table, email);
 		ArrayList<String> badges = testDateTimeBadges(date, dayofWeek, hour);
 		if (lastCommit == null) {
@@ -106,7 +130,7 @@ public class InternalProcessing {
 				lastCommit, fieldValues[3]);
 
 		badges.addAll(checkNumericalBadges(fieldValues, consecCommits));
-		//checks for jive in the message
+		// checks for jive in the message
 		if (message.toLowerCase().contains("jive")) {
 			badges.add("26");
 		}
@@ -118,7 +142,7 @@ public class InternalProcessing {
 				badges.remove(i--);
 			}
 		}
-		//checks to see if there are more than 7 new badges in the week
+		// checks to see if there are more than 7 new badges in the week
 		if ((badges.size() + fieldValues[0]) > 7) {
 			badges.add("16");
 		}
@@ -130,6 +154,13 @@ public class InternalProcessing {
 
 		test(table, email);
 	}
+	/***
+	 * This method determines simple date and time badges
+	 * @param date date of commit
+	 * @param dayofWeek day of the week user committed
+	 * @param hour hour of the commit
+	 * @return ArrayList of the attained badges
+	 */
 
 	public static ArrayList<String> testDateTimeBadges(String date,
 			String dayofWeek, String hour) {
@@ -165,11 +196,16 @@ public class InternalProcessing {
 
 		return badges;
 	}
-
+	/***
+	 * This method takes 
+	 * @param fieldValues
+	 * @param consecCommits
+	 * @return
+	 */
 	public static ArrayList<String> checkNumericalBadges(int[] fieldValues,
 			int[] consecCommits) {
 		ArrayList<String> badges = new ArrayList<String>();
-		//int totNumBugs = fieldValues[1];
+		// int totNumBugs = fieldValues[1];
 		int totNumCommits = fieldValues[2];
 
 		// consecCommits[0] is commited person, and consecCommits[1] is (value =
@@ -182,24 +218,15 @@ public class InternalProcessing {
 		} else if (consecCommits[1] == 2) {
 			badges.add("28");
 		}
-		
-		/*bug stuff is not currently implemented, but is being checked for here
-		if(totNumBugs > 0){
-			badges.add("31");
-		}
-		else if(totNumBugs > 10){
-			badges.add("32");
-		}
-		else if(totNumBugs > 25){
-			badges.add("33");
-		}
-		else if(totNumBugs > 50){
-			badges.add("34");
-		}
-		else if(totNumBugs > 100){
-			badges.add("35");
-		}*/
-		
+
+		/*
+		 * bug stuff is not currently implemented, but is being checked for here
+		 * if(totNumBugs > 0){ badges.add("31"); } else if(totNumBugs > 10){
+		 * badges.add("32"); } else if(totNumBugs > 25){ badges.add("33"); }
+		 * else if(totNumBugs > 50){ badges.add("34"); } else if(totNumBugs >
+		 * 100){ badges.add("35"); }
+		 */
+
 		if (totNumCommits > 0) {
 			badges.add("1");
 		} else if (totNumCommits > 50) {
@@ -355,8 +382,7 @@ public class InternalProcessing {
 		}
 
 		if (data.isEmpty()) {
-			//return null;
-			return results;
+			return null;
 		}
 
 		for (int i = 0; i < fields.length; i++) {
