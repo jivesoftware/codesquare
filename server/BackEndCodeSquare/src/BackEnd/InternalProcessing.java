@@ -8,9 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.NavigableSet;
-import java.util.StringTokenizer;
 
-import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
@@ -22,8 +20,6 @@ import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.client.ResultScanner;
-import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.conf.Configuration;
 
@@ -80,15 +76,13 @@ public class InternalProcessing {
 		} catch (ZooKeeperConnectionException e1) {
 			System.err.println(e1.getMessage());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.err.println();
+			System.err.println(e.getMessage());
 		}
 
 		HTable table = null;
 		try{
 			table = new HTable(config, "EmpBadges");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return;
 		}
@@ -168,9 +162,11 @@ public class InternalProcessing {
 		
 		return badges;
 	}
+	
+	
 	public static ArrayList<String> checkNumericalBadges(int[] fieldValues, int[] consecCommits){
 		ArrayList<String> badges = new ArrayList<String>();
-		int totNumBugs = fieldValues[1];
+		//int totNumBugs = fieldValues[1];
 		int totNumCommits = fieldValues[2];
 		
 		//consecCommits[0] is commited person, and consecCommits[1] is (value = 1)2 commits in a day or (value = 2)2 commits in >5 days: 0 is none
@@ -220,6 +216,7 @@ public class InternalProcessing {
 		return badges;
 	}
 	
+	@SuppressWarnings("unused")
 	public static void addRow(HTable table,  String email, String lastCommit, int badgesWeek, int numBugs, int numCommits, int consecCommits, String newBadges, String[] badges){
 		Get get = new Get(Bytes.toBytes(email));
 		Result data = null;
@@ -401,7 +398,6 @@ public class InternalProcessing {
 			dateOld = df.parse(lastCommit);
 			check = dfcheck.parse("02");
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -415,7 +411,6 @@ public class InternalProcessing {
 		try {
 			check = dfcheck.parse("05");
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		if(date.getTime()-dateOld.getTime() > check.getTime()){
@@ -478,7 +473,7 @@ public class InternalProcessing {
 		} catch (ZooKeeperConnectionException e1) {
 			System.err.println(e1.getMessage());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			
 			System.err.println();
 		}
 
@@ -511,7 +506,6 @@ public class InternalProcessing {
 			System.out.println("numCommits" + results[2]);
 			System.out.println("consecCommits" + results[3]);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
