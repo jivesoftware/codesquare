@@ -18,8 +18,7 @@ public class BackEndJar {
 	/**
 	 * Parses the git input sent by the Jenkins-run shell script git commands
 	 * 
-	 * @param tbp
-	 *            the string to be parsed (tbp = toBeParsed)
+	 * @param tbp the string to be parsed (tbp = toBeParsed)
 	 */
 	@SuppressWarnings("unchecked")
 	public static ArrayList<Commit> parseGitInput(String tbp) {
