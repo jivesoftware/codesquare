@@ -100,6 +100,7 @@ public static class Reduce extends Reducer<Text, Text, Text, Text> {
         for (Text val : values) {
         	int LOC = Integer.parseInt(val.toString().substring(1));
         	if (LOC < 0) {
+                Toolbox.addBadges(key.toString(), "20", table);
         		context.write(key, new Text("20"));
         	}
         	if (LOC > maxEmpLOC) {

@@ -118,6 +118,7 @@ public static class Reduce extends Reducer<Text, Text, Text, Text> {
     			   // if bossLOC >= maxEmpLOC
     			   if (Integer.parseInt(components[0]) > maxEmpLOC.get(Integer.parseInt(key.toString()))) { 
     				   // award badge 21
+                       Toolbox.addBadges(key.toString(), "21", table);
     				   context.write(key, new Text("21"));
     				   }
     			   }
@@ -127,10 +128,12 @@ public static class Reduce extends Reducer<Text, Text, Text, Text> {
     		   // if LOC == maxempLOC
     		   if (Integer.parseInt(components[1]) == maxEmpLOC.get(Integer.parseInt(key.toString()))) { 
     			   // award badge 23
+                   Toolbox.addBadges(components[0], "23", table);
     			   context.write(new Text(components[0]), new Text("23"));}
     		   // if LOC > bossLOC
     		   if (Integer.parseInt(components[1]) > bossLOC.get(Integer.parseInt(key.toString()))) { 
     			   // award badge 22
+                   Toolbox.addBadges(components[0], "22", table);
     			   context.write(new Text(components[0]), new Text("22"));
     			   }
     		   }

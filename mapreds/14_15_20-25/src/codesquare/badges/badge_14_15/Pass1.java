@@ -18,7 +18,6 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 import codesquare.Toolbox;
 
-
 /**
  * Class to find each Employee's LOC based on commit files
  * 
@@ -100,6 +99,7 @@ public Pass1(String input, String output) throws Exception {
         if (acc.size() >= 2) {
         	for (int i = 0; i < acc.size(); i++) {
         		if (!badge14.containsKey(acc.get(i))){
+                    Toolbox.addBadges(acc.get(i), "14", table);
         			context.write(new Text(acc.get(i)), new Text("14"));
         			badge14.put(acc.get(i), 1);
         		}
@@ -107,7 +107,7 @@ public Pass1(String input, String output) throws Exception {
         	if (acc.size() >= 9) {
         		for (int i = 0; i < acc.size(); i++) {
             		if (!badge15.containsKey(acc.get(i))){
-                                
+                        Toolbox.addBadges(acc.get(i).toString(), "15", table);
                 		context.write(new Text(acc.get(i)), new Text("15"));
                 		badge15.put(acc.get(i), 1);
                 		}

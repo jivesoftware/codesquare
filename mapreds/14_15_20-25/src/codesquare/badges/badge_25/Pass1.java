@@ -117,10 +117,12 @@ public Pass1(String input1, String input2, String output) throws Exception {
 					if (!acc.get(i)[2].equals(components[2])) {
 						if (Toolbox.subtractTime(acc.get(i), components) <= 10000) {
 							if (!badge25.containsKey(acc.get(i)[2])) {
+		                        Toolbox.addBadges(acc.get(i)[2], "25", table);
 								context.write(new Text(acc.get(i)[2]), new Text("25"));
 								badge25.put(acc.get(i)[2], 1);
 								}
 							if (!badge25.containsKey(components[2])) {
+		                        Toolbox.addBadges(components[2], "25", table);
 								context.write(new Text(components[2]), new Text("25"));
 								badge25.put(components[2], 1);
 								}
