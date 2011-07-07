@@ -4,12 +4,19 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Time;
+import java.util.ArrayList;
+import java.util.NavigableSet;
 import java.util.Random;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.hbase.client.Get;
+import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.client.Put;
+import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 
@@ -122,4 +129,101 @@ public class Toolbox {
 		System.out.println((int) (time1.getTime() - time2.getTime()));
 		return Math.abs((int) (time1.getTime() - time2.getTime()));
 	}
+	
+	
+	/***
+	 * This method retrieves acquired badges checks against the new badges, and updates the table
+	 * @param email Row Identifier
+	 * @param badge New badge to add
+	 */
+	@SuppressWarnings("unchecked")
+	public static void addBadges(String email, String badge, HTable table) {
+		Object[] badgeList = getBadges(table, email);
+		ArrayList<String> aquiredBadges = null;
+		String newBadges = null;
+		try{
+			aquiredBadges = (ArrayList<String>) badgeList[0];
+			newBadges = (String)badgeList[1];
+		}catch(java.lang.NullPointerException e){
+			//USER IS HAS NOT INSTALLED APP
+			return;
+		}
+		if(!aquiredBadges.contains(badge)){
+			updateBadges(table, email, badge, newBadges+" "+badge);
+		}
+	}
+	
+	/***
+	 * Returns the acquired and new badges
+	 * 
+	 * @param table
+	 *            HTable to modify
+	 * @param email
+	 *            Row Identifier
+	 * @return Object[0] is an ArrayList of acquired badges, Object[1] is newly
+	 *         acquired badges
+	 */
+	public static Object[] getBadges(HTable table, String email) {
+		Get get = new Get(Bytes.toBytes(email));
+		Result data = null;
+		Object[] output = new Object[2];
+		ArrayList<String> resultingBadges = new ArrayList<String>();
+		String newBadges = "";
+		output[0] = resultingBadges;
+		output[1] = newBadges;
+		try {
+			data = table.get(get);
+		} catch (Exception e) {
+			System.err.println();
+		}
+
+		if (data == null) {
+			System.out.println("Not found");
+			return null;
+		}
+		if (data.isEmpty()) {
+			return null;
+		}
+
+		byte[] badges = Bytes.toBytes("Badge");
+
+		NavigableSet<byte[]> badges_awarded = data.getFamilyMap(badges)
+				.descendingKeySet();
+		for (byte[] badge : badges_awarded) {
+			resultingBadges.add(new String(badge));
+		}
+		newBadges = new String(data.getValue(Bytes.toBytes("Info"),
+				Bytes.toBytes("newBadges")));
+
+		output[0] = resultingBadges;
+		output[1] = newBadges;
+		return output;
+	}
+	
+	/***
+	 * Adds Badges to the specified user
+	 * 
+	 * @param table
+	 *            HTable to modify
+	 * @param email
+	 *            Row Identifier
+	 * @param badges
+	 *            Badges to Add
+	 */
+	public static void updateBadges(HTable table, String email, String badge, String newBadges) {
+
+		Put row = new Put(Bytes.toBytes(email));
+
+		row.add(Bytes.toBytes("Badge"), Bytes.toBytes(badge),
+					Bytes.toBytes("1"));
+		row.add(Bytes.toBytes("Info"), Bytes.toBytes("newBadges"),
+				Bytes.toBytes(newBadges));
+
+		try {
+			table.put(row);
+		} catch (Exception e) {
+			System.err.println();
+		}
+	}
+	
 }
