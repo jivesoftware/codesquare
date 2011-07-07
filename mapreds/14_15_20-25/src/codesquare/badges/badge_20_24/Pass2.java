@@ -5,8 +5,11 @@ import java.io.IOException;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.conf.*;
+import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
+import org.apache.hadoop.mapreduce.Reducer.Context;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.NullOutputFormat;
@@ -79,6 +82,19 @@ public static class Map extends Mapper<LongWritable, Text, Text, Text> {
  * @write key: empId   value: 20
  */
 public static class Reduce extends Reducer<Text, Text, Text, Text> {
+	public HTable table;
+	 
+	public void setup(Context context) throws IOException,InterruptedException{
+		
+		Configuration config = HBaseConfiguration.create();
+		config.set("hbase.cluster.distributed", "true");
+        config.set("hbase.rootdir", "hdfs://hadoopdev008.eng.jiveland.com:54310/hbase");
+        config.set("hbase.zookeeper.quorum","hadoopdev008.eng.jiveland.com,hadoopdev002.eng.jiveland.com,hadoopdev001.eng.jiveland.com");
+        config.set("hbase.zookeeper.property.clientPort","2181");
+        config.set("hbase.hregion.max.filesize", "1073741824");
+        table = new HTable(config,"EmpBadges");
+	}
+	
     public void reduce(Text key, Iterable<Text> values, Context context) 
       throws IOException, InterruptedException {
         for (Text val : values) {

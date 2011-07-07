@@ -5,8 +5,11 @@ import java.io.IOException;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.conf.*;
+import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
+import org.apache.hadoop.mapreduce.Reducer.Context;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
@@ -66,6 +69,8 @@ public static class Map extends Mapper<LongWritable, Text, Text, Text> {
  * @write key: empId   value: {LOC} {bossId} AND {LOC}
  */
  public static class Reduce extends Reducer<Text, Text, Text, Text> {
+	 
+	 
     public void reduce(Text key, Iterable<Text> values, Context context) 
       throws IOException, InterruptedException {
         String info = " ";
