@@ -406,7 +406,12 @@ public class InternalProcessing {
 		output[1] = newBadges;
 		return output;
 	}
-
+	/***
+	 * This method updates the boss on the specified row
+	 * @param table HTable to alter
+	 * @param email Row Identifier
+	 * @param bossEmail New boss email
+	 */
 	public static void updateBoss(HTable table, String email, String bossEmail) {
 		Put row = new Put(Bytes.toBytes(email));
 
