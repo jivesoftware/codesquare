@@ -75,8 +75,6 @@ public class InternalProcessing {
 			String dayofWeek, String hour, String message, int numBugs) {
 
 		Configuration config = HBaseConfiguration.create();
-		// config.addResource(new
-		// Path("/Users/diivanand.ramalingam/Downloads/hbase/conf/hbase-site.xml"));
 		config.set("hbase.cluster.distributed", "true");
 		config.set("hbase.rootdir",
 				"hdfs://hadoopdev008.eng.jiveland.com:54310/hbase");
