@@ -6,13 +6,22 @@ import java.util.Iterator;
 import java.util.StringTokenizer;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.BlockLocation;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FSDataOutputStream;
+import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * This class parses a string containing git log commit info sent by a Jenkins
+ * script and adds each newly parsed commit as it's own .txt file in HDFS under
+ * the appropriate year, month, day, and hour folders (each a sub-folder of the
+ * one before it).
+ * @author diivanand.ramalingam
+ */
 public class BackEndJar {
 
 	/**
@@ -92,6 +101,13 @@ public class BackEndJar {
 		return commits;
 	}
 
+        /**
+         * Object[0] = total number of insertions (int), Object[1] = total number of deletions (int)
+         * Object[2] = String ArrayList whose elements are Strings contains the names of files changed
+         * by a commit, Object[3] = the total number of files changed (int)
+         * @param statString A String of statistical commit information to be parsed
+         * @return an Object array of commit statistical info
+         */
 	private static Object[] parseStats(String statString) {
 		statString = statString.replace('[', ' ');
 		statString = statString.replace(']', ' ');
@@ -125,6 +141,12 @@ public class BackEndJar {
 		return tmp;
 	}
 
+        /**
+         * Object[0] = date (String), Object[1] = hour (int), Object[2] = minute (int),
+         * Object[3] = second (int), Object[4] = dayOfWeek (String)
+         * @param dateString A String containing date information to be parsed
+         * @return an Object[] containing date information
+         */
 	private static Object[] parseDate(String dateString) {
 		Object[] tmp = new Object[5];
 		dateString = dateString.trim();
@@ -148,6 +170,11 @@ public class BackEndJar {
 		return tmp;
 	}
 
+        /**
+         * int[0] = hour, int[1] = minute, int[2] = second
+         * @param timeString
+         * @return an int array containing the int values of the hour, minute, second
+         */
 	private static int[] parseTime(String timeString) {
 		timeString = timeString.trim();
 		StringTokenizer st = new StringTokenizer(timeString, ":");
@@ -158,6 +185,11 @@ public class BackEndJar {
 		return times;
 	}
 
+        /**
+         * 
+         * @param month the common three-letter month abbreviation
+         * @return the numeric month value (1 = January, 12 = December)
+         */
 	private static int parseMonth(String month) {
 		if (month.equalsIgnoreCase("jan")) {
 			return 1;
@@ -190,6 +222,11 @@ public class BackEndJar {
 
 	// End area that contains methods which should be consolidated
 
+        /**
+         * 
+         * @param upc un-parsed-commits in JSON format
+         * @return an ArrayList of JSON objects that contain commit info
+         */
 	private static ArrayList<JSONObject> getCommits(ArrayList<String> upc) {
 		ArrayList<JSONObject> jObs = new ArrayList<JSONObject>();
 		for (String s : upc) {
@@ -205,13 +242,20 @@ public class BackEndJar {
 
 	// HDFS methods
 
+        /**
+         * inserts the commit objects as String into .txt files
+         * @param commits An arrayList of Commit objects
+         */
 	public static void insertCommitsIntoHDFS(ArrayList<Commit> commits) {
 		try {
 			// Connect and open HDFS and set path variables
 			Configuration config = new Configuration();
-			config.set("fs.default.name", "hdfs://10.45.111.143:8020");
+			config.set("fs.default.name", "hdfs://10.45.111.143:8020/");
+                        
+                        
+                        
 			FileSystem dfs = FileSystem.get(config);
-			String pathString = "/OldCommits";
+			String pathString = "/Commits";
 			Path src = new Path(pathString);
 
 			if (!dfs.exists(src)) {
@@ -225,7 +269,7 @@ public class BackEndJar {
 				Integer month = Integer.parseInt(st.nextToken());
 				Integer dayOfMonth = Integer.parseInt(st.nextToken());
 				Integer hour = new Integer(c.getHour());
-
+				Integer minute = new Integer(c.getMinute());
 
 				// If the year folder doesn't exist, create it
 				src = extendPath(src, year.toString());
@@ -254,11 +298,29 @@ public class BackEndJar {
 					dfs.mkdirs(src);
 					System.out.println(src.toString() + " " + dfs.exists(src));
 				}
-
-				Path src2 = new Path("/OldCommits/2011/6/23/14/2011/6/23/13/"+ c.getId()+".txt");
+				
+				// If the minute of the hour folder doesn't exist, create it
+				src = extendPath(src,minute.toString());
+				if(!dfs.exists(src)){
+					dfs.mkdirs(src);
+					System.out.println(src.toString() + " " + dfs.exists(src));
+				}
+				
+				//Write file
+				Path src2 = new Path(src.toString()+ "/" + c.getId()+".txt");
+				
+				if(dfs.exists(src2)){
+					System.out.println(src2 + " already exists, deleting it");
+					dfs.delete(src2, false);
+				}
+				
 				FSDataOutputStream fs = dfs.create(src2);
 				fs.write(c.toString().getBytes());
-				System.out.println("File Written: " + dfs.getWorkingDirectory().toString() +src2.toString());
+				FileStatus fileStatus = dfs.getFileStatus(src2);
+				
+				System.out.println("File Written: " + fileStatus.getPath());
+                                
+                                
 				fs.close();
 				
 				//Read from the files just written to confirm they are there
@@ -273,7 +335,7 @@ public class BackEndJar {
 				
 				System.out.println("Done reading, next file wll be written and then read if it exists");
 				System.out.println();
-				
+				src = new Path("/Commits");
 			}
 		} catch (IOException e) {
 			System.err.println(e.getMessage());
@@ -281,6 +343,12 @@ public class BackEndJar {
 
 	}
 
+        /**
+         * Extends pathNames
+         * @param current
+         * @param subDirName
+         * @return a new Path with a subdirectory attached to current
+         */
 	private static Path extendPath(Path current, String subDirName) {
 		return new Path(current.toString() + "/" + subDirName);
 	}
