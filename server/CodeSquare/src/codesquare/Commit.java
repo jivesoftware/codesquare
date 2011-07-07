@@ -1,7 +1,6 @@
 package codesquare;
 
 import java.util.ArrayList;
-import java.util.StringTokenizer;
 
 /**
  * An abstraction used to simplify and organize the access of instance variables

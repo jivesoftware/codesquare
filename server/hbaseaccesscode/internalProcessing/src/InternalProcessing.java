@@ -26,6 +26,13 @@ import org.apache.hadoop.conf.Configuration;
 
 // Class that has nothing but a main.
 // Does a Put, Get and a Scan against an hbase table.
+
+/**
+ * This class takes in the git commit info and uses GitParser.jar to
+ * to parse the input and store the parse input into HDFS. It also checks
+ * to see if any "look-up" badges are acquired in the process
+ * @author justin.kikuchi
+ */
 public class InternalProcessing {
 	private static int flag1=0;
 	public static void main(String[] args) {
@@ -420,8 +427,7 @@ public class InternalProcessing {
 			dateOld = df.parse(lastCommit);
 			check = dfcheck.parse("02");
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println(e.getMessage());
 		}
 
 		if ((date.getTime() - dateOld.getTime()) < check.getTime()
@@ -434,8 +440,7 @@ public class InternalProcessing {
 		try {
 			check = dfcheck.parse("05");
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println(e.getMessage());
 		}
 		if (date.getTime() - dateOld.getTime() > check.getTime()) {
 			result[1] = 2;

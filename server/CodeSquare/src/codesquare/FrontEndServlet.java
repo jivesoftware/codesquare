@@ -2,10 +2,9 @@ package codesquare;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
+
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
+
 import java.util.NavigableSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.Path;
+
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.HTable;
