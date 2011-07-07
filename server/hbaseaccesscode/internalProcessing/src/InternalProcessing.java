@@ -348,9 +348,9 @@ public class InternalProcessing {
 
 		Put row = new Put(Bytes.toBytes(email));
 
-		for (int i = 0; i < badges.length - 1; i = i + 2) {
+		for (int i = 0; i < badges.length; i++) {
 			row.add(Bytes.toBytes("Badge"), Bytes.toBytes(badges[i]),
-					Bytes.toBytes(badges[i + 1]));
+					Bytes.toBytes("1"));
 		}
 
 		try {
