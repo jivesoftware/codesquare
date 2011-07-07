@@ -1,4 +1,3 @@
-
 import BackEnd.BackEndJar;
 import BackEnd.Commit;
 import java.io.IOException;
@@ -23,11 +22,25 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.conf.Configuration;
 
-
 // Class that has nothing but a main.
 // Does a Put, Get and a Scan against an hbase table.
+/***
+ * This Class class the git parser and checks for basic badges, and updates the
+ * hbase
+ * 
+ * @author justin.kikuchi
+ * 
+ */
 public class InternalProcessing {
-	private static int flag1=0;
+
+	/***
+	 * This is the main method for the back end processing, it calls the git
+	 * parser and receives an array of Commits. From there it calls the
+	 * checkUpdateBadges to update the HBase.
+	 * 
+	 * @param args
+	 *            consists of a string that contains unparsed commit data
+	 */
 	public static void main(String[] args) {
 		ArrayList<Commit> output = BackEndJar.parseGitInput(args[0]);
 
@@ -40,6 +53,24 @@ public class InternalProcessing {
 		}
 	}
 
+	/***
+	 * This method takes various information from a recent commit, and uses it
+	 * to check for basic badges. It updates the row in the HBase with the
+	 * appropriate badges, and information.
+	 * 
+	 * @param email
+	 *            unique identifier for the row in the HBase
+	 * @param date
+	 *            date of commit
+	 * @param dayofWeek
+	 *            day of the week that user committed
+	 * @param hour
+	 *            hour in the day that user committed
+	 * @param message
+	 *            commit message
+	 * @param numBugs
+	 *            number of bugs the user fixed, currently not in use
+	 */
 	public static void checkUpdateBadges(String email, String date,
 			String dayofWeek, String hour, String message, int numBugs) {
 
@@ -81,19 +112,14 @@ public class InternalProcessing {
 			e.printStackTrace();
 			return;
 		}
-		//delete row first for testing purposes
-		if(flag1==0){
-			System.out.println("only once");
-			flag1 =1;
-			deleteRow(table, email);
-		}
+
 		String[] fields = { "badgesWeek", "numBugs", "numCommits",
 				"consecCommits" };
 		int[] fieldValues = getFields(table, email, fields);
-		//person does not exist
-		/*if(fieldValues == null){
+		// person does not exist
+		if (fieldValues == null) {
 			return;
-		}*/
+		}
 		String lastCommit = getLastCommit(table, email);
 		ArrayList<String> badges = testDateTimeBadges(date, dayofWeek, hour);
 		if (lastCommit == null) {
@@ -106,7 +132,7 @@ public class InternalProcessing {
 				lastCommit, fieldValues[3]);
 
 		badges.addAll(checkNumericalBadges(fieldValues, consecCommits));
-		//checks for jive in the message
+		// checks for jive in the message
 		if (message.toLowerCase().contains("jive")) {
 			badges.add("26");
 		}
@@ -118,7 +144,7 @@ public class InternalProcessing {
 				badges.remove(i--);
 			}
 		}
-		//checks to see if there are more than 7 new badges in the week
+		// checks to see if there are more than 7 new badges in the week
 		if ((badges.size() + fieldValues[0]) > 7) {
 			badges.add("16");
 		}
@@ -130,6 +156,18 @@ public class InternalProcessing {
 
 		test(table, email);
 	}
+
+	/***
+	 * This method determines simple date and time badges
+	 * 
+	 * @param date
+	 *            date of commit
+	 * @param dayofWeek
+	 *            day of the week user committed
+	 * @param hour
+	 *            hour of the commit
+	 * @return ArrayList of the attained badges
+	 */
 
 	public static ArrayList<String> testDateTimeBadges(String date,
 			String dayofWeek, String hour) {
@@ -166,14 +204,24 @@ public class InternalProcessing {
 		return badges;
 	}
 
+	/***
+	 * This method takes in information passed in from the HBase to check for
+	 * number of commits, and committed person
+	 * 
+	 * @param fieldValues
+	 *            array of three things, [0] is number of badges in week, [1] is
+	 *            bugs, [2] is number of commits
+	 * @param consecCommits
+	 *            [0] is committed person, [1] is 2 commits in a day, [2] is 2
+	 *            commits in >5days
+	 * @return ArrayList of acquired badges
+	 */
 	public static ArrayList<String> checkNumericalBadges(int[] fieldValues,
 			int[] consecCommits) {
 		ArrayList<String> badges = new ArrayList<String>();
 		int totNumBugs = fieldValues[1];
 		int totNumCommits = fieldValues[2];
 
-		// consecCommits[0] is commited person, and consecCommits[1] is (value =
-		// 1)2 commits in a day or (value = 2)2 commits in >5 days: 0 is none
 		if (consecCommits[0] >= 7) {
 			badges.add("30");
 		}
@@ -182,24 +230,20 @@ public class InternalProcessing {
 		} else if (consecCommits[1] == 2) {
 			badges.add("28");
 		}
-		
-		/*bug stuff is not currently implemented, but is being checked for here
-		if(totNumBugs > 0){
+
+		// bug stuff is not currently implemented, but is being checked for here
+		if (totNumBugs > 0) {
 			badges.add("31");
-		}
-		else if(totNumBugs > 10){
+		} else if (totNumBugs > 10) {
 			badges.add("32");
-		}
-		else if(totNumBugs > 25){
+		} else if (totNumBugs > 25) {
 			badges.add("33");
-		}
-		else if(totNumBugs > 50){
+		} else if (totNumBugs > 50) {
 			badges.add("34");
-		}
-		else if(totNumBugs > 100){
+		} else if (totNumBugs > 100) {
 			badges.add("35");
-		}*/
-		
+		}
+
 		if (totNumCommits > 0) {
 			badges.add("1");
 		} else if (totNumCommits > 50) {
@@ -215,21 +259,32 @@ public class InternalProcessing {
 		return badges;
 	}
 
+	/***
+	 * This method adds a row to the table, if one exits it overwrites it. It's
+	 * parameters are updated information
+	 * 
+	 * @param table
+	 *            HTable to put to
+	 * @param email
+	 *            Unique identifier for the row
+	 * @param lastCommit
+	 *            Most recent commit
+	 * @param badgesWeek
+	 *            Number of badges in the current week
+	 * @param numBugs
+	 *            Number of total bugs
+	 * @param numCommits
+	 *            Total number of bugs
+	 * @param consecCommits
+	 *            Number of consecutive commits by day
+	 * @param newBadges
+	 *            Newly acquired badges
+	 * @param badges
+	 *            already acquired badges
+	 */
 	public static void addRow(HTable table, String email, String lastCommit,
 			int badgesWeek, int numBugs, int numCommits, int consecCommits,
 			String newBadges, String[] badges) {
-		Get get = new Get(Bytes.toBytes(email));
-		Result data = null;
-		try {
-			data = table.get(get);
-		} catch (Exception e) {
-			System.err.println();
-		}
-		 
-		/*if (!data.isEmpty()) {
-			System.out.println("Already Exists");
-			return;
-		}*/
 		for (int i = 0; i < badges.length; i++) {
 			newBadges = newBadges + " " + badges[i];
 		}
@@ -261,6 +316,14 @@ public class InternalProcessing {
 		}
 	}
 
+	/***
+	 * Deletes row from the HBase
+	 * 
+	 * @param table
+	 *            HTable to delete row from
+	 * @param email
+	 *            Identifies row to delete
+	 */
 	public static void deleteRow(HTable table, String email) {
 		Delete d = new Delete(Bytes.toBytes(email));
 
@@ -271,6 +334,16 @@ public class InternalProcessing {
 		}
 	}
 
+	/***
+	 * Adds Badges to the specified user
+	 * 
+	 * @param table
+	 *            HTable to modify
+	 * @param email
+	 *            Row Identifier
+	 * @param badges
+	 *            Badges to Add
+	 */
 	public static void updateBadges(HTable table, String email, String[] badges) {
 
 		Put row = new Put(Bytes.toBytes(email));
@@ -287,6 +360,16 @@ public class InternalProcessing {
 		}
 	}
 
+	/***
+	 * Returns the acquired and new badges
+	 * 
+	 * @param table
+	 *            HTable to modify
+	 * @param email
+	 *            Row Identifier
+	 * @return Object[0] is an ArrayList of acquired badges, Object[1] is newly
+	 *         acquired badges
+	 */
 	public static Object[] getBadges(HTable table, String email) {
 		Get get = new Get(Bytes.toBytes(email));
 		Result data = null;
@@ -319,16 +402,6 @@ public class InternalProcessing {
 		newBadges = new String(data.getValue(Bytes.toBytes("Info"),
 				Bytes.toBytes("newBadges")));
 
-		/* checks for personal message, not used at the moment
-		String[] result =  new String[resultingBadges.size()];
-		result = resultingBadges.toArray(result);
-		
-		for(int i=0; i<result.length; i++){
-			String customDescription = new String(data.getValue(Bytes.toBytes("Badge"), Bytes.toBytes(result[i])));
-			int currentBadgeIndex = resultingBadges.indexOf(result[i]);
-			resultingBadges.add(currentBadgeIndex+1, customDescription);
-		}*/
-
 		output[0] = resultingBadges;
 		output[1] = newBadges;
 		return output;
@@ -347,9 +420,19 @@ public class InternalProcessing {
 		}
 	}
 
+	/***
+	 * This method retrieves the last commit from the HBase
+	 * 
+	 * @param table
+	 *            HTable to modify
+	 * @param email
+	 *            Row Identifier
+	 * @return The String of the last commit date
+	 */
 	public static String getLastCommit(HTable table, String email) {
 		Get get = new Get(Bytes.toBytes(email));
 		Result data = null;
+		String lastCommit = null;
 
 		try {
 			data = table.get(get);
@@ -360,11 +443,26 @@ public class InternalProcessing {
 		if (data.isEmpty()) {
 			return null;
 		}
-
-		return new String(data.getValue(Bytes.toBytes("Info"),
-				Bytes.toBytes("lastCommit")));
+		try {
+			lastCommit = new String(data.getValue(Bytes.toBytes("Info"),
+					Bytes.toBytes("lastCommit")));
+		} catch (java.lang.NullPointerException e) {
+			return "";
+		}
+		return lastCommit;
 	}
 
+	/***
+	 * This method retrieves the specified integer fields from the HBase.
+	 * 
+	 * @param table
+	 *            HTable to modify
+	 * @param email
+	 *            Row Identifier
+	 * @param fields
+	 *            Column names to retrieve
+	 * @return integer array of the fields requested
+	 */
 	public static int[] getFields(HTable table, String email, String[] fields) {
 		Get get = new Get(Bytes.toBytes(email));
 		int[] results = new int[fields.length];
@@ -377,27 +475,54 @@ public class InternalProcessing {
 		}
 
 		if (data.isEmpty()) {
-			//return null;
-			return results;
+			return null;
 		}
 
 		for (int i = 0; i < fields.length; i++) {
-			results[i] = byteArrayToInt(
-					data.getValue(Bytes.toBytes("Info"),
-							Bytes.toBytes(fields[i])), 0);
+			results[i] = byteArrayToInt(data.getValue(Bytes.toBytes("Info"),
+					Bytes.toBytes(fields[i])));
 		}
 		return results;
 	}
 
-	public static int byteArrayToInt(byte[] b, int offset) {
+	/***
+	 * This method is a helper function to getFields that converts a byte array
+	 * to an integer
+	 * 
+	 * @param b
+	 *            The byte array to convert
+	 * @return integer value of the byte array
+	 */
+	private static int byteArrayToInt(byte[] b) {
 		int value = 0;
-		for (int i = 0; i < 4; i++) {
-			int shift = (4 - 1 - i) * 8;
-			value += (b[i + offset] & 0x000000FF) << shift;
+		try {
+			for (int i = 0; i < 4; i++) {
+				int shift = (4 - 1 - i) * 8;
+				value += (b[i] & 0x000000FF) << shift;
+			}
+		} catch (java.lang.NullPointerException e) {
+			return 0;
 		}
 		return value;
 	}
 
+	/***
+	 * This method checks to see if there are commits on consecutive days, twice
+	 * in a day, or greater than 5days
+	 * 
+	 * @param table
+	 *            HTable to modify
+	 * @param email
+	 *            Row Identifier
+	 * @param commitDate
+	 *            New commit date
+	 * @param lastCommit
+	 *            Previous commit date
+	 * @param consecCommitsOld
+	 *            Consecutive commits before the newest commit
+	 * @return An integer array, [0] is consecutive commits, [1] is commits in a
+	 *         day, [2] is commits in >5days
+	 */
 	public static int[] checkConsecCommits(HTable table, String email,
 			String commitDate, String lastCommit, int consecCommitsOld) {
 		int[] result = new int[2]; // result[0] is commited person, and
@@ -443,6 +568,14 @@ public class InternalProcessing {
 		return result;
 	}
 
+	/***
+	 * This method resets the new badge column in the HBase
+	 * 
+	 * @param table
+	 *            HTable to modify
+	 * @param email
+	 *            Row Identifier
+	 */
 	public static void resetNewBadges(HTable table, String email) {
 		Put row = new Put(Bytes.toBytes(email));
 
@@ -456,6 +589,14 @@ public class InternalProcessing {
 		}
 	}
 
+	/***
+	 * This method prints the specified row in the HBase
+	 * 
+	 * @param table
+	 *            HTable to modify
+	 * @param email
+	 *            Row Identifier
+	 */
 	public static void test(HTable table, String email) {
 		System.out
 				.println("Printing data........................................................");
