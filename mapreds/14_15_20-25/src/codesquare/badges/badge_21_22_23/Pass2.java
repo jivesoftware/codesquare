@@ -1,6 +1,8 @@
 package codesquare.badges.badge_21_22_23;      
 import java.io.File;
 import java.io.IOException;
+
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.conf.*;
 import org.apache.hadoop.io.*;
@@ -32,6 +34,8 @@ public class Pass2 {
 		
 public Pass2(String input, String output) throws Exception {
 	    Configuration conf = new Configuration();
+	    FileSystem dfs = codesquare.Toolbox.getHDFS();
+	    
 	    Job job = new Job(conf, "LOC1");
 	    job.setOutputKeyClass(Text.class);
 	    job.setOutputValueClass(Text.class);
@@ -39,7 +43,7 @@ public Pass2(String input, String output) throws Exception {
 	    job.setReducerClass(Reduce.class);
 	    job.setInputFormatClass(TextInputFormat.class);
 	    job.setOutputFormatClass(TextOutputFormat.class);
-	    Toolbox.addDirectory(job, new File(input));
+	    Toolbox.addDirectory(job, dfs,new Path(input));
 	    FileInputFormat.addInputPath(job, new Path("bossList.txt"));
 	    FileOutputFormat.setOutputPath(job, new Path(output));
 	    job.waitForCompletion(true);

@@ -2,12 +2,15 @@ package codesquare.badges.badge_21_22_23;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.conf.*;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.NullOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 import codesquare.Toolbox;
@@ -42,15 +45,17 @@ public class Pass3 {
 	
 public Pass3(String input, String output) throws Exception {
     Configuration conf = new Configuration();
+    FileSystem dfs = codesquare.Toolbox.getHDFS();
+    
     Job job = new Job(conf, "LOC1");
     job.setOutputKeyClass(Text.class);
     job.setOutputValueClass(Text.class);
     job.setMapperClass(Map.class);
     job.setReducerClass(Reduce.class);
     job.setInputFormatClass(TextInputFormat.class);
-    job.setOutputFormatClass(TextOutputFormat.class);
-    Toolbox.addDirectory(job, new File(input));
-    FileOutputFormat.setOutputPath(job, new Path(output));
+    job.setOutputFormatClass(NullOutputFormat.class);
+    Toolbox.addDirectory(job, dfs,new Path(input));
+    //FileOutputFormat.setOutputPath(job, new Path(output));
     job.waitForCompletion(true);
  }
    

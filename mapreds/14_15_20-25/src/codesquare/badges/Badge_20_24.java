@@ -5,7 +5,7 @@ import java.io.FileWriter;
 import java.io.Writer;
 
 import codesquare.Toolbox;
-import codesquare.badges.badge_20_24.Pass1;
+import codesquare.badges.badge_20_24.Pass2;
 import codesquare.badges.sharedpasses.LOC;
 
 /**
@@ -28,7 +28,7 @@ public class Badge_20_24 {
 		String output1 = Toolbox.generateString();
 		new LOC(args[0], output1);
 		System.out.println("LOC1 FINISHED!!!");
-		Pass1 x = new Pass1(output1, args[1]);
+		Pass2 x = new Pass2(output1, args[1]);
 		Writer output = null;
 		File file = new File("maxEmp.txt");
 		output = new BufferedWriter(new FileWriter(file));

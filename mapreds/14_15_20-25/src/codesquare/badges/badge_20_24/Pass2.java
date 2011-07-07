@@ -1,12 +1,15 @@
 package codesquare.badges.badge_20_24;        
 import java.io.File;
 import java.io.IOException;
+
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.conf.*;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.NullOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 import codesquare.Toolbox;
@@ -29,7 +32,7 @@ import codesquare.Toolbox;
  * @author deanna.surma
  * 
  */
-public class Pass1 {
+public class Pass2 {
 	// gets empId LOC AND empId BossId
 	// returns empId LOC BossId AND empId LOC
 	private static int maxEmpLOC = 0;
@@ -42,7 +45,9 @@ public int getMaxEmp() {
 		return maxEmp;
 	}
 	
-public Pass1(String input, String output) throws Exception {
+public Pass2(String input, String output) throws Exception {
+		FileSystem dfs = codesquare.Toolbox.getHDFS();
+	
 	    Configuration conf = new Configuration();
 	    Job job = new Job(conf, "LOC1");
 	    job.setOutputKeyClass(Text.class);
@@ -50,9 +55,9 @@ public Pass1(String input, String output) throws Exception {
 	    job.setMapperClass(Map.class);
 	    job.setReducerClass(Reduce.class);
 	    job.setInputFormatClass(TextInputFormat.class);
-	    job.setOutputFormatClass(TextOutputFormat.class);
-	    Toolbox.addDirectory(job, new File(input));
-	    FileOutputFormat.setOutputPath(job, new Path(output));
+	    job.setOutputFormatClass(NullOutputFormat.class);
+	    Toolbox.addDirectory(job, dfs,new Path(input));
+	    //FileOutputFormat.setOutputPath(job, new Path(output));
 	    job.waitForCompletion(true);
 	 }
  

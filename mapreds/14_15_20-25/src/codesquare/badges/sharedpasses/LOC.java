@@ -1,6 +1,8 @@
 package codesquare.badges.sharedpasses;      
 import java.io.File;
 import java.io.IOException;
+
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.conf.*;
 import org.apache.hadoop.io.*;
@@ -29,6 +31,8 @@ public class LOC {
 
 public LOC(String input, String output) throws Exception {
 	    Configuration conf = new Configuration();
+	    FileSystem dfs = codesquare.Toolbox.getHDFS();
+	    
 	    Job job = new Job(conf, "LOC1");
 	    job.setOutputKeyClass(Text.class);
 	    job.setOutputValueClass(IntWritable.class);
@@ -36,7 +40,7 @@ public LOC(String input, String output) throws Exception {
 	    job.setReducerClass(Reduce.class);
 	    job.setInputFormatClass(TextInputFormat.class);
 	    job.setOutputFormatClass(TextOutputFormat.class);
-	    Toolbox.addDirectory(job, new File(input));
+	    Toolbox.addDirectory(job, dfs,new Path(input));
 	    FileOutputFormat.setOutputPath(job, new Path(output));
 	    job.waitForCompletion(true);
 	 }

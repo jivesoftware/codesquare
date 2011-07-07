@@ -1,5 +1,7 @@
 package codesquare.badges;
 
+import org.apache.hadoop.fs.FileSystem;
+
 import codesquare.badges.badge_14_15.Pass1;
 
 /**

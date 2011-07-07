@@ -4,12 +4,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.conf.*;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.NullOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 import codesquare.Toolbox;
@@ -37,16 +39,18 @@ private static HashMap<String, Integer> badge25 = new HashMap<String, Integer>()
 
 public Pass1(String input1, String input2, String output) throws Exception {
 	    Configuration conf = new Configuration();
+	    FileSystem dfs = codesquare.Toolbox.getHDFS();
+	    
 	    Job job = new Job(conf, "LOC1");
 	    job.setOutputKeyClass(Text.class);
 	    job.setOutputValueClass(Text.class);
 	    job.setMapperClass(Map.class);
 	    job.setReducerClass(Reduce.class);
 	    job.setInputFormatClass(TextInputFormat.class);
-	    job.setOutputFormatClass(TextOutputFormat.class);
-	    Toolbox.addDirectory(job, new File(input1));
-	    Toolbox.addDirectory(job, new File(input2));
-	    FileOutputFormat.setOutputPath(job, new Path(output));
+	    job.setOutputFormatClass(NullOutputFormat.class);
+	    Toolbox.addDirectory(job, dfs,new Path(input1));
+	    Toolbox.addDirectory(job, dfs,new Path(input2));
+	    //FileOutputFormat.setOutputPath(job, new Path(output));
 	    job.waitForCompletion(true);
 	 }
 
