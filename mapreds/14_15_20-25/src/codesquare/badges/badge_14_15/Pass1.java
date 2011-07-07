@@ -88,6 +88,7 @@ public Pass1(String input, String output) throws Exception {
         	if (acc.size() >= 9) {
         		for (int i = 0; i < acc.size(); i++) {
             		if (!badge15.containsKey(acc.get(i))){
+                                
                 		context.write(new Text(acc.get(i)), new Text("15"));
                 		badge15.put(acc.get(i), 1);
                 		}

@@ -13,6 +13,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 import codesquare.Toolbox;
+import org.apache.hadoop.hbase.client.HTable;
 
 /**
  * Class to find each Employee's LOC based on commit files
@@ -27,6 +28,7 @@ import codesquare.Toolbox;
  * 
  */
 public class Pass1 {
+    private static HTable table;
 // receives commits
 // returns empId #badge
 	
