@@ -16,7 +16,6 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 /**
  * 
  * Class providing commonly used functions
- * 
  */
 public class Toolbox {
 	
