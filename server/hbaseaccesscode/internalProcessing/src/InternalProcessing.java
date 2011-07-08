@@ -43,37 +43,23 @@ public class InternalProcessing {
 	 */
 	public static void main(String[] args) {
 		ArrayList<Commit> output = BackEndJar.parseGitInput(args[0]);
-
+		HTable table = setup();
 		BackEndJar.insertCommitsIntoHDFS(output);
-
+		
+		if(table == null){
+			System.out.println("could not find table");
+			return;
+		}
+		
 		for (Commit c : output) {
 			System.out.println(c.getDate());
-			checkUpdateBadges(c.getEmail(), c.getDate(), c.getDay(),
+			checkUpdateBadges(table, c.getEmail(), c.getDate(), c.getDay(),
 					new Integer(c.getHour()).toString(), c.getMessage(), 0);
 		}
+
+		test(table, "eric.ren@jivesoftware.com");
 	}
-
-	/***
-	 * This method takes various information from a recent commit, and uses it
-	 * to check for basic badges. It updates the row in the HBase with the
-	 * appropriate badges, and information.
-	 * 
-	 * @param email
-	 *            unique identifier for the row in the HBase
-	 * @param date
-	 *            date of commit
-	 * @param dayofWeek
-	 *            day of the week that user committed
-	 * @param hour
-	 *            hour in the day that user committed
-	 * @param message
-	 *            commit message
-	 * @param numBugs
-	 *            number of bugs the user fixed, currently not in use
-	 */
-	public static void checkUpdateBadges(String email, String date,
-			String dayofWeek, String hour, String message, int numBugs) {
-
+	public static HTable setup(){
 		Configuration config = HBaseConfiguration.create();
 		config.set("hbase.cluster.distributed", "true");
 		config.set("hbase.rootdir",
@@ -108,8 +94,32 @@ public class InternalProcessing {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return;
+			return table;
 		}
+		return table;
+	}
+
+	/***
+	 * This method takes various information from a recent commit, and uses it
+	 * to check for basic badges. It updates the row in the HBase with the
+	 * appropriate badges, and information.
+	 * 
+	 * @param email
+	 *            unique identifier for the row in the HBase
+	 * @param date
+	 *            date of commit
+	 * @param dayofWeek
+	 *            day of the week that user committed
+	 * @param hour
+	 *            hour in the day that user committed
+	 * @param message
+	 *            commit message
+	 * @param numBugs
+	 *            number of bugs the user fixed, currently not in use
+	 */
+	public static void checkUpdateBadges(HTable table, String email, String date,
+			String dayofWeek, String hour, String message, int numBugs) {
+
 
 		String[] fields = { "badgesWeek", "numBugs", "numCommits",
 				"consecCommits" };
@@ -151,8 +161,6 @@ public class InternalProcessing {
 		addRow(table, email, date, badges.size() + fieldValues[0],
 				fieldValues[1], fieldValues[2], consecCommits[0], newBadges,
 				badges.toArray(results));
-
-		test(table, email);
 	}
 
 	/***
