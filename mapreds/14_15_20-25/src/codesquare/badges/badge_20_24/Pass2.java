@@ -102,6 +102,7 @@ public static class Reduce extends Reducer<Text, Text, Text, Text> {
         	if (LOC < 0) {
                 Toolbox.addBadges(key.toString(), "20", table);
         		context.write(key, new Text("20"));
+        		context.setStatus("Reduced and inserted kv pair into hBase: " + key.toString() + ":20");
         	}
         	if (LOC > maxEmpLOC) {
         		maxEmpLOC = LOC;

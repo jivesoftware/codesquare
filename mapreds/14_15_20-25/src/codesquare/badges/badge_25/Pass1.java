@@ -120,11 +120,13 @@ public Pass1(String input1, String input2, String output) throws Exception {
 		                        Toolbox.addBadges(acc.get(i)[2], "25", table);
 								context.write(new Text(acc.get(i)[2]), new Text("25"));
 								badge25.put(acc.get(i)[2], 1);
+								context.setStatus("Reduced and inserted kv pair into hBase: " + acc.get(i)[2] + ":15");
 								}
 							if (!badge25.containsKey(components[2])) {
 		                        Toolbox.addBadges(components[2], "25", table);
 								context.write(new Text(components[2]), new Text("25"));
 								badge25.put(components[2], 1);
+								context.setStatus("Reduced and inserted kv pair into hBase: " + components[2] + ":25");
 								}
 							}
 					}
