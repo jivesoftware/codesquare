@@ -102,6 +102,7 @@ public Pass1(String input, String output) throws Exception {
                     Toolbox.addBadges(acc.get(i), "14", table);
         			context.write(new Text(acc.get(i)), new Text("14"));
         			badge14.put(acc.get(i), 1);
+        			context.setStatus("Reduced and inserted kv pair into hBase: " + acc.get(i).toString() + ":14");
         		}
         	}
         	if (acc.size() >= 9) {
@@ -110,6 +111,7 @@ public Pass1(String input, String output) throws Exception {
                         Toolbox.addBadges(acc.get(i).toString(), "15", table);
                 		context.write(new Text(acc.get(i)), new Text("15"));
                 		badge15.put(acc.get(i), 1);
+                		context.setStatus("Reduced and inserted kv pair into hBase: " + acc.get(i).toString() + ":15");
                 		}
             	}
         	}
