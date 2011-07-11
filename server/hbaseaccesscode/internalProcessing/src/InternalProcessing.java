@@ -5,6 +5,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.NavigableSet;
 
@@ -53,7 +54,8 @@ public class InternalProcessing {
 			System.out.println("could not find table");
 			return;
 		}
-		for (Commit c : output) {
+		for (int i = output.size() - 1; i >= 0; i--) {
+			Commit c = output.get(i);
 			checkUpdateBadges(table, c.getEmail(), c.getDate(), c.getDay(),
 					new Integer(c.getHour()).toString(), c.getMessage(), 0);
 		}
@@ -69,6 +71,11 @@ public class InternalProcessing {
 		}
 	}
 
+	/***
+	 * This method sets up the hbase configuration.
+	 * 
+	 * @return Object array consisting of a HTable(1) and the config object(0)
+	 */
 	public static Object[] setup() {
 		Object[] output = new Object[2];
 		Configuration config = HBaseConfiguration.create();
@@ -262,7 +269,7 @@ public class InternalProcessing {
 		} else if (totNumBugs > 1) {
 			badges.add("31");
 		}
-		System.out.println(totNumCommits);
+
 		if (totNumCommits > 999) {
 			badges.add("5");
 		} else if (totNumCommits > 999) {
@@ -382,10 +389,9 @@ public class InternalProcessing {
 	/***
 	 * Returns the acquired and new badges
 	 * 
-	 * @param table
-	 *            HTable to modify
-	 * @param email
-	 *            Row Identifier
+	 * @param data
+	 *            The data from the hbase
+	 * 
 	 * @return Object[0] is an ArrayList of acquired badges, Object[1] is newly
 	 *         acquired badges
 	 */
@@ -470,10 +476,8 @@ public class InternalProcessing {
 	/***
 	 * This method retrieves the specified integer fields from the HBase.
 	 * 
-	 * @param table
-	 *            HTable to modify
-	 * @param email
-	 *            Row Identifier
+	 * @param data
+	 *            The data from the hbase
 	 * @param fields
 	 *            Column names to retrieve
 	 * @return integer array of the fields requested
@@ -529,10 +533,6 @@ public class InternalProcessing {
 	 * This method checks to see if there are commits on consecutive days, twice
 	 * in a day, or greater than 5days
 	 * 
-	 * @param table
-	 *            HTable to modify
-	 * @param email
-	 *            Row Identifier
 	 * @param commitDate
 	 *            New commit date
 	 * @param lastCommit
@@ -544,7 +544,7 @@ public class InternalProcessing {
 	 */
 	public static int[] checkConsecCommits(String commitDate,
 			String lastCommit, int consecCommitsOld) {
-		int[] result = new int[2]; // result[0] is commited person, and
+		int[] result = new int[2]; // result[0] is commited person field, and
 									// result[1] is (value = 1)2 commits in a
 									// day or (value = 2)2 commits in >5 days: 0
 									// is none
@@ -611,10 +611,8 @@ public class InternalProcessing {
 	/***
 	 * This method prints the specified row in the HBase
 	 * 
-	 * @param table
-	 *            HTable to modify
-	 * @param email
-	 *            Row Identifier
+	 * @param data
+	 *            The data from the hbase
 	 */
 	public static void test(Result data) {
 		System.out
