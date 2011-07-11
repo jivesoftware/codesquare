@@ -16,6 +16,7 @@ import org.apache.hadoop.hbase.ZooKeeperConnectionException;
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
+import org.apache.hadoop.hbase.client.HConnectionManager;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
@@ -43,23 +44,33 @@ public class InternalProcessing {
 	 */
 	public static void main(String[] args) {
 		ArrayList<Commit> output = BackEndJar.parseGitInput(args[0]);
-		HTable table = setup();
+		Object[] out = setup();
+		HTable table = (HTable) out[1];
+		Configuration config = (Configuration) out[0];
 		BackEndJar.insertCommitsIntoHDFS(output);
-		
-		if(table == null){
+
+		if (table == null) {
 			System.out.println("could not find table");
 			return;
 		}
-		
 		for (Commit c : output) {
-			System.out.println(c.getDate());
 			checkUpdateBadges(table, c.getEmail(), c.getDate(), c.getDay(),
 					new Integer(c.getHour()).toString(), c.getMessage(), 0);
 		}
-
-		test(table, "eric.ren@jivesoftware.com");
+		Result data = getRowData(table, "eric.ren@jivesoftware.com");
+		test(data);
+		try {
+			table.close();
+			// free resources and close connections
+			HConnectionManager.deleteConnection(config, true);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
-	public static HTable setup(){
+
+	public static Object[] setup() {
+		Object[] output = new Object[2];
 		Configuration config = HBaseConfiguration.create();
 		config.set("hbase.cluster.distributed", "true");
 		config.set("hbase.rootdir",
@@ -91,12 +102,14 @@ public class InternalProcessing {
 		HTable table = null;
 		try {
 			table = new HTable(config, "EmpBadges");
+			output[0] = config;
+			output[1] = table;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return table;
+			return output;
 		}
-		return table;
+		return output;
 	}
 
 	/***
@@ -117,34 +130,34 @@ public class InternalProcessing {
 	 * @param numBugs
 	 *            number of bugs the user fixed, currently not in use
 	 */
-	public static void checkUpdateBadges(HTable table, String email, String date,
-			String dayofWeek, String hour, String message, int numBugs) {
+	public static void checkUpdateBadges(HTable table, String email,
+			String date, String dayofWeek, String hour, String message,
+			int numBugs) {
 
-
-		String[] fields = { "badgesWeek", "numBugs", "numCommits",
-				"consecCommits" };
-		int[] fieldValues = getFields(table, email, fields);
+		Result data = getRowData(table, email);
 		// person does not exist
-		if (fieldValues == null) {
+		if (data == null) {
 			return;
 		}
-		String lastCommit = getLastCommit(table, email);
+		String[] fields = { "badgesWeek", "numBugs", "numCommits",
+				"consecCommits" };
+		int[] fieldValues = getFields(data, fields);
+
+		String lastCommit = getLastCommit(data);
 		ArrayList<String> badges = testDateTimeBadges(date, dayofWeek, hour);
-		if (lastCommit == null) {
-			lastCommit = "";
-		}
+
 		fieldValues[1] = fieldValues[1] + numBugs;
 		fieldValues[2] = fieldValues[2] + 1;
 
-		int[] consecCommits = checkConsecCommits(table, email, date,
-				lastCommit, fieldValues[3]);
+		int[] consecCommits = checkConsecCommits(date, lastCommit,
+				fieldValues[3]);
 
 		badges.addAll(checkNumericalBadges(fieldValues, consecCommits));
 		// checks for jive in the message
 		if (message.toLowerCase().contains("jive")) {
 			badges.add("26");
 		}
-		Object[] badgeList = getBadges(table, email);
+		Object[] badgeList = getBadges(data);
 		@SuppressWarnings("unchecked")
 		ArrayList<String> aquiredBadges = (ArrayList<String>) badgeList[0];
 		for (int i = 0; i < badges.size(); i++) {
@@ -193,7 +206,7 @@ public class InternalProcessing {
 
 		if (dayofWeek.equals("Mon") && Integer.parseInt(hour) <= 5) {
 			badges.add("18");
-		} else if (dayofWeek.equals("Fri") && Integer.parseInt(hour) >= 4) {
+		} else if (dayofWeek.equals("Fri") && Integer.parseInt(hour) >= 16) {
 			badges.add("19");
 		} else if (dayofWeek.equals("Sat") || dayofWeek.equals("Sun")) {
 			badges.add("29");
@@ -238,28 +251,28 @@ public class InternalProcessing {
 		}
 
 		// bug stuff is not currently implemented, but is being checked for here
-		if (totNumBugs > 0) {
-			badges.add("31");
-		} else if (totNumBugs > 10) {
-			badges.add("32");
-		} else if (totNumBugs > 25) {
-			badges.add("33");
+		if (totNumBugs > 100) {
+			badges.add("35");
 		} else if (totNumBugs > 50) {
 			badges.add("34");
-		} else if (totNumBugs > 100) {
-			badges.add("35");
+		} else if (totNumBugs > 25) {
+			badges.add("33");
+		} else if (totNumBugs > 10) {
+			badges.add("32");
+		} else if (totNumBugs > 1) {
+			badges.add("31");
 		}
-
-		if (totNumCommits > 0) {
-			badges.add("1");
-		} else if (totNumCommits > 50) {
-			badges.add("2");
-		} else if (totNumCommits > 500) {
-			badges.add("3");
-		} else if (totNumCommits > 1000) {
-			badges.add("4");
-		} else if (totNumCommits > 5000) {
+		System.out.println(totNumCommits);
+		if (totNumCommits > 999) {
 			badges.add("5");
+		} else if (totNumCommits > 999) {
+			badges.add("4");
+		} else if (totNumCommits > 499) {
+			badges.add("3");
+		} else if (totNumCommits > 49) {
+			badges.add("2");
+		} else if (totNumCommits > 0) {
+			badges.add("1");
 		}
 
 		return badges;
@@ -376,19 +389,12 @@ public class InternalProcessing {
 	 * @return Object[0] is an ArrayList of acquired badges, Object[1] is newly
 	 *         acquired badges
 	 */
-	public static Object[] getBadges(HTable table, String email) {
-		Get get = new Get(Bytes.toBytes(email));
-		Result data = null;
+	public static Object[] getBadges(Result data) {
 		Object[] output = new Object[2];
 		ArrayList<String> resultingBadges = new ArrayList<String>();
 		String newBadges = "";
 		output[0] = resultingBadges;
 		output[1] = newBadges;
-		try {
-			data = table.get(get);
-		} catch (Exception e) {
-			System.err.println();
-		}
 
 		if (data == null) {
 			System.out.println("Not found");
@@ -412,11 +418,16 @@ public class InternalProcessing {
 		output[1] = newBadges;
 		return output;
 	}
+
 	/***
 	 * This method updates the boss on the specified row
-	 * @param table HTable to alter
-	 * @param email Row Identifier
-	 * @param bossEmail New boss email
+	 * 
+	 * @param table
+	 *            HTable to alter
+	 * @param email
+	 *            Row Identifier
+	 * @param bossEmail
+	 *            New boss email
 	 */
 	public static void updateBoss(HTable table, String email, String bossEmail) {
 		Put row = new Put(Bytes.toBytes(email));
@@ -434,25 +445,18 @@ public class InternalProcessing {
 	/***
 	 * This method retrieves the last commit from the HBase
 	 * 
-	 * @param table
-	 *            HTable to modify
-	 * @param email
-	 *            Row Identifier
+	 * @param data
+	 *            The data from the hbase
+	 * 
 	 * @return The String of the last commit date
 	 */
-	public static String getLastCommit(HTable table, String email) {
-		Get get = new Get(Bytes.toBytes(email));
-		Result data = null;
-		String lastCommit = null;
-
-		try {
-			data = table.get(get);
-		} catch (Exception e) {
-			System.err.println();
+	public static String getLastCommit(Result data) {
+		String lastCommit = "";
+		if (data == null) {
+			return "";
 		}
-
 		if (data.isEmpty()) {
-			return null;
+			return "";
 		}
 		try {
 			lastCommit = new String(data.getValue(Bytes.toBytes("Info"),
@@ -474,9 +478,18 @@ public class InternalProcessing {
 	 *            Column names to retrieve
 	 * @return integer array of the fields requested
 	 */
-	public static int[] getFields(HTable table, String email, String[] fields) {
-		Get get = new Get(Bytes.toBytes(email));
+	public static int[] getFields(Result data, String[] fields) {
 		int[] results = new int[fields.length];
+
+		for (int i = 0; i < fields.length; i++) {
+			results[i] = byteArrayToInt(data.getValue(Bytes.toBytes("Info"),
+					Bytes.toBytes(fields[i])));
+		}
+		return results;
+	}
+
+	public static Result getRowData(HTable table, String email) {
+		Get get = new Get(Bytes.toBytes(email));
 		Result data = null;
 
 		try {
@@ -488,12 +501,7 @@ public class InternalProcessing {
 		if (data.isEmpty()) {
 			return null;
 		}
-
-		for (int i = 0; i < fields.length; i++) {
-			results[i] = byteArrayToInt(data.getValue(Bytes.toBytes("Info"),
-					Bytes.toBytes(fields[i])));
-		}
-		return results;
+		return data;
 	}
 
 	/***
@@ -534,8 +542,8 @@ public class InternalProcessing {
 	 * @return An integer array, [0] is consecutive commits, [1] is commits in a
 	 *         day, [2] is commits in >5days
 	 */
-	public static int[] checkConsecCommits(HTable table, String email,
-			String commitDate, String lastCommit, int consecCommitsOld) {
+	public static int[] checkConsecCommits(String commitDate,
+			String lastCommit, int consecCommitsOld) {
 		int[] result = new int[2]; // result[0] is commited person, and
 									// result[1] is (value = 1)2 commits in a
 									// day or (value = 2)2 commits in >5 days: 0
@@ -608,21 +616,20 @@ public class InternalProcessing {
 	 * @param email
 	 *            Row Identifier
 	 */
-	public static void test(HTable table, String email) {
+	public static void test(Result data) {
 		System.out
 				.println("Printing data........................................................");
 		@SuppressWarnings("unchecked")
-		ArrayList<String> badges_awarded = (ArrayList<String>) (getBadges(
-				table, email))[0];
-		String newBadges = (String) (getBadges(table, email))[1];
+		ArrayList<String> badges_awarded = (ArrayList<String>) (getBadges(data))[0];
+		String newBadges = (String) (getBadges(data))[1];
 		System.out.println("newBadges: " + newBadges);
 		for (int i = 0; i < badges_awarded.size(); i++)
 			System.out.println("Badges=\t" + badges_awarded.get(i));
 		String[] fields = { "badgesWeek", "numBugs", "numCommits",
 				"consecCommits" };
-		int[] results = getFields(table, email, fields);
+		int[] results = getFields(data, fields);
 		System.out.println("1numbugs=\t" + results[1]);
-		System.out.println("1lastCommit=\t" + getLastCommit(table, email));
+		System.out.println("1lastCommit=\t" + getLastCommit(data));
 		System.out.println("1badgesWeek=\t" + results[0]);
 		System.out.println("1numCommits=\t" + results[2]);
 		System.out.println("1consecCommits=\t" + results[3]);
