@@ -55,6 +55,12 @@ public class mapreducHbase {
 			e.printStackTrace();
 			return;
 		}
+		long starttime;
+		long stoptime;
+		starttime = System.currentTimeMillis();
+		addBadges("blah@blah.com", "25");
+		stoptime = System.currentTimeMillis();
+		System.out.println("Time ellapsed: " + (stoptime -starttime));
 	}
 	/***
 	 * This method retrieves acquired badges checks against the new badges, and updates the table
