@@ -48,6 +48,7 @@ public class Pass3 {
 	
 public Pass3(String input, String output) throws Exception {
     Configuration conf = new Configuration();
+    conf.set("fs.default.name", "hdfs://10.45.111.143:8020");
     FileSystem dfs = codesquare.Toolbox.getHDFS();
     
     Job job = new Job(conf, "LOC1");
@@ -78,7 +79,9 @@ public static class Map extends Mapper<LongWritable, Text, Text, Text> {
    		bossLOC.put(Integer.parseInt(components[0]), Integer.parseInt(components[1]));
    	}
    	else { // if empId LOC BossId, add (boss, LOC) to maxEmpLOC and write bossId, empId, LOC
-   		if (new Integer(components[2]).equals(0)) { }
+   		if (components[2].equals("noboss@nomail.com")) { 
+   			
+   		}
    		else {
    			if (maxEmpLOC.get(components[2]) == null || Integer.parseInt(components[0]) > maxEmpLOC.get(components[2])) {
    				maxEmpLOC.put(Integer.parseInt(components[2]), Integer.parseInt(components[1]));

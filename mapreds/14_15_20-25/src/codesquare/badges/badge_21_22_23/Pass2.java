@@ -37,6 +37,7 @@ public class Pass2 {
 		
 public Pass2(String input, String output) throws Exception {
 	    Configuration conf = new Configuration();
+	    conf.set("fs.default.name", "hdfs://10.45.111.143:8020");
 	    FileSystem dfs = codesquare.Toolbox.getHDFS();
 	    
 	    Job job = new Job(conf, "LOC1");

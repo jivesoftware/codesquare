@@ -42,6 +42,7 @@ private static HashMap<String, Integer> badge25 = new HashMap<String, Integer>()
 
 public Pass1(String input1, String input2, String output) throws Exception {
 	    Configuration conf = new Configuration();
+	    conf.set("fs.default.name", "hdfs://10.45.111.143:8020");
 	    FileSystem dfs = codesquare.Toolbox.getHDFS();
 	    
 	    Job job = new Job(conf, "LOC1");
