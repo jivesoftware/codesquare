@@ -5,7 +5,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.NavigableSet;
 
@@ -27,7 +26,7 @@ import org.apache.hadoop.conf.Configuration;
 // Class that has nothing but a main.
 // Does a Put, Get and a Scan against an hbase table.
 /***
- * This Class class the git parser and checks for basic badges, and updates the
+ * This Class calls the git parser and checks for basic badges, and updates the
  * hbase
  * 
  * @author justin.kikuchi
