@@ -32,7 +32,7 @@ import org.apache.hadoop.conf.Configuration;
  * @author justin.kikuchi
  * 
  */
-public class InternalProcessing {
+public class BasicBadgesProcessor {
 
 	/***
 	 * This is the main method for the back end processing, it calls the git
