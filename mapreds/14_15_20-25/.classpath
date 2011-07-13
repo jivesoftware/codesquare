@@ -2,21 +2,21 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Downloads/codesquare/CodeSquareLib/commons-cli-1.2.jar"/>
-	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Downloads/codesquare/CodeSquareLib/commons-codec-1.4.jar"/>
-	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Downloads/codesquare/CodeSquareLib/commons-daemon-1.0.1.jar"/>
-	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Downloads/codesquare/CodeSquareLib/commons-el-1.0.jar"/>
-	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Downloads/codesquare/CodeSquareLib/commons-httpclient-3.0.1.jar"/>
-	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Downloads/codesquare/CodeSquareLib/commons-logging-1.0.4.jar"/>
-	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Downloads/codesquare/CodeSquareLib/commons-logging-api-1.0.4.jar"/>
-	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Downloads/codesquare/CodeSquareLib/commons-net-1.4.1.jar"/>
-	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Downloads/codesquare/CodeSquareLib/hadoop-core.jar"/>
-	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Downloads/codesquare/CodeSquareLib/hbase-0.90.1-cdh3u0.jar"/>
-	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Downloads/codesquare/CodeSquareLib/json.jar"/>
-	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Downloads/codesquare/CodeSquareLib/log4j-1.2.15.jar"/>
-	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Downloads/codesquare/CodeSquareLib/mysql.jar"/>
-	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Downloads/codesquare/CodeSquareLib/slf4j-api-1.4.3.jar"/>
-	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Downloads/codesquare/CodeSquareLib/slf4j-log4j12-1.4.3.jar"/>
-	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Downloads/codesquare/CodeSquareLib/zookeeper-3.3.1.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/git/codesquare/mapreds/14_15_20-25/lib/commons-cli-1.2.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/git/codesquare/mapreds/14_15_20-25/lib/commons-codec-1.4.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/git/codesquare/mapreds/14_15_20-25/lib/commons-daemon-1.0.1.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/git/codesquare/mapreds/14_15_20-25/lib/commons-el-1.0.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/git/codesquare/mapreds/14_15_20-25/lib/commons-httpclient-3.0.1.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/git/codesquare/mapreds/14_15_20-25/lib/commons-logging-1.0.4.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/git/codesquare/mapreds/14_15_20-25/lib/commons-logging-api-1.0.4.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/git/codesquare/mapreds/14_15_20-25/lib/commons-net-1.4.1.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/git/codesquare/mapreds/14_15_20-25/lib/hadoop-core.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/git/codesquare/mapreds/14_15_20-25/lib/hbase-0.90.1-cdh3u0.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/git/codesquare/mapreds/14_15_20-25/lib/json.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/git/codesquare/mapreds/14_15_20-25/lib/log4j-1.2.15.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/git/codesquare/mapreds/14_15_20-25/lib/mysql.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/git/codesquare/mapreds/14_15_20-25/lib/slf4j-api-1.4.3.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/git/codesquare/mapreds/14_15_20-25/lib/slf4j-log4j12-1.4.3.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/git/codesquare/mapreds/14_15_20-25/lib/zookeeper-3.3.1.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

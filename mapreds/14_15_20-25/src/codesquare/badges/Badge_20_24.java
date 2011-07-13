@@ -27,8 +27,8 @@ public class Badge_20_24 {
 	public static void main(String[] args) throws Exception {
 		String output1 = Toolbox.generateString();
 		new LOC(args[0], output1);
-		System.out.println("LOC1 FINISHED!!!");
-		Pass2 x = new Pass2(output1, args[1]);
+		System.out.println("Badge_20_24 FINISHED!!!");
+		Pass2 x = new Pass2(output1);
 		Writer output = null;
 		File file = new File("maxEmp.txt");
 		output = new BufferedWriter(new FileWriter(file));

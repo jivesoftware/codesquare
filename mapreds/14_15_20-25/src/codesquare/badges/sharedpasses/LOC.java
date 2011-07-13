@@ -33,7 +33,10 @@ public LOC(String input, String output) throws Exception {
 	    Configuration conf = new Configuration();
 	    FileSystem dfs = codesquare.Toolbox.getHDFS();
 	    
-	    Job job = new Job(conf, "LOC1");
+	    Job job = new Job(conf);
+	    job.setJarByClass(codesquare.badges.sharedpasses.LOC.class);
+	    job.setJobName("LOC");
+	    
 	    job.setOutputKeyClass(Text.class);
 	    job.setOutputValueClass(IntWritable.class);
 	    job.setMapperClass(Map.class);

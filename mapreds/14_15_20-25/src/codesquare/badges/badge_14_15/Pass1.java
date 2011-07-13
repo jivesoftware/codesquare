@@ -39,12 +39,16 @@ private static HashMap<String, Integer> badge14 = new HashMap<String, Integer>()
 //stores all empIds that have badge 15
 private static HashMap<String, Integer> badge15 = new HashMap<String, Integer>();
 
-public Pass1(String input, String output) throws Exception {
+public Pass1(String input) throws Exception {
 	    Configuration conf = new Configuration();
 	    conf.set("fs.default.name", "hdfs://10.45.111.143:8020");
 	    FileSystem hdfs = codesquare.Toolbox.getHDFS();
 	    
-	    Job job = new Job(conf, "LOC1");
+	    Job job = new Job(conf);
+	    
+	    job.setJarByClass(codesquare.badges.badge_14_15.Pass1.class);
+	    job.setJobName("Badge_14_15");
+	    
 	    job.setOutputKeyClass(Text.class);
 	    job.setOutputValueClass(Text.class);
 	    job.setMapperClass(Map.class);
@@ -54,6 +58,8 @@ public Pass1(String input, String output) throws Exception {
 	    Toolbox.addDirectory(job, hdfs,new Path(input));
 	    //FileOutputFormat.setOutputPath(job, new Path(output));
 	    job.waitForCompletion(true);
+	    hdfs.close();
+	    
 	 }
 
 /**
