@@ -174,7 +174,9 @@ public class BasicBadgesProcessor {
 		}
 		// checks to see if there are more than 7 new badges in the week
 		if ((badges.size() + fieldValues[0]) > 7) {
-			badges.add("16");
+			if(!aquiredBadges.contains("16")){
+				badges.add("16");
+			}
 		}
 		String newBadges = (String) badgeList[1];
 		String[] results = new String[badges.size()];
@@ -270,7 +272,7 @@ public class BasicBadgesProcessor {
 			badges.add("31");
 		}
 
-		if (totNumCommits > 999) {
+		if (totNumCommits > 4999) {
 			badges.add("5");
 		} else if (totNumCommits > 999) {
 			badges.add("4");
