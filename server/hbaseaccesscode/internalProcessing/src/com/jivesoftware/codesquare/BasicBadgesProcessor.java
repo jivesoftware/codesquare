@@ -1,3 +1,4 @@
+package com.jivesoftware.codesquare;
 import BackEnd.BackEndJar;
 import BackEnd.Commit;
 import java.io.IOException;
