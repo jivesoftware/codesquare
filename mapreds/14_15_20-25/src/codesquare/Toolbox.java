@@ -25,16 +25,32 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
  * Class providing commonly used functions
  */
 public class Toolbox {
-	
+
 	/**
 	 * 
 	 * @return the Jive CodeSquare HDFS file system
 	 */
-	public static FileSystem getHDFS(){
+	public static FileSystem getHDFS() {
 		Configuration config = new Configuration();
-		config.set("fs.default.name", "hdfs://10.45.111.143:8020/");
-                    
-        //Connect to and Return HDFS           
+
+		config.set("fs.default.name",
+				"hdfs://hadoopdev001.eng.jiveland.com:54310");
+		config.set("hadoop.log.dir", "/hadoop001/data/hadoop/logs");
+		config.set("hadoop.tmp.dir", "/hadoop001/tmp");
+		config.set("io.file.buffer.size", "131072");
+		config.set("fs.inmemory.size.mb", "200");
+		config.set("fs.checkpoint.period", "900");
+
+		config.set("dfs.datanode.max.xceivers", "4096");
+		config.set("dfs.block.size", "134217728");
+		config.set(
+				"dfs.name.dir",
+				"/hadoop001/data/datanode,/hadoop002/data/datanode,/hadoop003/data/datanode,/hadoop004/data/datanode,/hadoop005/data/datanode,/hadoop006/data/datanode,/hadoop007/data/datanode,/hadoop008/data/datanode,/hadoop009/data/datanode,/hadoop010/data/datanode,/hadoop011/data/datanode,/hadoop012/data/datanode");
+		config.set("dfs.umaskmode", "007");
+		config.set("dfs.datanode.du.reserved","107374182400");
+		config.set("dfs.datanode.du.pct", "0.85f");
+		
+		// Connect to and Return HDFS
 		try {
 			FileSystem dfs = FileSystem.get(config);
 			return dfs;
@@ -42,7 +58,7 @@ public class Toolbox {
 			System.err.println(e.getMessage());
 			return null;
 		}
-		
+
 	}
 
 	/**
@@ -50,61 +66,54 @@ public class Toolbox {
 	 * adds all non-hidden files to InputPath (excludes "_SUCCESS" file)
 	 * 
 	 */
-	public static void addDirectory(Job job, FileSystem hdfs,Path directory) throws Exception {
-		
-		if(hdfs.exists(directory)){
-			
-			if(hdfs.isFile(directory) && !directory.toString().contains("_SUCCESS")){
+	public static void addDirectory(Job job, FileSystem hdfs, Path directory)
+			throws Exception {
+
+		if (hdfs.exists(directory)) {
+
+			if (hdfs.isFile(directory)
+					&& !directory.toString().contains("_SUCCESS")) {
 				FileInputFormat.addInputPath(job, directory);
-				
-			}else{
+
+			} else {
 				FileStatus[] fs = hdfs.listStatus(directory);
-				
-				for(FileStatus entry: fs){
-					addDirectory(job,hdfs,entry.getPath());
+
+				for (FileStatus entry : fs) {
+					addDirectory(job, hdfs, entry.getPath());
 				}
-				
+
 			}
-		}else{
-			throw new FileNotFoundException("Directory doesn't exist: " + directory.toString());
+		} else {
+			throw new FileNotFoundException("Directory doesn't exist: "
+					+ directory.toString());
 		}
-		
-		//directory.get
-		
+
+		// directory.get
+
 		/*
-		File[] entries = directory.listFiles();
-		for (File entry : entries) {
-			if (entry.isFile() && (!entry.isHidden())
-					&& (!entry.toString().contains("_SUCCESS"))) {
-				FileInputFormat.addInputPath(job, new Path(entry.toString()));
-			}
-			if (entry.isDirectory()) {
-				addDirectory(job, hdfs,entry);
-			}
-		}
-		*/
+		 * File[] entries = directory.listFiles(); for (File entry : entries) {
+		 * if (entry.isFile() && (!entry.isHidden()) &&
+		 * (!entry.toString().contains("_SUCCESS"))) {
+		 * FileInputFormat.addInputPath(job, new Path(entry.toString())); } if
+		 * (entry.isDirectory()) { addDirectory(job, hdfs,entry); } }
+		 */
 	}
 
 	/**
 	 * 
 	 * deletes directory and its contents
-	 * @throws IOException 
+	 * 
+	 * @throws IOException
 	 * 
 	 */
-	public static boolean deleteDirectory(Path path, FileSystem hdfs) throws IOException {
-			return hdfs.delete(path, true);
+	public static boolean deleteDirectory(Path path, FileSystem hdfs)
+			throws IOException {
+		return hdfs.delete(path, true);
 		/*
-		if (path.exists()) {
-			File[] files = path.listFiles();
-			for (int i = 0; i < files.length; i++) {
-				if (files[i].isDirectory()) {
-					deleteDirectory(files[i]);
-				} else {
-					files[i].delete();
-				}
-			}
-		}
-		*/	
+		 * if (path.exists()) { File[] files = path.listFiles(); for (int i = 0;
+		 * i < files.length; i++) { if (files[i].isDirectory()) {
+		 * deleteDirectory(files[i]); } else { files[i].delete(); } } }
+		 */
 	}
 
 	/**
@@ -115,7 +124,8 @@ public class Toolbox {
 	 */
 	public static String generateString() {
 		Random r = new Random();
-		return "/Commits/tmpOutput/" + Long.toString(Math.abs(r.nextLong()), 36);
+		return "/user/interns/Commits/tmpOutput/"
+				+ Long.toString(Math.abs(r.nextLong()), 36);
 	}
 
 	/**
@@ -130,30 +140,33 @@ public class Toolbox {
 		System.out.println((int) (time1.getTime() - time2.getTime()));
 		return Math.abs((int) (time1.getTime() - time2.getTime()));
 	}
-	
-	
+
 	/***
-	 * This method retrieves acquired badges checks against the new badges, and updates the table
-	 * @param email Row Identifier
-	 * @param badge New badge to add
+	 * This method retrieves acquired badges checks against the new badges, and
+	 * updates the table
+	 * 
+	 * @param email
+	 *            Row Identifier
+	 * @param badge
+	 *            New badge to add
 	 */
 	@SuppressWarnings("unchecked")
 	public static void addBadges(String email, String badge, HTable table) {
 		Object[] badgeList = getBadges(table, email);
 		ArrayList<String> aquiredBadges = null;
 		String newBadges = null;
-		try{
+		try {
 			aquiredBadges = (ArrayList<String>) badgeList[0];
-			newBadges = (String)badgeList[1];
-		}catch(java.lang.NullPointerException e){
-			//USER IS HAS NOT INSTALLED APP
+			newBadges = (String) badgeList[1];
+		} catch (java.lang.NullPointerException e) {
+			// USER IS HAS NOT INSTALLED APP
 			return;
 		}
-		if(!aquiredBadges.contains(badge)){
-			updateBadges(table, email, badge, newBadges+" "+badge);
+		if (!aquiredBadges.contains(badge)) {
+			updateBadges(table, email, badge, newBadges + " " + badge);
 		}
 	}
-	
+
 	/***
 	 * Returns the acquired and new badges
 	 * 
@@ -200,7 +213,7 @@ public class Toolbox {
 		output[1] = newBadges;
 		return output;
 	}
-	
+
 	/***
 	 * Adds Badges to the specified user
 	 * 
@@ -211,12 +224,13 @@ public class Toolbox {
 	 * @param badges
 	 *            Badges to Add
 	 */
-	public static void updateBadges(HTable table, String email, String badge, String newBadges) {
+	public static void updateBadges(HTable table, String email, String badge,
+			String newBadges) {
 
 		Put row = new Put(Bytes.toBytes(email));
 
 		row.add(Bytes.toBytes("Badge"), Bytes.toBytes(badge),
-					Bytes.toBytes("1"));
+				Bytes.toBytes("1"));
 		row.add(Bytes.toBytes("Info"), Bytes.toBytes("newBadges"),
 				Bytes.toBytes(newBadges));
 
@@ -226,5 +240,5 @@ public class Toolbox {
 			System.err.println();
 		}
 	}
-	
+
 }
