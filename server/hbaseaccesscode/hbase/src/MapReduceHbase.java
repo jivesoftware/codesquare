@@ -16,9 +16,9 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.util.Bytes;
 
 public class MapReduceHbase {
-	private static HTable table;
+	public static HTable table;
 	
-	public static void main(String[] args){
+	public static void setup(){
 		Configuration config = HBaseConfiguration.create();
 		config.set("hbase.cluster.distributed", "true");
 		config.set("hbase.rootdir",
