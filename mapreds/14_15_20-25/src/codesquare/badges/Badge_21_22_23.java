@@ -1,6 +1,9 @@
 package codesquare.badges;
 import java.io.File;
 
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+
 import codesquare.Toolbox;
 import codesquare.badges.badge_21_22_23.Pass2;
 import codesquare.badges.badge_21_22_23.Pass3;
@@ -30,10 +33,12 @@ public class Badge_21_22_23 {
 		System.out.println("LOC1 FINISHED!!!");
 		new Pass2(output1, output2);
 		System.out.println("LOC2 FINISHED!!!");
-		new Pass3(output2, args[1]);
-		System.out.println("LOC3 FINISHED!!!");
-		Toolbox.deleteDirectory(new File(output1));
-		Toolbox.deleteDirectory(new File(output2));	
+		new Pass3(output2);
+		System.out.println("Badge_21_22_23 FINISHED!!!");
+		FileSystem hdfs = Toolbox.getHDFS();
+		Toolbox.deleteDirectory(new Path(output1),hdfs);
+		Toolbox.deleteDirectory(new Path(output2),hdfs);	
+		hdfs.close();
 	}
 }
 

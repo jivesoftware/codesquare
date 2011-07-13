@@ -21,8 +21,8 @@ import codesquare.badges.badge_14_15.Pass1;
  */
 public class Badge_14_15 {
 	public static void main(String[] args) throws Exception {
-		new Pass1(args[0], args[1]);
-		System.out.println("LOC14_15 FINISHED!!!");
+		new Pass1(args[0]);
+		System.out.println("Badge_14_15 FINISHED!!!");
 	}
 }
 

@@ -46,12 +46,15 @@ public class Pass3 {
 	// stores each boss's maxEmpLOC
 	private static HashMap<Integer, Integer> maxEmpLOC = new HashMap<Integer, Integer>();
 	
-public Pass3(String input, String output) throws Exception {
+public Pass3(String input) throws Exception {
     Configuration conf = new Configuration();
     conf.set("fs.default.name", "hdfs://10.45.111.143:8020");
     FileSystem dfs = codesquare.Toolbox.getHDFS();
     
     Job job = new Job(conf, "LOC1");
+    job.setJarByClass(codesquare.badges.badge_21_22_23.Pass3.class);
+    job.setJobName("Badge_21_22_23");
+    
     job.setOutputKeyClass(Text.class);
     job.setOutputValueClass(Text.class);
     job.setMapperClass(Map.class);
@@ -61,6 +64,7 @@ public Pass3(String input, String output) throws Exception {
     Toolbox.addDirectory(job, dfs,new Path(input));
     //FileOutputFormat.setOutputPath(job, new Path(output));
     job.waitForCompletion(true);
+    dfs.close();
  }
    
 /**

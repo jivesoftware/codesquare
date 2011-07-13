@@ -1,4 +1,6 @@
-package codesquare.badges.badge_25;      
+package codesquare.badges.badge_25;
+
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,9 +25,8 @@ import org.apache.hadoop.hbase.client.HTable;
 /**
  * Class to find each Employee's LOC based on commit files
  * 
- * returned file format is {empId} #{LOC}
- * where "{" and "}" are not expressed
- * ie. 4825 #25 
+ * returned file format is {empId} #{LOC} where "{" and "}" are not expressed
+ * ie. 4825 #25
  * 
  * accepts 2 directories - searches for all files recursively
  * 
@@ -33,107 +34,131 @@ import org.apache.hadoop.hbase.client.HTable;
  * 
  */
 public class Pass1 {
-    private static HTable table;
-// receives commits
-// returns empId #badge
-	
-// stores all empIds that have badge 25
-private static HashMap<String, Integer> badge25 = new HashMap<String, Integer>();
+	private static HTable table;
+	// receives commits
+	// returns empId #badge
 
-public Pass1(String input1, String input2, String output) throws Exception {
-	    Configuration conf = new Configuration();
-	    conf.set("fs.default.name", "hdfs://10.45.111.143:8020");
-	    FileSystem dfs = codesquare.Toolbox.getHDFS();
-	    
-	    Job job = new Job(conf, "LOC1");
-	    job.setOutputKeyClass(Text.class);
-	    job.setOutputValueClass(Text.class);
-	    job.setMapperClass(Map.class);
-	    job.setReducerClass(Reduce.class);
-	    job.setInputFormatClass(TextInputFormat.class);
-	    job.setOutputFormatClass(NullOutputFormat.class);
-	    Toolbox.addDirectory(job, dfs,new Path(input1));
-	    Toolbox.addDirectory(job, dfs,new Path(input2));
-	    //FileOutputFormat.setOutputPath(job, new Path(output));
-	    job.waitForCompletion(true);
-	 }
+	// stores all empIds that have badge 25
+	private static HashMap<String, Integer> badge25 = new HashMap<String, Integer>();
 
-/**
- * 
- * @write key: ten second partition ({minute}-{10sec interval}-{directory name}   value: {minute} {second} {empId} 
- */
- public static class Map extends Mapper<LongWritable, Text, Text, Text> {
-	public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-    	String line = value.toString();
-    	String [] components = line.split("\\s+");
-    	
-    	Integer [] tenSecPartition = new Integer[2];
-    	Integer [] tenSecPartition2 = new Integer[2];
-    	tenSecPartition[0] = Integer.parseInt(components[5]);
-    	tenSecPartition[1] = Integer.parseInt(components[6].substring(0,1)+"0");
-    	tenSecPartition2[1] = tenSecPartition[1] - 10;
-    	tenSecPartition2[0] = tenSecPartition[0];
-    	
-    	if (tenSecPartition2[1].equals(-10)) {
-    		tenSecPartition2[0] = tenSecPartition2[0] - 1;
-    		tenSecPartition2[1] = 50;
-    	}
-    	
-    	String [] documents = components[8].substring(1,(components[8].length()-1)).split(",");
-    	for (int i = 0; i < documents.length; i++) {
-    		String[] filename = documents[i].split("/");
-    		String directory = "";
-    		if (!(new Integer(filename.length - 1)).equals(-1)) {
-    			directory = filename[filename.length - 1]; }
-    		context.write(new Text(tenSecPartition[0]+"-"+tenSecPartition[1]+"-"+directory), new Text(components[5]+" "+components[6]+" "+components[1]));
-    		context.write(new Text(tenSecPartition2[0]+"-"+tenSecPartition2[1]+"-"+directory), new Text(components[5]+" "+components[6]+" "+components[1]));
-    	}	// minute, second, empId
-    }
- } 
-    
-/**
- * 
- * @write key: empId   value: 25
- */
- public static class Reduce extends Reducer<Text, Text, Text, Text> {
-	 public HTable table;
-	 
-		public void setup(Context context) throws IOException,InterruptedException{
-			
+	public Pass1(String input1, String input2) throws Exception {
+		Configuration conf = new Configuration();
+		conf.set("fs.default.name", "hdfs://10.45.111.143:8020");
+		FileSystem dfs = codesquare.Toolbox.getHDFS();
+
+		Job job = new Job(conf);
+		job.setJarByClass(Pass1.class);
+		job.setJobName("Badge25");
+		
+		job.setOutputKeyClass(Text.class);
+		job.setOutputValueClass(Text.class);
+		job.setMapperClass(Map.class);
+		job.setReducerClass(Reduce.class);
+		job.setInputFormatClass(TextInputFormat.class);
+		job.setOutputFormatClass(NullOutputFormat.class);
+		Toolbox.addDirectory(job, dfs, new Path(input1));
+		Toolbox.addDirectory(job, dfs, new Path(input2));
+		// FileOutputFormat.setOutputPath(job, new Path(output));
+		job.waitForCompletion(true);
+	}
+
+	/**
+	 * 
+	 * @write key: ten second partition ({minute}-{10sec interval}-{directory
+	 *        name} value: {minute} {second} {empId}
+	 */
+	public static class Map extends Mapper<LongWritable, Text, Text, Text> {
+		public void map(LongWritable key, Text value, Context context)
+				throws IOException, InterruptedException {
+			String line = value.toString();
+			String[] components = line.split("\\s+");
+
+			Integer[] tenSecPartition = new Integer[2];
+			Integer[] tenSecPartition2 = new Integer[2];
+			tenSecPartition[0] = Integer.parseInt(components[5]);
+			tenSecPartition[1] = Integer.parseInt(components[6].substring(0, 1)
+					+ "0");
+			tenSecPartition2[1] = tenSecPartition[1] - 10;
+			tenSecPartition2[0] = tenSecPartition[0];
+
+			if (tenSecPartition2[1].equals(-10)) {
+				tenSecPartition2[0] = tenSecPartition2[0] - 1;
+				tenSecPartition2[1] = 50;
+			}
+
+			String[] documents = components[8].substring(1,
+					(components[8].length() - 1)).split(",");
+			for (int i = 0; i < documents.length; i++) {
+				String[] filename = documents[i].split("/");
+				String directory = "";
+				if (!(new Integer(filename.length - 1)).equals(-1)) {
+					directory = filename[filename.length - 1];
+				}
+				context.write(new Text(tenSecPartition[0] + "-"
+						+ tenSecPartition[1] + "-" + directory), new Text(
+						components[5] + " " + components[6] + " "
+								+ components[1]));
+				context.write(new Text(tenSecPartition2[0] + "-"
+						+ tenSecPartition2[1] + "-" + directory), new Text(
+						components[5] + " " + components[6] + " "
+								+ components[1]));
+			} // minute, second, empId
+		}
+	}
+
+	/**
+	 * 
+	 * @write key: empId value: 25
+	 */
+	public static class Reduce extends Reducer<Text, Text, Text, Text> {
+		public HTable table;
+
+		public void setup(Context context) throws IOException,
+				InterruptedException {
+
 			Configuration config = HBaseConfiguration.create();
 			config.set("hbase.cluster.distributed", "true");
-	        config.set("hbase.rootdir", "hdfs://hadoopdev008.eng.jiveland.com:54310/hbase");
-	        config.set("hbase.zookeeper.quorum","hadoopdev008.eng.jiveland.com,hadoopdev002.eng.jiveland.com,hadoopdev001.eng.jiveland.com");
-	        config.set("hbase.zookeeper.property.clientPort","2181");
-	        config.set("hbase.hregion.max.filesize", "1073741824");
-	        table = new HTable(config,"EmpBadges");
+			config.set("hbase.rootdir",
+					"hdfs://hadoopdev008.eng.jiveland.com:54310/hbase");
+			config.set(
+					"hbase.zookeeper.quorum",
+					"hadoopdev008.eng.jiveland.com,hadoopdev002.eng.jiveland.com,hadoopdev001.eng.jiveland.com");
+			config.set("hbase.zookeeper.property.clientPort", "2181");
+			config.set("hbase.hregion.max.filesize", "1073741824");
+			table = new HTable(config, "EmpBadges");
 		}
-	 
-    public void reduce(Text key, Iterable<Text> values, Context context) 
-      throws IOException, InterruptedException {
-    	ArrayList<String[]> acc = new ArrayList<String[]>();
-        for (Text val : values) {
-        	String[] components = val.toString().split(" ");
-        	for (int i = 0; i < acc.size(); i++) {
+
+		public void reduce(Text key, Iterable<Text> values, Context context)
+				throws IOException, InterruptedException {
+			ArrayList<String[]> acc = new ArrayList<String[]>();
+			for (Text val : values) {
+				String[] components = val.toString().split(" ");
+				for (int i = 0; i < acc.size(); i++) {
 					if (!acc.get(i)[2].equals(components[2])) {
 						if (Toolbox.subtractTime(acc.get(i), components) <= 10000) {
 							if (!badge25.containsKey(acc.get(i)[2])) {
-		                        Toolbox.addBadges(acc.get(i)[2], "25", table);
-								context.write(new Text(acc.get(i)[2]), new Text("25"));
+								Toolbox.addBadges(acc.get(i)[2], "25", table);
+								context.write(new Text(acc.get(i)[2]),
+										new Text("25"));
 								badge25.put(acc.get(i)[2], 1);
-								context.setStatus("Reduced and inserted kv pair into hBase: " + acc.get(i)[2] + ":15");
-								}
-							if (!badge25.containsKey(components[2])) {
-		                        Toolbox.addBadges(components[2], "25", table);
-								context.write(new Text(components[2]), new Text("25"));
-								badge25.put(components[2], 1);
-								context.setStatus("Reduced and inserted kv pair into hBase: " + components[2] + ":25");
-								}
+								context.setStatus("Reduced and inserted kv pair into hBase: "
+										+ acc.get(i)[2] + ":15");
 							}
+							if (!badge25.containsKey(components[2])) {
+								Toolbox.addBadges(components[2], "25", table);
+								context.write(new Text(components[2]),
+										new Text("25"));
+								badge25.put(components[2], 1);
+								context.setStatus("Reduced and inserted kv pair into hBase: "
+										+ components[2] + ":25");
+							}
+						}
 					}
-        	}
-        	acc.add(components);
-        }
-    }
- }
+				}
+				acc.add(components);
+			}
+		}
+	}
+
+	
 }

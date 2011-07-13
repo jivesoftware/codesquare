@@ -41,6 +41,9 @@ public Pass2(String input, String output) throws Exception {
 	    FileSystem dfs = codesquare.Toolbox.getHDFS();
 	    
 	    Job job = new Job(conf, "LOC1");
+	    job.setJarByClass(codesquare.badges.badge_21_22_23.Pass2.class);
+	    job.setJobName("");
+	    
 	    job.setOutputKeyClass(Text.class);
 	    job.setOutputValueClass(Text.class);
 	    job.setMapperClass(Map.class);
@@ -51,6 +54,7 @@ public Pass2(String input, String output) throws Exception {
 	    FileInputFormat.addInputPath(job, new Path("bossList.txt"));
 	    FileOutputFormat.setOutputPath(job, new Path(output));
 	    job.waitForCompletion(true);
+	    dfs.close();
 	 }
 	
 /**

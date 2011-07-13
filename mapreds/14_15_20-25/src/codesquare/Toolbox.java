@@ -58,12 +58,10 @@ public class Toolbox {
 				FileInputFormat.addInputPath(job, directory);
 				
 			}else{
-				File dir = new File(directory.toString());
+				FileStatus[] fs = hdfs.listStatus(directory);
 				
-				File[] entries = dir.listFiles();
-				
-				for(File entry: entries){
-					addDirectory(job,hdfs,new Path(entry.getPath()));
+				for(FileStatus entry: fs){
+					addDirectory(job,hdfs,entry.getPath());
 				}
 				
 			}
@@ -90,9 +88,12 @@ public class Toolbox {
 	/**
 	 * 
 	 * deletes directory and its contents
+	 * @throws IOException 
 	 * 
 	 */
-	public static boolean deleteDirectory(File path) {
+	public static boolean deleteDirectory(Path path, FileSystem hdfs) throws IOException {
+			return hdfs.delete(path, true);
+		/*
 		if (path.exists()) {
 			File[] files = path.listFiles();
 			for (int i = 0; i < files.length; i++) {
@@ -103,7 +104,7 @@ public class Toolbox {
 				}
 			}
 		}
-		return (path.delete());
+		*/	
 	}
 
 	/**
@@ -114,7 +115,7 @@ public class Toolbox {
 	 */
 	public static String generateString() {
 		Random r = new Random();
-		return Long.toString(Math.abs(r.nextLong()), 36);
+		return "/Commits/tmpOutput/" + Long.toString(Math.abs(r.nextLong()), 36);
 	}
 
 	/**
