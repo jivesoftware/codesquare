@@ -1,0 +1,1 @@
+LOG= $(git log --pretty=format:"]'}, '%H' : { 'cID': '%h', 'cMes': '%s', 'date': '%ad', 'name': '%cn', 'email': '%ce', 'stats': '[" --numstat) 

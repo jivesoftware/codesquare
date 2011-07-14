@@ -1,0 +1,81 @@
+#header-wrapper{
+	width:960px;
+	margin:0px auto 0px;
+	height:116px;
+	margin-top:0px;
+	overflow:hidden;}
+.feedtwitter{margin-top:6px;text-align:left}
+#main-wrapper{
+	width:526px;
+	padding-top:0px;
+	padding-left:5px;
+	padding-right:5px;
+	float:left;
+	word-wrap:break-word;
+	overflow:hidden; }
+#myGallery{
+	-moz-box-shadow:0 0 5px #999;
+	-webkit-box-shadow:0 0 5px #999;
+	border:3px solid #FFF;
+	margin-bottom:15px;
+	margin-top:23px;
+	width:517px;
+	z-index:5; 
+	overflow:hidden; }
+#navcontainer .current-cat a{
+	-moz-border-radius:10px 10px 0 0;
+	-webkit-border-top-left-radius:10px;
+	-webkit-border-top-right-radius:10px;
+	background:none repeat scroll 0 0 #1F74BC;
+	color:#FFF;
+	padding-bottom:17px;
+	text-shadow:0 1px 0 #000}
+#nav a{
+	-moz-border-radius:10px 10px 0 0;
+	-webkit-border-top-left-radius:10px;
+	-webkit-border-top-right-radius:10px;
+	background:none repeat scroll 0 0 #458ECB;
+	color:#FFF;
+	float:left;
+	font-size:11px;
+	font-weight:bold;
+	margin:0;
+	padding:14px;
+	text-transform:uppercase}
+#nav,#nav ul,#nav ol{
+	line-height:1em;
+	list-style:none outside none;
+	margin:0;
+	padding:0}
+#nav li{
+	cursor:pointer;
+	display:inline;
+	float:left;
+	height:36px;
+	margin-bottom:0;
+	margin-right:3px;
+	margin-top:0;
+	padding:0}
+div.outer{float:left;margin-right:10px}
+.twit-rss{padding:0 10px 7px;width:276px}
+.clear{clear:both}
+
+
+#lsidebar-wrapper{
+	width:189px;
+	float:left;
+	padding-top:0px;
+	padding-left:17px;
+	margin-left:0px;
+	margin-right:5px;
+	word-wrap:break-word;
+	overflow:hidden; }
+#rsidebar-wrapper{
+	width:189px;
+	float:right;
+	padding-top:0px;
+	padding-right:17px;
+	margin-right:0px;
+	margin-left:5px;
+	word-wrap:break-word;
+	overflow:hidden; }
