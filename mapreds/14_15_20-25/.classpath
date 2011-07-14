@@ -18,5 +18,5 @@
 	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/git/codesquare/mapreds/14_15_20-25/lib/slf4j-api-1.4.3.jar"/>
 	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/git/codesquare/mapreds/14_15_20-25/lib/slf4j-log4j12-1.4.3.jar"/>
 	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/git/codesquare/mapreds/14_15_20-25/lib/zookeeper-3.3.1.jar"/>
-	<classpathentry kind="output" path="build/classes"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>

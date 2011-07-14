@@ -1,9 +1,8 @@
 package codesquare.badges.badge_14_15;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -13,9 +12,7 @@ import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.NullOutputFormat;
-import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 import codesquare.Toolbox;
 
@@ -35,9 +32,9 @@ public class Pass1 {
 	// returns empId #LOC
 
 	// stores all empIds that have badge 14
-	private static HashMap<String, Integer> badge14 = new HashMap<String, Integer>();
+	private static HashMap<String, Integer> badge14 = new HashMap<String, Integer>(); //where in the code is this populated
 	// stores all empIds that have badge 15
-	private static HashMap<String, Integer> badge15 = new HashMap<String, Integer>();
+	private static HashMap<String, Integer> badge15 = new HashMap<String, Integer>(); //where in the code is this populated
 
 	public Pass1(String input) throws Exception {
 		Configuration conf = new Configuration();
@@ -94,6 +91,9 @@ public class Pass1 {
 					(components[8].length() - 1)).split(",");
 			for (int i = 0; i < documents.length; i++) {
 				context.write(new Text(documents[i]), new Text(components[1]));
+				//puts
+				
+				//
 				System.out.println(documents[i] + " " + components[1]);
 			}
 		}
@@ -125,28 +125,39 @@ public class Pass1 {
 				throws IOException, InterruptedException {
 			System.out.println("REDUCE");
 			HashMap<String, String> acc = new HashMap<String, String>();
+			
 			for (Text val : values) {
 				acc.put(val.toString(), "1");
 			}
+			//debug code
+			
+			
+			//end debug code
 			if (acc.size() >= 2) {
-				for (int i = 0; i < acc.size(); i++) {
-					if (!badge14.containsKey(acc.get(i))) {
-						Toolbox.addBadges(acc.get(i), "14", table);
-						context.write(new Text(acc.get(i)), new Text("14"));
-						badge14.put(acc.get(i), 1);
+				Iterator it = acc.keySet().iterator();
+				while (it.hasNext()) {
+				    String x = (String) it.next();
+				    String y = acc.get(x);
+				    //do stuff here
+					if (!badge14.containsKey(x)) {
+						Toolbox.addBadges(x, "14", table);
+						context.write(new Text(x), new Text("14")); //Text is being given null, btw, where is badge14 or badge15 ever populated?
+						badge14.put(x, 1);
 						context.setStatus("Reduced and inserted kv pair into hBase: "
-								+ acc.get(i).toString() + ":14");
+								+ x + ":14");
 					}
 				}
 				if (acc.size() >= 9) {
-					for (int i = 0; i < acc.size(); i++) {
-						if (!badge15.containsKey(acc.get(i))) {
-							Toolbox.addBadges(acc.get(i).toString(), "15",
-									table);
-							context.write(new Text(acc.get(i)), new Text("15"));
-							badge15.put(acc.get(i), 1);
+					Iterator it2 = acc.keySet().iterator();
+					while (it2.hasNext()) {
+						String x2 = (String) it2.next();
+						String y2 = acc.get(x2);
+						if (!badge15.containsKey(x2)) {
+							Toolbox.addBadges(x2, "15", table);
+							context.write(new Text(x2), new Text("15"));
+							badge15.put(x2, 1);
 							context.setStatus("Reduced and inserted kv pair into hBase: "
-									+ acc.get(i).toString() + ":15");
+									+ x2 + ":15");
 						}
 					}
 				}
