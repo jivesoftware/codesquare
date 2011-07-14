@@ -1,0 +1,20 @@
+body{background: none repeat scroll 0 0 #FFFFFF;color:#222;font:75% "Helvetica Neue",Arial,Helvetica,sans-serif;margin:0px;padding:0px;}
+a:link,a:visited{color:#3366CC;text-decoration:none;outline:none;}
+a:hover{color:#5588AA;text-decoration:underline;outline:none;}
+a img{border-width:0}
+#logo{position:relative; top: 22px;}
+#body-wrapper3{margin:0px;padding:0px;background: url("http://2.bp.blogspot.com/-Gz3head90IY/ThKbUQuBrNI/AAAAAAAABHg/WSvSDDHairc/s000/wrapper.png") repeat-x scroll 0 0 transparent;}
+#outer-wrapper{
+	width:960px;
+	margin:0px auto 0px;
+	padding:0;
+	text-align:$startSide;
+	font:$bodyfont;}
+#content-wrapper{
+	background: url("http://1.bp.blogspot.com/-GZKzUynnbzE/ThKbUlOaM8I/AAAAAAAABHk/mTs9y4WSBWs/s000/content.png") repeat-y scroll 0 0 transparent;}
+#navcontainer{background:url("http://2.bp.blogspot.com/-xHu23D91yvI/ThKbauf86wI/AAAAAAAABIM/TXJn8D4uBBQ/s000/menu.png") no-repeat scroll 0 bottom transparent;display:block;height:44px;overflow:hidden;padding:0 0 26px;text-shadow:0 1px 0 #000}
+#footer{background:url("http://3.bp.blogspot.com/-jMxwcnaciYg/ThKbbHDevEI/AAAAAAAABIQ/Zawg9PahSrU/s000/footer.png") no-repeat scroll 0 0 transparent;color:#666;font-size:13px;margin-top:0;padding:25px 19px 0;text-align:center;clear:both;text-shadow:0 1px 0 #fff}
+#footer a{color:#666}
+#footer a:hover{color:#E8EFF1;text-decoration:none}
+#credits{color:#888;font-size:11px;padding:7px;text-align:center;text-shadow:0 1px 0 #fff}
+#credits a{color:#888;text-decoration:none}

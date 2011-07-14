@@ -1,56 +1,78 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <head>
+    <link rel="stylesheet" href="stylesheets/main.css" type="text/css" media="screen" />
 
-<html lang="en">
-<head>
-<link rel="stylesheet" href="stylesheets/main.css" type="text/css" media="screen" />
-<link rel="stylesheet" href="stylesheets/jquery.fancybox-1.3.4.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="stylesheets/stylesheet.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="stylesheets/stylesheet2.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="fancybox/jquery.fancybox-1.3.4.css" type="text/css" media="screen" />
 
-<script type="text/javascript" charset="utf-8" src="javascripts/main.js"></script>
-<script type="text/javascript" src="http://code.jquery.com/jquery-1.4.3.min.js"></script>
-<script type="text/javascript" src="fancybox/jquery.fancybox-1.3.4.pack.js"></script>
-<script type="text/javascript" src="fancybox/jquery.easing-1.4.pack.js"></script>
+    <script type="text/javascript" src="javascripts/jquery.js"></script>
+    <script type="text/javascript" src="fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+    <script type="text/javascript" src="fancybox/jquery.easing-1.3.pack.js"></script>
 
-<script type="text/javascript">
-
-$(document).ready(function() {	
-
-  // moved the function below from init() in main.js to here for local testing
-  makeBadgeTable();
-
-  $("form").bind("submit", function() {
-
-    $.ajax({
-        type: "POST",
-        cache: false,
-        url: "badgePopup.php",
-        data: $(this).serializeArray(),
-        success: function(data) {
-            $.fancybox(data, {
-
-            'width' : '100%',
-
-            'height' : '100%',
-
-            'autoScale' : false,
-
-            'transitionIn' : 'elastic',
-
-            'transitionOut' : 'elastic',
-
-            'type' : 'html'
-   
-            });
-        }
-    });
-  return false;
-  });
-});
-
-</script>
+    <script type="text/javascript" charset="utf-8" src="javascripts/main.js"></script>
 </head>
+  
 <body>
-  <h1>Pre-alpha Canvas view</h1>
-  <table id="badgeTable"></table>
+testing...
+
+<div id='body-wrapper3'>
+  <div class='outer-wrapper' id='outer-wrapper'>
+
+    <div class='feedtwitter twit-rss'>
+      <a expr:href='data:blog.homepageUrl + "feeds/posts/default"'>
+	<img src='images/blank.png' style='margin:0 4px 0 0;'/></a>
+      </div>
+    <div style='clear:both;'/>
+    <div class='outer' id='header-wrapper'>
+      <img id = "logo" src="images/logo.png" />
+      </div>
+    <div style='clear:both;'/>
+    <div id='navcontainer'>
+      <ul id='nav'>
+	<li class='current-cat'><a href='canvas.html'>Browse Badges</a></li>
+	<li><a href='#'>Share</a> </li>
+	<li><a href='#'>Brag</a> </li>
+	<li><a onclick="gadgets.views.requestNavigateTo('canvas.page2');">Click to go to page 2</a></li>
+      </ul>
+    </div>
+    <div style='clear:both;'/>
+    <div id='content-wrapper'>
+      <div id='lsidebar-wrapper'> <p/></div>
+      <div id='main-wrapper'>
+	<div class='fullbox_excerpt'>
+	  <h3>View your badges</h3>
+	  <p id = 'numberOfBadges'></p>
+	  <div id='myGallery'>
+
+<!--
+    <div id="two_id" style="display:none">
+	  Content for tab Two.
+	</div>
+
+    <div id="badgeTab" style="display:none">
+	      This is static content for tab Three. -->
+
+	      <table id="badgeTable"></table>
+
+<!--	    </div>
+	    
+           -->
+           </div>
+	  </div> 
+	</div>
+      <div id='rsidebar-wrapper'>
+	<b:section class='sidebar' id='sidebarright' preferred='yes'> </b:section>
+	</div>
+      
+      <div class='clear'>&#160;</div>
+      </div> 
+    <div id='footer'>Copyright &#169; 2011 | Powered by Blogger </div>
+    <div style='clear:both;'/>
+    </div>
+</div>
+<div style='clear:both;'/>
+
 </body>
-</html>
+
+
+

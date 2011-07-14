@@ -1,67 +1,44 @@
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<!--<script type="text/javascript" src="javascripts/loadUpdates.js">-->
-<script type="text/javascript">
-  window.onload=function() {
-
-  // First, we load the URL into a variable
-  var url = window.location.href;
-
-  // Next, split the url by the ?
-  var qparts = url.split("?");
-
-  // Then find the querystring, everything after the ?
-  var query = qparts[1];
-
-  console.log(query);
-
-  // Split the query string into variables (separates by &s)
-  var vars = query.split("&");
-
-  // Initialize the value with "" as default
-  var value = "";
-
-  // Split the variable by =, which splits name and value
-  var numPart = vars[0].split("=");
-  var namePart = vars[1].split("=");
-  var descPart = vars[2].split("=");
-  value = "<img src='" + numPart[1] + "' />" + 
-           "<h2>" + namePart[1] + "</h2>" +
-	   "<p>" + descPart[1] + "</p>";
-
-  
-  console.log(value);
-  // Convert escape code
-  value = unescape(value);
-
-  console.log(value);
-  // Convert "+"s to " "s
-  //  value.replace(/\+/g," ");
-
-  // Update document with value
-  document.getElementById("info").innerHTML = value;
-}
-
-</script>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Untitled Document</title>
 </head>
+
 <body>
-<div id="info"></div>
-<p>div's update code will be right here</p>
-
-<!--
-
-      <form id="update_form" onsubmit="return postUpdate();">
-        <p>
-          <label for="update_entry">Share Your Badge With A Message!</label><br />
-          <input id="update_entry" />
-          <input type="submit" value="Go">
-        </p>
-      </form>
-
-      <div id="updates">
-        <h3>Most Recent Update</h3>
-        <ul id="recent_updates"></ul>
-      </div>
--->
+<table width="100%" border="0">
+  <tr>
+    <td>&nbsp;</td>
+    <td><img src="leapyear.jpg" width="30%" height="40%" hspace="225"/></td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td align="center">Frogger Badge</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td align="center"><p>Commited at least once on a Leap Day of a Leap Year!</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p></td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    
+    
+    
+    <td align="center">
+    
+    
+    
+    Insert status update post area here    </td>
+    
+    
+    
+    <td>&nbsp;</td>
+  </tr>
+</table>
 </body>
 </html>
