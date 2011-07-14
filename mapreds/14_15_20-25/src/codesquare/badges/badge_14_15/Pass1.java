@@ -124,9 +124,9 @@ public class Pass1 {
 		public void reduce(Text key, Iterable<Text> values, Context context)
 				throws IOException, InterruptedException {
 			System.out.println("REDUCE");
-			ArrayList<String> acc = new ArrayList<String>();
+			HashMap<String, String> acc = new HashMap<String, String>();
 			for (Text val : values) {
-				acc.add(val.toString());
+				acc.put(val.toString(), "1");
 			}
 			if (acc.size() >= 2) {
 				for (int i = 0; i < acc.size(); i++) {
