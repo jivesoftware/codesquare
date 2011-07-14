@@ -40,12 +40,12 @@ public class Pass2 {
 	// gets empId LOC AND empId BossId
 	// returns empId LOC BossId AND empId LOC
 	private static int maxEmpLOC = 0;
-	private static int maxEmp = 0;
+	private static String maxEmp = "";
 
 	/**
 	 * return employee with the most added LOC
 	 */
-	public int getMaxEmp() {
+	public String getMaxEmp() {
 		return maxEmp;
 	}
 
@@ -87,6 +87,9 @@ public class Pass2 {
 		job.setReducerClass(Reduce.class);
 		job.setInputFormatClass(TextInputFormat.class);
 		job.setOutputFormatClass(NullOutputFormat.class);
+		
+		System.out.println("");
+		
 		Toolbox.addDirectory(job, hdfs, new Path(input));
 		// FileOutputFormat.setOutputPath(job, new Path(output));
 		job.waitForCompletion(true);
@@ -141,7 +144,7 @@ public class Pass2 {
 				}
 				if (LOC > maxEmpLOC) {
 					maxEmpLOC = LOC;
-					maxEmp = Integer.parseInt(key.toString());
+					maxEmp = key.toString();
 				}
 			}
 		}

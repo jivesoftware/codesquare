@@ -68,9 +68,10 @@ public class Toolbox {
 	 */
 	public static void addDirectory(Job job, FileSystem hdfs, Path directory)
 			throws Exception {
+		
 
-		if (hdfs.exists(directory)) {
-
+		if (hdfs.exists(directory) && !directory.toString().contains("_logs")) {
+			
 			if (hdfs.isFile(directory)
 					&& !directory.toString().contains("_SUCCESS")) {
 				FileInputFormat.addInputPath(job, directory);
@@ -83,10 +84,7 @@ public class Toolbox {
 				}
 
 			}
-		} else {
-			throw new FileNotFoundException("Directory doesn't exist: "
-					+ directory.toString());
-		}
+		} 
 
 		// directory.get
 

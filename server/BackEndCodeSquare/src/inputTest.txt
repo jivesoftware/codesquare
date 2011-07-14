@@ -1,0 +1,3 @@
+]"  }
+{ "cID": "52b706adae28f16349f7f97996764ab945ad222a", "cMes": "after-500-commits", "date": "Fri Jul 8 10:22:28 2011 -0700", "name": "Eric Ren", "email": "eric.ren@jivesoftware.com", "stats": "[ 1 506 sample ]" }
+{ "cID": "607280d89776dcde41f953d3c7b7f4ac4f022565", "cMes": "test-IP-stacking-commits", "date": "Fri Jul 8 10:17:58 2011 -0700", "name": "Eric Ren", "email": "eric.ren@jivesoftware.com", "stats": "[ 1 0 sample ]" }
