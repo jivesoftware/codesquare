@@ -78,7 +78,7 @@ public class Pass2 {
 
 		Job job = new Job(conf);
 
-		job.setJarByClass(codesquare.badges.badge_14_15.Pass1.class);
+		job.setJarByClass(codesquare.badges.badge_20_24.Pass2.class);
 		job.setJobName("Badge_20_24");
 
 		job.setOutputKeyClass(Text.class);
