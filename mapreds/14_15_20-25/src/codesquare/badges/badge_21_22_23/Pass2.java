@@ -1,4 +1,5 @@
-package codesquare.badges.badge_21_22_23;      
+package codesquare.badges.badge_21_22_23;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -18,12 +19,11 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import codesquare.Toolbox;
 
 /**
- * Class to take input from LOC1 and BossList
- * and write empId LOC bossId AND empId LOC to prepare for LOC3
+ * Class to take input from LOC1 and BossList and write empId LOC bossId AND
+ * empId LOC to prepare for LOC3
  * 
- * returned file format is {empId} {LOC} {bossId} AND {empId} {LOC}
- * where "{" and "}" are not expressed
- * ie. 4825 29 4824 AND  4825 29
+ * returned file format is {empId} {LOC} {bossId} AND {empId} {LOC} where "{"
+ * and "}" are not expressed ie. 4825 29 4824 AND 4825 29
  * 
  * accepts a directory - searches for all files recursively
  * 
@@ -34,63 +34,84 @@ public class Pass2 {
 	// TODO: get bossList from HBase
 	// gets empId #LOC AND empId BossId
 	// returns empId LOC BossId AND empId LOC
-		
-public Pass2(String input, String output) throws Exception {
-	    Configuration conf = new Configuration();
-	    conf.set("fs.default.name", "hdfs://10.45.111.143:8020");
-	    FileSystem dfs = codesquare.Toolbox.getHDFS();
-	    
-	    Job job = new Job(conf, "LOC1");
-	    job.setJarByClass(codesquare.badges.badge_21_22_23.Pass2.class);
-	    job.setJobName("");
-	    
-	    job.setOutputKeyClass(Text.class);
-	    job.setOutputValueClass(Text.class);
-	    job.setMapperClass(Map.class);
-	    job.setReducerClass(Reduce.class);
-	    job.setInputFormatClass(TextInputFormat.class);
-	    job.setOutputFormatClass(TextOutputFormat.class);
-	    Toolbox.addDirectory(job, dfs,new Path(input));
-	    FileInputFormat.addInputPath(job, new Path("bossList.txt"));
-	    FileOutputFormat.setOutputPath(job, new Path(output));
-	    job.waitForCompletion(true);
-	    dfs.close();
-	 }
-	
-/**
- * 
- * @write key: empId   value: #LOC or bossId
- */      
-public static class Map extends Mapper<LongWritable, Text, Text, Text> {    
-    public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-    	String line = value.toString();
-    	String [] components = line.split("\\s+");
-    	context.write(new Text(components[0]), new Text(components[1]));
-    }
- } 
-        
-/**
- * 
- * @write key: empId   value: {LOC} {bossId} AND {LOC}
- */
- public static class Reduce extends Reducer<Text, Text, Text, Text> {
-	 
-	 
-    public void reduce(Text key, Iterable<Text> values, Context context) 
-      throws IOException, InterruptedException {
-        String info = " ";
-        String LOC = "";
-        for (Text val : values) {
-        	if (val.toString().substring(0,1).equals("#")){
-        		info = val.toString().substring(1).concat(info);
-        		LOC = val.toString().substring(1);
-        	}
-        	else {
-        		info = info.concat(val.toString());
-        	} 
-        }
-        context.write(key, new Text(info));
-        context.write(key, new Text(LOC));
-    }
- }        
+
+	public Pass2(String input, String output) throws Exception {
+		Configuration conf = new Configuration();
+		conf.set("fs.default.name",
+				"hdfs://hadoopdev001.eng.jiveland.com:54310");
+
+		conf.set("fs.default.name",
+				"hdfs://hadoopdev001.eng.jiveland.com:54310");
+
+		conf.set("fs.default.name",
+				"hdfs://hadoopdev001.eng.jiveland.com:54310");
+		conf.set("hadoop.log.dir", "/hadoop001/data/hadoop/logs");
+		conf.set("hadoop.tmp.dir", "/hadoop001/tmp");
+		conf.set("io.file.buffer.size", "131072");
+		conf.set("fs.inmemory.size.mb", "200");
+		conf.set("fs.checkpoint.period", "900");
+
+		conf.set("dfs.datanode.max.xceivers", "4096");
+		conf.set("dfs.block.size", "134217728");
+		conf.set(
+				"dfs.name.dir",
+				"/hadoop001/data/datanode,/hadoop002/data/datanode,/hadoop003/data/datanode,/hadoop004/data/datanode,/hadoop005/data/datanode,/hadoop006/data/datanode,/hadoop007/data/datanode,/hadoop008/data/datanode,/hadoop009/data/datanode,/hadoop010/data/datanode,/hadoop011/data/datanode,/hadoop012/data/datanode");
+		conf.set("dfs.umaskmode", "007");
+		conf.set("dfs.datanode.du.reserved", "107374182400");
+		conf.set("dfs.datanode.du.pct", "0.85f");
+
+		FileSystem dfs = codesquare.Toolbox.getHDFS();
+
+		Job job = new Job(conf, "LOC1");
+		job.setJarByClass(codesquare.badges.badge_21_22_23.Pass2.class);
+		job.setJobName("");
+
+		job.setOutputKeyClass(Text.class);
+		job.setOutputValueClass(Text.class);
+		job.setMapperClass(Map.class);
+		job.setReducerClass(Reduce.class);
+		job.setInputFormatClass(TextInputFormat.class);
+		job.setOutputFormatClass(TextOutputFormat.class);
+		Toolbox.addDirectory(job, dfs, new Path(input));
+		FileInputFormat.addInputPath(job, new Path("bossList.txt"));
+		FileOutputFormat.setOutputPath(job, new Path(output));
+		job.waitForCompletion(true);
+		dfs.close();
+	}
+
+	/**
+	 * 
+	 * @write key: empId value: #LOC or bossId
+	 */
+	public static class Map extends Mapper<LongWritable, Text, Text, Text> {
+		public void map(LongWritable key, Text value, Context context)
+				throws IOException, InterruptedException {
+			String line = value.toString();
+			String[] components = line.split("\\s+");
+			context.write(new Text(components[0]), new Text(components[1]));
+		}
+	}
+
+	/**
+	 * 
+	 * @write key: empId value: {LOC} {bossId} AND {LOC}
+	 */
+	public static class Reduce extends Reducer<Text, Text, Text, Text> {
+
+		public void reduce(Text key, Iterable<Text> values, Context context)
+				throws IOException, InterruptedException {
+			String info = " ";
+			String LOC = "";
+			for (Text val : values) {
+				if (val.toString().substring(0, 1).equals("#")) {
+					info = val.toString().substring(1).concat(info);
+					LOC = val.toString().substring(1);
+				} else {
+					info = info.concat(val.toString());
+				}
+			}
+			context.write(key, new Text(info));
+			context.write(key, new Text(LOC));
+		}
+	}
 }

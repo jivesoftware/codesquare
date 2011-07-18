@@ -1,0 +1,65 @@
+/* main.css */
+/*
+td {
+   width: 100%;
+}
+*/
+
+input[type="image"] {
+   width: 85px;;
+   height: 85px;
+   padding: 2px;
+}
+
+td  p {
+   height: 40px; 
+   width: 100px;  
+   text-align: center;
+}
+
+th {
+   font:16px "Helvetica Neue",Arial,Helvetica,sans-serif;
+}
+
+table {
+   table-layout: fixed;
+   padding-top: 26px;
+   padding-bottom: 25px;
+   margin: auto;
+}
+
+.shadow {
+	border-width: 3px;
+	border-style: outset;
+    -moz-border-radius: 50px;
+    -webkit-border-radius: 50px;
+    border-radius: 50px;
+    display: inline-block; }
+
+.shadow:hover{
+	border-style: inset; }
+    
+.highlight {
+	border-width: 5px;
+	border-style: outset;
+	border-color: #cfe28b;
+    -moz-border-radius: 50px;
+    -webkit-border-radius: 50px;
+    border-radius: 50px;
+    display: inline-block; }
+
+.highlight:hover{
+	border-style: inset; }
+
+.new {
+	font: eurostile;
+	font-weight:bold;
+	font-size: 24px;
+	color: #cfe28b;
+	position: relative;
+	bottom: 75px;
+	left:55px;
+	 text-shadow: 0 0 3px #fff; /* horizontal-offset vertical-offset 'blur' colour */
+  	-moz-text-shadow: 0 0 3px #fff;
+  	-webkit-text-shadow: 0 0 3px #fff;
+	}

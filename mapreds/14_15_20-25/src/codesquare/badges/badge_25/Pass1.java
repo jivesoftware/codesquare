@@ -1,6 +1,5 @@
 package codesquare.badges.badge_25;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,13 +42,35 @@ public class Pass1 {
 
 	public Pass1(String input1, String input2) throws Exception {
 		Configuration conf = new Configuration();
-		conf.set("fs.default.name", "hdfs://10.45.111.143:8020");
+		conf.set("fs.default.name",
+				"hdfs://hadoopdev001.eng.jiveland.com:54310");
+
+		conf.set("fs.default.name",
+				"hdfs://hadoopdev001.eng.jiveland.com:54310");
+
+		conf.set("fs.default.name",
+				"hdfs://hadoopdev001.eng.jiveland.com:54310");
+		conf.set("hadoop.log.dir", "/hadoop001/data/hadoop/logs");
+		conf.set("hadoop.tmp.dir", "/hadoop001/tmp");
+		conf.set("io.file.buffer.size", "131072");
+		conf.set("fs.inmemory.size.mb", "200");
+		conf.set("fs.checkpoint.period", "900");
+
+		conf.set("dfs.datanode.max.xceivers", "4096");
+		conf.set("dfs.block.size", "134217728");
+		conf.set(
+				"dfs.name.dir",
+				"/hadoop001/data/datanode,/hadoop002/data/datanode,/hadoop003/data/datanode,/hadoop004/data/datanode,/hadoop005/data/datanode,/hadoop006/data/datanode,/hadoop007/data/datanode,/hadoop008/data/datanode,/hadoop009/data/datanode,/hadoop010/data/datanode,/hadoop011/data/datanode,/hadoop012/data/datanode");
+		conf.set("dfs.umaskmode", "007");
+		conf.set("dfs.datanode.du.reserved", "107374182400");
+		conf.set("dfs.datanode.du.pct", "0.85f");
+
 		FileSystem dfs = codesquare.Toolbox.getHDFS();
 
 		Job job = new Job(conf);
 		job.setJarByClass(Pass1.class);
 		job.setJobName("Badge25");
-		
+
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(Text.class);
 		job.setMapperClass(Map.class);
@@ -160,5 +181,4 @@ public class Pass1 {
 		}
 	}
 
-	
 }
