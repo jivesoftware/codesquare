@@ -352,3 +352,55 @@ gadgets.util.registerOnLoadHandler(init);
 
 //gadgets.window.adjustHeight();
 
+//Diiv Scripts
+
+//generates the array of the names of the Viewer's friends and creates an autocomplete text box using the names in nameArray
+function autoCompleteText(){
+	var nameArray = []; //Initializes a new empty array
+	var personArray = osapi.people.getViewerFriends(); // An array of Person JSON objects
+	var arrayLen = personArray.length;
+	
+	//Iterate through person objects and object the name of each person and add it to nameArray
+	for(var i = 0;i < arrayLen; i++){ 
+		var friendName = personArray[i].name; //obtain name string field from Person JSON object
+		nameArray[i] = friendName; //add name string to nameArray
+	}
+	
+	//Used in testing
+	var availableTags = [
+		"ActionScript",
+		"AppleScript",
+		"Asp",
+		"BASIC",
+		"C",
+		"C++",
+		"Clojure",
+		"COBOL",
+		"ColdFusion",
+		"Erlang",
+		"Fortran",
+		"Groovy",
+		"Haskell",
+		"Java",
+		"JavaScript",
+		"Lisp",
+		"Perl",
+		"PHP",
+		"Python",
+		"Ruby",
+		"Scala",
+		"Scheme"
+	];
+	//End used in testing
+	
+	$( "#tags" ).autocomplete({
+		//source: availableTags //used in testing
+		source: nameArray
+	});
+}
+
+//sends a Jive message post to the person with friendName as their name
+function sendMessage(friendName){
+	
+}
+
