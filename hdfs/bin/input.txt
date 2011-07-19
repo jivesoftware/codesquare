@@ -1,3 +1,0 @@
-This is a test
-Hopefully this writes to the HDFS
-A Diiv can only hope...
