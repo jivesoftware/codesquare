@@ -11,7 +11,7 @@ import java.util.StringTokenizer;
  * @author diivanand.ramalingam
  * 
  */
-public class Commit {
+public class Push {
     private String id;
     private String msg;
     private String email;
@@ -28,7 +28,7 @@ public class Commit {
      * Constructs an empty commit object
      * 
      */
-    public Commit() {
+    public Push() {
     }
     
     /**
@@ -41,7 +41,7 @@ public class Commit {
      * @param day @param date @param hour 
      * @param minute @param second
      */
-    public Commit(String id, String email, String msg, int numFilesChanged, 
+    public Push(String id, String email, String msg, int numFilesChanged, 
             ArrayList<String> filesChanged, int insertions, int deletions,
             Date commitDate, Date pushDate) {
         this.id = id; this.msg = msg; this.numFilesChanged = numFilesChanged;this.email = email;

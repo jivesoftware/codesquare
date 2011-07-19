@@ -9,7 +9,7 @@ import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
-import com.jivesoftware.backendServlet.Commit;
+import com.jivesoftware.backendServlet.Push;
 
 public class HDFS {
 
@@ -48,7 +48,7 @@ public class HDFS {
 	 * @param commits
 	 *            An arrayList of Commit objects
 	 */
-	public static void insertCommitsIntoHDFS(ArrayList<Commit> commits) {
+	public static void insertCommitsIntoHDFS(ArrayList<Push> commits) {
 		try {
 			// Connect and open HDFS and set path variables
 			FileSystem dfs = FileSystem.get(setConfiguration(new Configuration()));
@@ -60,7 +60,7 @@ public class HDFS {
 				dfs.mkdirs(src);
 			}
 
-			for (Commit c : commits) {
+			for (Push c : commits) {
 		        // If the folders don't exist, create them
 		        String[] extensions = {((Integer) c.getPushDate().getYear()).toString(),
 		                ((Integer) c.getPushDate().getMonth()).toString(), c.getPushDate().getDay(),
