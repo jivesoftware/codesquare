@@ -13,7 +13,7 @@ import org.json.JSONObject;
 
 import com.jivesoftware.toolbox.HDFS;
 import com.jivesoftware.toolbox.Hbase;
-import com.jivesoftware.backendServlet.Push;
+import com.jivesoftware.backendServlet.Commit;
 import com.jivesoftware.backendServlet.Date;
 import com.jivesoftware.badges.BasicBadges;
 
@@ -29,7 +29,7 @@ public class BackEndServletTemp {
 	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {
-		ArrayList<Push> output = parseGitInput(args[0], args[1]);
+		ArrayList<Commit> output = parseGitInput(args[0], args[1]);
 		Object[] out = Hbase.setup();
 		HTable table = (HTable) out[1];
 		Configuration config = (Configuration) out[0];
@@ -41,7 +41,7 @@ public class BackEndServletTemp {
 		}
 		
 		for (int i = output.size() - 1; i >= 0; i--) {
-			Push c = output.get(i);
+			Commit c = output.get(i);
 			BasicBadges.checkUpdateBadges(table, c , 0);
 		}
 		Result data = Hbase.getRowData(table, "eric.ren@jivesoftware.com");
@@ -63,13 +63,13 @@ public class BackEndServletTemp {
      *            the name of the file containing all the commits
      * @throws Exception 
      */
-    public static ArrayList<Push> parseGitInput(String json, String pushDate) throws Exception {
+    public static ArrayList<Commit> parseGitInput(String json, String pushDate) throws Exception {
         // initialize local variables
-        ArrayList<Push> commits = new ArrayList<Push>();
+        ArrayList<Commit> commits = new ArrayList<Commit>();
         // Create Commit objects from JSON and write the Commits to HDFS
         for (JSONObject j : getCommits(json)) {
             try {
-                Push commit = new Push();
+                Commit commit = new Commit();
                 commit.setPushDate(new Date(pushDate));
                 commit.setCommitDate(new Date(j.getString("commitDate")));
                 commit.addStats(j.getString("stats"));
