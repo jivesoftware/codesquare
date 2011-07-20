@@ -75,7 +75,12 @@ public class Hbase {
 		}
 	}
 
-	public static Configuration setConfiguration(Configuration config) {
+	/**
+	 * 
+	 * @return a configuration for the HBase our Jive App uses
+	 */
+	public static Configuration getHBaseConfiguration() {
+		Configuration config = HBaseConfiguration.create();
 		config.set("hbase.cluster.distributed", "true");
 		config.set("hbase.rootdir", "hdfs://hadoopdev008.eng.jiveland.com:54310/hbase");
 		config.set( "hbase.zookeeper.quorum", "hadoopdev008.eng.jiveland.com,hadoopdev002.eng.jiveland.com,hadoopdev001.eng.jiveland.com");
@@ -92,7 +97,7 @@ public class Hbase {
 	 */
 	public static Object[] setup() throws Exception {
 		Object[] output = new Object[2];
-		Configuration config = setConfiguration(HBaseConfiguration.create());
+		Configuration config = getHBaseConfiguration();
 
 		// Create a table
 		HBaseAdmin admin = new HBaseAdmin(config);
