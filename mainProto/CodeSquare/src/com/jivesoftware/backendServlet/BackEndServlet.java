@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.hbase.client.HConnectionManager;
 import org.apache.hadoop.hbase.client.HTable;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -115,7 +116,9 @@ public class BackEndServlet extends HttpServlet {
 			System.err.println("Bad Query String: " + queryStr);
 		}
 		
-		
+		// free resources and close connections
+		HConnectionManager.deleteConnection(hbaseConfig, true);
+		table.close();
 	}
 	
 	
