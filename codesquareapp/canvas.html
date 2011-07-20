@@ -1,78 +1,56 @@
-  <head>
-    <link rel="stylesheet" href="stylesheets/main.css" type="text/css" media="screen" />
-
-    <link rel="stylesheet" href="stylesheets/stylesheet.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="stylesheets/stylesheet2.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="fancybox/jquery.fancybox-1.3.4.css" type="text/css" media="screen" />
-
-    <script type="text/javascript" src="javascripts/jquery.js"></script>
-    <script type="text/javascript" src="fancybox/jquery.fancybox-1.3.4.pack.js"></script>
-    <script type="text/javascript" src="fancybox/jquery.easing-1.3.pack.js"></script>
-
-    <script type="text/javascript" charset="utf-8" src="javascripts/main.js"></script>
+<head>
+  <link rel="stylesheet" href="stylesheets/main.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="stylesheets/stylesheet.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="stylesheets/stylesheet2.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="fancybox/jquery.fancybox-1.3.4.css" type="text/css" media="screen" />
 </head>
-  
+
 <body>
-testing...
-
-<div id='body-wrapper3'>
-  <div class='outer-wrapper' id='outer-wrapper'>
-
-    <div class='feedtwitter twit-rss'>
-      <a expr:href='data:blog.homepageUrl + "feeds/posts/default"'>
-	<img src='images/blank.png' style='margin:0 4px 0 0;'/></a>
+  <div id='body-wrapper3'>
+    <div class='outer-wrapper' id='outer-wrapper'>
+      <div class='feedtwitter twit-rss'> <img src='images/blank.png' style='margin:0 4px 0 0;'/> </div>
+      <div style='clear:both;'/>
+      <div class='outer' id='header-wrapper'> <img id = "logo" src="images/logo.png" /> </div>
+      <div style='clear:both;'/>
+      <div id='navcontainer'>
+      	<ul id='nav'>
+	  <li id="browse" class="current-cat">
+	    <a href="#">Browse Badges</a>
+	  </li>
+	  <li id="share">
+	    <a href="#">Share</a>
+	  </li>
+	  <li id="brag">
+	    <a href="#">Brag</a>
+	  </li>
+	</ul>
       </div>
-    <div style='clear:both;'/>
-    <div class='outer' id='header-wrapper'>
-      <img id = "logo" src="images/logo.png" />
-      </div>
-    <div style='clear:both;'/>
-    <div id='navcontainer'>
-      <ul id='nav'>
-	<li class='current-cat'><a href='canvas.html'>Browse Badges</a></li>
-	<li><a href='#'>Share</a> </li>
-	<li><a href='#'>Brag</a> </li>
-	<li><a onclick="gadgets.views.requestNavigateTo('canvas.page2');">Click to go to page 2</a></li>
-      </ul>
-    </div>
-    <div style='clear:both;'/>
-    <div id='content-wrapper'>
-      <div id='lsidebar-wrapper'> <p/></div>
-      <div id='main-wrapper'>
-	<div class='fullbox_excerpt'>
-	  <h3>View your badges</h3>
-	  <p id = 'numberOfBadges'></p>
-	  <div id='myGallery'>
-
-<!--
-    <div id="two_id" style="display:none">
-	  Content for tab Two.
-	</div>
-
-    <div id="badgeTab" style="display:none">
-	      This is static content for tab Three. -->
-
-	      <table id="badgeTable"></table>
-
-<!--	    </div>
-	    
-           -->
-           </div>
+      <div style='clear:both;'/>
+      <div id='content-wrapper'>
+      	<div id='lsidebar-wrapper'> <p/></div>
+      	<div id='main-wrapper'>
+	  <div class='fullbox_excerpt'>
+	    <h3>View your badges</h3>
+	    <p id = 'numberOfBadges'></p>
+	    <div id='myGallery'> 
+	      <table id="badgeTable"></table> 
+	    </div>
 	  </div> 
 	</div>
-      <div id='rsidebar-wrapper'>
-	<b:section class='sidebar' id='sidebarright' preferred='yes'> </b:section>
+      	<div id='rsidebar-wrapper'>
+	  <b:section class='sidebar' id='sidebarright' preferred='yes'> </b:section>
 	</div>
-      
-      <div class='clear'>&#160;</div>
+      	<div class='clear'>&#160;</div>
       </div> 
-    <div id='footer'>Copyright &#169; 2011 | Powered by Blogger </div>
-    <div style='clear:both;'/>
-    </div>
+      <div id='footer'>Copyright &#169; 2011 | Powered by Blogger </div>
+      <div style='clear:both;'/> </div>
+  </div>
+  <div style='clear:both;'/>
 </div>
-<div style='clear:both;'/>
-
+<script type="text/javascript" src="javascripts/jquery.js"></script>
+<script type="text/javascript" src="fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+<script type="text/javascript" src="fancybox/jquery.easing-1.3.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="javascripts/toolbox.js"></script>
+<script type="text/javascript" charset="utf-8" src="javascripts/main.js"></script>
+<script type="text/javascript" charset="utf-8" src="javascripts/canvas.js"></script>
 </body>
-
-
-
