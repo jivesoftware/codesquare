@@ -33,7 +33,7 @@ public class BasicBadges {
 		if (data == null) {
 			return;
 		}
-		String date = c.getPushDate().getYear()+"-"+c.getPushDate().getMonth()+"-"+c.getPushDate().getDate();
+		String date = c.getCommitDate().getYear()+"-"+c.getCommitDate().getMonth()+"-"+c.getCommitDate().getDate();
 		int[] fieldValues = Hbase.getFields(data, new String[] { "badgesWeek", "numBugs", "numCommits", "consecCommits" });
 		String lastCommit = Hbase.getLastCommit(data);
 		ArrayList<String> badges = testDateTimeBadges(date, c.getPushDate().getDay(), c.getPushDate().getHour());
