@@ -1,7 +1,9 @@
 package com.jivesoftware.toolbox;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.NavigableSet;
 
 import org.apache.hadoop.conf.Configuration;
@@ -95,9 +97,7 @@ public class HbaseTools {
 	 * @return Object array consisting of a HTable(1) and the config object(0)
 	 * @throws Exception 
 	 */
-	public static Object[] setup() throws Exception {
-		Object[] output = new Object[2];
-		Configuration config = getHBaseConfiguration();
+	public static HTable getTable(Configuration config) throws Exception {
 
 		// Create a table
 		HBaseAdmin admin = new HBaseAdmin(config);
@@ -108,11 +108,8 @@ public class HbaseTools {
 			admin.addColumn("EmpBadges", new HColumnDescriptor("Badge"));
 			admin.enableTable("EmpBadges");
 		}
-		HTable table = null;
-		table = new HTable(config, "EmpBadges");
-		output[0] = config;
-		output[1] = table;
-		return output;
+		HTable table = new HTable(config, "EmpBadges");
+		return table;
 	}
 	
 	/***
@@ -245,6 +242,33 @@ public class HbaseTools {
 		return results;
 	}
 
+	public static String getPushDate(HTable table, String email) {
+		Get get = new Get(Bytes.toBytes(email));
+		Result data = null;
+	    Calendar cal = Calendar.getInstance();
+	    SimpleDateFormat sdf = new SimpleDateFormat("EEE MM dd HH:mm:ss z yyyy");
+	    String dateTime =  sdf.format(cal.getTime());
+		try {
+			data = table.get(get);
+		} catch (Exception e) {
+			System.err.println();
+		}
+		if (data == null) {
+			return dateTime;
+		}
+		if (data.isEmpty()) {
+			return null;
+		}
+		String lastCommit = "";
+		try {
+			lastCommit = new String(data.getValue(Bytes.toBytes("Info"),
+					Bytes.toBytes("lastPush")));
+		} catch (java.lang.NullPointerException e) {
+			return dateTime;
+		}
+		return lastCommit;
+	}
+	
 	public static Result getRowData(HTable table, String email) {
 		Get get = new Get(Bytes.toBytes(email));
 		Result data = null;

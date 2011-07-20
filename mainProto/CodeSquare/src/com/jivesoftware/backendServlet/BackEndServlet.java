@@ -1,9 +1,6 @@
 package com.jivesoftware.backendServlet;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -12,13 +9,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.hbase.thrift.generated.Hbase;
+import org.apache.hadoop.hbase.client.HTable;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.jivesoftware.toolbox.HDFSTools;
 import com.jivesoftware.toolbox.HbaseTools;
+import com.jivesoftware.badges.BasicBadges;
 import com.jivesoftware.toolbox.ServletTools;
 
 /**
@@ -42,7 +39,7 @@ public class BackEndServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try{
 			doGetOrPost(request,response);
-		}catch(JSONException e){
+		}catch(Exception e){
 			System.err.println(e.getClass() + ":" + e.getMessage());
 		}
 		
@@ -52,12 +49,14 @@ public class BackEndServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		try{
-			doGetOrPost(request,response);
-		}catch(JSONException e){
-			System.err.println(e.getClass() + ":" + e.getMessage());
-		}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+			try {
+				doGetOrPost(request,response);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				System.err.println(e.getClass() + ":" + e.getMessage());
+			}
+
 	}
 	
 	/**
@@ -69,10 +68,10 @@ public class BackEndServlet extends HttpServlet {
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	protected void doGetOrPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, JSONException{
+	protected void doGetOrPost(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		String queryStr = request.getQueryString();
-		
-		//intialize hbase connection here since either request uses it
+		Configuration hbaseConfig = HbaseTools.getHBaseConfiguration();
+		HTable table = HbaseTools.getTable(hbaseConfig);
 		
 		if(queryStr.contains("json") && queryStr.contains("pushDate")){
 			JSONArray jArrCommits = new JSONArray(request.getParameter("json"));
@@ -89,7 +88,7 @@ public class BackEndServlet extends HttpServlet {
 					Commit c = ServletTools.convertToCommit(jCommit, pushDate);
 					HDFSTools.writeCommitToHDFS(hdfs, c); //writes a commit as it's own text file in the appropriate HDFS folder
 					//TODO Hey Justin mind writing this one too?
-					HBaseTools.checkForBasicBadges(c,table); //checks to see if this commit earned it's commiter any basic badges
+					BasicBadges.checkUpdateBadges(table, c, 0); //checks to see if this commit earned it's commiter any basic badges
 				}
 				
 				hdfs.close(); //close connection to hdfs
@@ -105,7 +104,7 @@ public class BackEndServlet extends HttpServlet {
 			if(infoForRecDate != null && infoForRecDate.length() > 0){
 				
 				JSONObject jRecDate = new JSONObject();
-				String mostRecentPushDate = HbaseTools.getMostRecentPushDate(infoForRecDate,table);
+				String mostRecentPushDate = HbaseTools.getPushDate(table, infoForRecDate);
 				jRecDate.put("recDate", mostRecentPushDate);
 				ServletTools.sendJSONOutput(response,jRecDate);
 				

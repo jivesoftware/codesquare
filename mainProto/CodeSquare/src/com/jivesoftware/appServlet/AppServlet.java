@@ -3,9 +3,6 @@ package com.jivesoftware.appServlet;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import java.util.ArrayList;
-
-import java.util.NavigableSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,13 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.hadoop.conf.Configuration;
 
-import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.HConnectionManager;
 import org.apache.hadoop.hbase.client.HTable;
-import org.apache.hadoop.hbase.client.Put;
-import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.util.Bytes;
 import org.json.*;
 
 import com.jivesoftware.toolbox.HbaseTools;
