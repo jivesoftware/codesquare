@@ -10,7 +10,7 @@ import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
 
 import com.jivesoftware.backendServlet.Commit;
-import com.jivesoftware.toolbox.Hbase;
+import com.jivesoftware.toolbox.HbaseTools;
 
 public class BasicBadges {
 	
@@ -28,14 +28,14 @@ public class BasicBadges {
 	 */
 	public static void checkUpdateBadges(HTable table, Commit c, int numBugs) {
 
-		Result data = Hbase.getRowData(table, c.getEmail());
+		Result data = HbaseTools.getRowData(table, c.getEmail());
 		// person does not exist
 		if (data == null) {
 			return;
 		}
-		String date = c.getCommitDate().getYear()+"-"+c.getCommitDate().getMonth()+"-"+c.getCommitDate().getDate();
-		int[] fieldValues = Hbase.getFields(data, new String[] { "badgesWeek", "numBugs", "numCommits", "consecCommits" });
-		String lastCommit = Hbase.getLastCommit(data);
+		String date = c.getPushDate().getYear()+"-"+c.getPushDate().getMonth()+"-"+c.getPushDate().getDate();
+		int[] fieldValues = HbaseTools.getFields(data, new String[] { "badgesWeek", "numBugs", "numCommits", "consecCommits" });
+		String lastCommit = HbaseTools.getLastCommit(data);
 		ArrayList<String> badges = testDateTimeBadges(date, c.getPushDate().getDay(), c.getPushDate().getHour());
 
 		fieldValues[1] = fieldValues[1] + numBugs;
@@ -48,7 +48,7 @@ public class BasicBadges {
 		if (c.getMessage().toLowerCase().contains("jive")) {
 			badges.add("26");
 		}
-		Object[] badgeList = Hbase.getBadges(data);
+		Object[] badgeList = HbaseTools.getBadges(data);
 		@SuppressWarnings("unchecked")
 		ArrayList<String> aquiredBadges = (ArrayList<String>) badgeList[0];
 		for (int i = 0; i < badges.size(); i++) {
@@ -65,7 +65,7 @@ public class BasicBadges {
 		}
 		String newBadges = (String) badgeList[1];
 		String[] results = new String[badges.size()];
-		Hbase.addRow(table, c.getEmail(), date, badges.size() + fieldValues[0],
+		HbaseTools.addRow(table, c.getEmail(), date, badges.size() + fieldValues[0],
 				fieldValues[1], fieldValues[2], consecCommits[0], newBadges,
 				badges.toArray(results));
 	}

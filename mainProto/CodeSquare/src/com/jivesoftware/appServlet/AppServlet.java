@@ -27,7 +27,7 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.json.*;
 
-import com.jivesoftware.toolbox.Hbase;
+import com.jivesoftware.toolbox.HbaseTools;
 
 /**
  * Retrieves email information from the Jive App and uses it to query
@@ -131,16 +131,16 @@ public class AppServlet extends HttpServlet {
 
         if (matchFound && match2Found) {
 
-            Configuration conf = Hbase.setConfiguration(HBaseConfiguration.create());
+            Configuration conf = HbaseTools.getHBaseConfiguration();
 
  
             //Create a table
             HTable table = new HTable(conf, "EmpBadges"); //Employee table
             HTable BadgeTable = new HTable(conf, "Badges"); //Badges table
 
-            Hbase.addUserOrUpdateBoss(table, email, bossEmail);
+            HbaseTools.addUserOrUpdateBoss(table, email, bossEmail);
 
-            Object[] badgeInfo = Hbase.getBadges(table, email);
+            Object[] badgeInfo = HbaseTools.getBadges(table, email);
 
             String[] badgesWithDescription = (String[]) badgeInfo[0]; // Elements
             // in
@@ -170,7 +170,7 @@ public class AppServlet extends HttpServlet {
                 }
             }
 
-            Hbase.resetNewBadges(table, email);
+            HbaseTools.resetNewBadges(table, email);
             table.close();
             //free resources and close connections
             HConnectionManager.deleteConnection(conf, true);
@@ -197,7 +197,7 @@ public class AppServlet extends HttpServlet {
 
         for (int i = 0; i < badges.length; i++) {
             System.out.println("Processing Badge No: " + badges[i]);
-            String[] badgeInfo = Hbase.getBadgeInfo(BadgeTable, badges[i]);
+            String[] badgeInfo = HbaseTools.getBadgeInfo(BadgeTable, badges[i]);
 
             JSONObject j2 = new JSONObject();
             j2.put("Name", badgeInfo[1]);
@@ -218,8 +218,8 @@ public class AppServlet extends HttpServlet {
 
             if (!j.has(i.toString())) {
                 JSONObject j3 = new JSONObject();
-                j3.put("Name", Hbase.getBadgeInfo(BadgeTable, i.toString())[1]);
-                j3.put("Description", Hbase.getBadgeInfo(BadgeTable, i.toString())[2]);
+                j3.put("Name", HbaseTools.getBadgeInfo(BadgeTable, i.toString())[1]);
+                j3.put("Description", HbaseTools.getBadgeInfo(BadgeTable, i.toString())[2]);
                 j3.put("IconURL", "images/unobtained.png");
                 j3.put("New", false);
                 j.put(i.toString(), j3);

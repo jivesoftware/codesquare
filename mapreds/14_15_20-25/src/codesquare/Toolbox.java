@@ -68,7 +68,7 @@ public class Toolbox {
 	 */
 	public static void addDirectory(Job job, FileSystem hdfs, Path directory)
 			throws Exception {
-		
+		System.out.println("I'm in this directory: " + directory.toString());
 
 		if (hdfs.exists(directory) && !directory.toString().contains("_logs")) {
 			
