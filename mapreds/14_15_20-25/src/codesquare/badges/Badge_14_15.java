@@ -1,7 +1,9 @@
 package codesquare.badges;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 
+import codesquare.Toolbox;
 import codesquare.badges.badge_14_15.Pass1;
 
 /**
@@ -21,8 +23,11 @@ import codesquare.badges.badge_14_15.Pass1;
  */
 public class Badge_14_15 {
 	public static void main(String[] args) throws Exception {
-		new Pass1(args[0]);
+		Configuration config = Toolbox.getConfiguration();
+		FileSystem hdfs = Toolbox.getHDFS(config);
+		new Pass1(args[0],config,hdfs);
 		System.out.println("Badge_14_15 FINISHED!!!");
+		hdfs.close();
 	}
 }
 

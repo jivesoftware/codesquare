@@ -1,6 +1,7 @@
 package codesquare.badges;
 import java.io.File;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
@@ -27,15 +28,16 @@ import codesquare.badges.sharedpasses.LOC;
  */
 public class Badge_21_22_23 {
 	public static void main(String[] args) throws Exception {
+		Configuration config = Toolbox.getConfiguration();
+		FileSystem hdfs = Toolbox.getHDFS(config);
 		String output1 = Toolbox.generateString();
 		String output2 = Toolbox.generateString();
-		new LOC(args[0], output1);
+		new LOC(args[0], output1, config, hdfs);
 		System.out.println("LOC1 FINISHED!!!");
-		new Pass2(output1, output2);
+		new Pass2(output1, output2, config, hdfs);
 		System.out.println("LOC2 FINISHED!!!");
-		new Pass3(output2);
+		new Pass3(output2, config, hdfs);
 		System.out.println("Badge_21_22_23 FINISHED!!!");
-		FileSystem hdfs = Toolbox.getHDFS();
 		Toolbox.deleteDirectory(new Path(output1),hdfs);
 		Toolbox.deleteDirectory(new Path(output2),hdfs);	
 		hdfs.close();

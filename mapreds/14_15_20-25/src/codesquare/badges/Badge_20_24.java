@@ -32,33 +32,20 @@ import codesquare.badges.sharedpasses.LOC;
  */
 public class Badge_20_24 {	
 	public static void main(String[] args) throws Exception {
-		Configuration config = HBaseConfiguration.create();
-		config.set("hbase.cluster.distributed", "true");
-		config.set("hbase.rootdir",
-				"hdfs://hadoopdev008.eng.jiveland.com:54310/hbase");
-		config.set(
-				"hbase.zookeeper.quorum",
-				"hadoopdev008.eng.jiveland.com,hadoopdev002.eng.jiveland.com,hadoopdev001.eng.jiveland.com");
-		config.set("hbase.zookeeper.property.clientPort", "2181");
-		config.set("hbase.hregion.max.filesize", "1073741824");
-		HTable table = new HTable(config, "EmpBadges");
-		
+		Configuration hdfsConfig = Toolbox.getConfiguration();
+		FileSystem hdfs = Toolbox.getHDFS(hdfsConfig);
+		Configuration hBaseConfig = Toolbox.getHBaseConfiguration();
+		System.out.println("I've got the HBase Configuration");
+		HTable table = new HTable(hBaseConfig, "EmpBadges");
+		System.out.println("I've connected to the EmpBadges table");
 		String output1 = Toolbox.generateString();
-		FileSystem hdfs = Toolbox.getHDFS();
-		new LOC(args[0], output1);
+		System.out.println("I've generated the output String");
+		new LOC(args[0], output1, hdfsConfig, hdfs);
 		System.out.println("Badge_20_24 FINISHED!!!");
-		Pass2 x = new Pass2(output1);
-		Toolbox.addBadges(x.getMaxEmp(), "24", table);
-		
-		/*
-		Writer output = null;
-		File file = new File(output2);
-		output = new BufferedWriter(new FileWriter(file));
-		output.write(x.getMaxEmp()+" 24");
-		output.close();
-		*/
-		
+		Pass2 pass2 = new Pass2(output1, hdfsConfig, hdfs);
+		Toolbox.addBadges(pass2.getMaxEmp(), "24", table);
 		Toolbox.deleteDirectory(new Path(output1), hdfs);
 		hdfs.close();
+		table.close();
 	}
 }

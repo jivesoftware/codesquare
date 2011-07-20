@@ -36,35 +36,13 @@ public class Pass1 {
 	// stores all empIds that have badge 15
 	private static HashMap<String, Integer> badge15 = new HashMap<String, Integer>(); //where in the code is this populated
 
-	public Pass1(String input) throws Exception {
-		Configuration conf = new Configuration();
-		conf.set("fs.default.name",
-				"hdfs://hadoopdev001.eng.jiveland.com:54310");
+	public Pass1(String input, Configuration config,FileSystem hdfs) throws Exception {
 
-		conf.set("fs.default.name",
-				"hdfs://hadoopdev001.eng.jiveland.com:54310");
-		conf.set("hadoop.log.dir", "/hadoop001/data/hadoop/logs");
-		conf.set("hadoop.tmp.dir", "/hadoop001/tmp");
-		conf.set("io.file.buffer.size", "131072");
-		conf.set("fs.inmemory.size.mb", "200");
-		conf.set("fs.checkpoint.period", "900");
-
-		conf.set("dfs.datanode.max.xceivers", "4096");
-		conf.set("dfs.block.size", "134217728");
-		conf.set(
-				"dfs.name.dir",
-				"/hadoop001/data/datanode,/hadoop002/data/datanode,/hadoop003/data/datanode,/hadoop004/data/datanode,/hadoop005/data/datanode,/hadoop006/data/datanode,/hadoop007/data/datanode,/hadoop008/data/datanode,/hadoop009/data/datanode,/hadoop010/data/datanode,/hadoop011/data/datanode,/hadoop012/data/datanode");
-		conf.set("dfs.umaskmode", "007");
-		conf.set("dfs.datanode.du.reserved", "107374182400");
-		conf.set("dfs.datanode.du.pct", "0.85f");
-
-		FileSystem hdfs = codesquare.Toolbox.getHDFS();
-
-		Job job = new Job(conf);
+		Job job = new Job(config);
 
 		job.setJarByClass(codesquare.badges.badge_14_15.Pass1.class);
 		job.setJobName("Badge_14_15");
-
+		//job.setNumReduceTasks(1);
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(Text.class);
 		job.setMapperClass(Map.class);
@@ -74,7 +52,6 @@ public class Pass1 {
 		Toolbox.addDirectory(job, hdfs, new Path(input));
 		// FileOutputFormat.setOutputPath(job, new Path(output));
 		job.waitForCompletion(true);
-		hdfs.close();
 
 	}
 

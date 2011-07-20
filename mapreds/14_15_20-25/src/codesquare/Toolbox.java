@@ -12,6 +12,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
@@ -30,9 +31,25 @@ public class Toolbox {
 	 * 
 	 * @return the Jive CodeSquare HDFS file system
 	 */
-	public static FileSystem getHDFS() {
-		Configuration config = new Configuration();
+	public static FileSystem getHDFS(Configuration config) {
 
+		// Connect to and Return HDFS
+		try {
+			FileSystem dfs = FileSystem.get(config);
+			return dfs;
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+			return null;
+		}
+
+	}
+	
+	/**
+	 * 
+	 * Retrieves a configuration object pertaining to the cluster our HDFS is located in 
+	 */
+	public static Configuration getConfiguration(){
+		Configuration config = new Configuration();
 		config.set("fs.default.name",
 				"hdfs://hadoopdev001.eng.jiveland.com:54310");
 		config.set("hadoop.log.dir", "/hadoop001/data/hadoop/logs");
@@ -47,18 +64,27 @@ public class Toolbox {
 				"dfs.name.dir",
 				"/hadoop001/data/datanode,/hadoop002/data/datanode,/hadoop003/data/datanode,/hadoop004/data/datanode,/hadoop005/data/datanode,/hadoop006/data/datanode,/hadoop007/data/datanode,/hadoop008/data/datanode,/hadoop009/data/datanode,/hadoop010/data/datanode,/hadoop011/data/datanode,/hadoop012/data/datanode");
 		config.set("dfs.umaskmode", "007");
-		config.set("dfs.datanode.du.reserved","107374182400");
+		config.set("dfs.datanode.du.reserved", "107374182400");
 		config.set("dfs.datanode.du.pct", "0.85f");
-		
-		// Connect to and Return HDFS
-		try {
-			FileSystem dfs = FileSystem.get(config);
-			return dfs;
-		} catch (IOException e) {
-			System.err.println(e.getMessage());
-			return null;
-		}
-
+		return config;
+	}
+	
+	
+	/**
+	 * 
+	 * Retrieves a configuration object pertaining to the cluster our HBase is located in 
+	 */
+	public static Configuration getHBaseConfiguration(){
+		Configuration config = HBaseConfiguration.create();
+		config.set("hbase.cluster.distributed", "true");
+		config.set("hbase.rootdir",
+				"hdfs://hadoopdev008.eng.jiveland.com:54310/hbase");
+		config.set(
+				"hbase.zookeeper.quorum",
+				"hadoopdev008.eng.jiveland.com,hadoopdev002.eng.jiveland.com,hadoopdev001.eng.jiveland.com");
+		config.set("hbase.zookeeper.property.clientPort", "2181");
+		config.set("hbase.hregion.max.filesize", "1073741824");
+		return config;
 	}
 
 	/**
@@ -68,23 +94,26 @@ public class Toolbox {
 	 */
 	public static void addDirectory(Job job, FileSystem hdfs, Path directory)
 			throws Exception {
-		System.out.println("I'm in this directory: " + directory.toString());
 
 		if (hdfs.exists(directory) && !directory.toString().contains("_logs")) {
-			
-			if (hdfs.isFile(directory)
-					&& !directory.toString().contains("_SUCCESS")) {
-				FileInputFormat.addInputPath(job, directory);
 
+			if (hdfs.isFile(directory)) {
+				if (directory.toString().contains("_SUCCESS")) {
+					//do nothing 
+				}
+				else {
+					FileInputFormat.addInputPath(job, directory);
+				}
 			} else {
-				FileStatus[] fs = hdfs.listStatus(directory);
 
+				FileStatus[] fs = hdfs.listStatus(directory);
+				
 				for (FileStatus entry : fs) {
 					addDirectory(job, hdfs, entry.getPath());
 				}
 
 			}
-		} 
+		}
 
 		// directory.get
 
