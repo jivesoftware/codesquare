@@ -11,9 +11,14 @@ import org.apache.hadoop.fs.Path;
 
 import com.jivesoftware.backendServlet.Commit;
 
-public class HDFS {
+public class HDFSTools {
 
-	public static Configuration setConfiguration(Configuration config) {
+	/**
+	 * 
+	 * @return the Configuration to the HDFS that contains our folders that store out commits
+	 */
+	public static Configuration getConfiguration() {
+		Configuration config = new Configuration();
 		config.set("fs.default.name", "hdfs://hadoopdev001.eng.jiveland.com:54310");
 		config.set("hadoop.log.dir", "/hadoop001/data/hadoop/logs");
 		config.set("hadoop.tmp.dir", "/hadoop001/tmp");
@@ -42,51 +47,36 @@ public class HDFS {
 	}
 	
 	// HDFS methods
+	
+	
 	/**
-	 * inserts the commit objects as String into .txt files
-	 * 
-	 * @param commits
-	 *            An arrayList of Commit objects
+	 * Writes the Commit object as a string in it's own .txt file in the appropriate folder in HDFS
+	 * @param dfs The HDFS that contains our folders
+	 * @param c The Commit object
+	 * @throws IOException
 	 */
-	public static void insertCommitsIntoHDFS(ArrayList<Commit> commits) {
-		try {
-			// Connect and open HDFS and set path variables
-			FileSystem dfs = FileSystem.get(setConfiguration(new Configuration()));
+	public static void writeCommitToHDFS(FileSystem dfs, Commit c) throws IOException{
+		Path src = new Path("/user/interns/Commits");
+		
+		// If the folders don't exist, create them
+        String[] extensions = {((Integer) c.getPushDate().getYear()).toString(),
+                ((Integer) c.getPushDate().getMonth()).toString(), c.getPushDate().getDay(),
+                ((Integer) c.getPushDate().getHour()).toString(), ((Integer) c.getPushDate().getMinute()).toString()};
+        for (int i = 0; i<extensions.length; i++){
+            src = extendPath(src, extensions[i]);
+            if (!dfs.exists(src)) {
+                dfs.mkdirs(src);
+            }
+        }
 
-			String pathString = "/user/interns/Commits";
-			Path src = new Path(pathString);
+		// Write file
+		src = new Path(src.toString() + "/" + c.getId() + ".txt");
 
-			if (!dfs.exists(src)) {
-				dfs.mkdirs(src);
-			}
+		if (dfs.exists(src)) { dfs.delete(src, false); }
 
-			for (Commit c : commits) {
-		        // If the folders don't exist, create them
-		        String[] extensions = {((Integer) c.getPushDate().getYear()).toString(),
-		                ((Integer) c.getPushDate().getMonth()).toString(), c.getPushDate().getDay(),
-		                ((Integer) c.getPushDate().getHour()).toString(), ((Integer) c.getPushDate().getMinute()).toString()};
-		        for (int i = 0; i<extensions.length; i++){
-		            src = extendPath(src, extensions[i]);
-		            if (!dfs.exists(src)) {
-		                dfs.mkdirs(src);
-		            }
-		        }
-
-				// Write file
-				src = new Path(src.toString() + "/" + c.getId() + ".txt");
-
-				if (dfs.exists(src)) { dfs.delete(src, false); }
-
-				FSDataOutputStream fs = dfs.create(src);
-				fs.write(c.toString().getBytes());
-				fs.close();
-
-				src = new Path("/user/interns/Commits");
-			}
-		} catch (IOException e) {
-			System.err.println(e.getMessage());
-		}
-
+		FSDataOutputStream fs = dfs.create(src);
+		fs.write(c.toString().getBytes());
+		fs.close();
 	}
 	
 }
