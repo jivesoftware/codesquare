@@ -35,34 +35,9 @@ public class Pass2 {
 	// gets empId #LOC AND empId BossId
 	// returns empId LOC BossId AND empId LOC
 
-	public Pass2(String input, String output) throws Exception {
-		Configuration conf = new Configuration();
-		conf.set("fs.default.name",
-				"hdfs://hadoopdev001.eng.jiveland.com:54310");
-
-		conf.set("fs.default.name",
-				"hdfs://hadoopdev001.eng.jiveland.com:54310");
-
-		conf.set("fs.default.name",
-				"hdfs://hadoopdev001.eng.jiveland.com:54310");
-		conf.set("hadoop.log.dir", "/hadoop001/data/hadoop/logs");
-		conf.set("hadoop.tmp.dir", "/hadoop001/tmp");
-		conf.set("io.file.buffer.size", "131072");
-		conf.set("fs.inmemory.size.mb", "200");
-		conf.set("fs.checkpoint.period", "900");
-
-		conf.set("dfs.datanode.max.xceivers", "4096");
-		conf.set("dfs.block.size", "134217728");
-		conf.set(
-				"dfs.name.dir",
-				"/hadoop001/data/datanode,/hadoop002/data/datanode,/hadoop003/data/datanode,/hadoop004/data/datanode,/hadoop005/data/datanode,/hadoop006/data/datanode,/hadoop007/data/datanode,/hadoop008/data/datanode,/hadoop009/data/datanode,/hadoop010/data/datanode,/hadoop011/data/datanode,/hadoop012/data/datanode");
-		conf.set("dfs.umaskmode", "007");
-		conf.set("dfs.datanode.du.reserved", "107374182400");
-		conf.set("dfs.datanode.du.pct", "0.85f");
-
-		FileSystem dfs = codesquare.Toolbox.getHDFS();
-
-		Job job = new Job(conf, "LOC1");
+	public Pass2(String input, String output, Configuration config,FileSystem hdfs) throws Exception {
+		
+		Job job = new Job(config);
 		job.setJarByClass(codesquare.badges.badge_21_22_23.Pass2.class);
 		job.setJobName("");
 
@@ -72,11 +47,10 @@ public class Pass2 {
 		job.setReducerClass(Reduce.class);
 		job.setInputFormatClass(TextInputFormat.class);
 		job.setOutputFormatClass(TextOutputFormat.class);
-		Toolbox.addDirectory(job, dfs, new Path(input));
+		Toolbox.addDirectory(job, hdfs, new Path(input));
 		FileInputFormat.addInputPath(job, new Path("bossList.txt"));
 		FileOutputFormat.setOutputPath(job, new Path(output));
 		job.waitForCompletion(true);
-		dfs.close();
 	}
 
 	/**
