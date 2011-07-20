@@ -103,14 +103,11 @@ public class Toolbox {
 				}
 				else {
 					FileInputFormat.addInputPath(job, directory);
-					System.out.println("Adding file to input path: "
-							+ directory.toString());
 				}
 			} else {
 
 				FileStatus[] fs = hdfs.listStatus(directory);
-				System.out.println("I'm going to go inside this folder: "
-						+ directory.toString());
+				
 				for (FileStatus entry : fs) {
 					addDirectory(job, hdfs, entry.getPath());
 				}

@@ -34,14 +34,18 @@ public class Badge_20_24 {
 	public static void main(String[] args) throws Exception {
 		Configuration hdfsConfig = Toolbox.getConfiguration();
 		FileSystem hdfs = Toolbox.getHDFS(hdfsConfig);
-		Configuration hBaseConfig = Toolbox.getConfiguration();
+		Configuration hBaseConfig = Toolbox.getHBaseConfiguration();
+		System.out.println("I've got the HBase Configuration");
 		HTable table = new HTable(hBaseConfig, "EmpBadges");
+		System.out.println("I've connected to the EmpBadges table");
 		String output1 = Toolbox.generateString();
+		System.out.println("I've generated the output String");
 		new LOC(args[0], output1, hdfsConfig, hdfs);
 		System.out.println("Badge_20_24 FINISHED!!!");
 		Pass2 pass2 = new Pass2(output1, hdfsConfig, hdfs);
 		Toolbox.addBadges(pass2.getMaxEmp(), "24", table);
 		Toolbox.deleteDirectory(new Path(output1), hdfs);
 		hdfs.close();
+		table.close();
 	}
 }
