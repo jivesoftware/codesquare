@@ -63,3 +63,7 @@ table {
   	-moz-text-shadow: 0 0 3px #fff;
   	-webkit-text-shadow: 0 0 3px #fff;
 	}
+
+.popup {
+       display: none;
+}

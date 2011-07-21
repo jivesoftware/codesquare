@@ -1,11 +1,6 @@
 var glObj = {};
 glObj.timer_is_on = 0;
 glObj.refreshTime = 3000;
-glObj.email = 'eric.ren@jivesoftware.com';
-glObj.bossEmail = 'deanna.surma@jivesoftware.com';
-
-//alert(glObj.timer_is_on); //test
-
 
 //continually request data from server
 function startBadges() {
@@ -14,7 +9,6 @@ function startBadges() {
 	alert("timer on: " + glObj.timer_is_on); //test
 	getBadges();
 	document.getElementById('button').innerHTML = "Stop requesting";
-	
     } 
     else {
 	glObj.timer_is_on = 0;
@@ -24,261 +18,47 @@ function startBadges() {
     }
 }
 
-// An utility function to get the size of an object
-Object.size = function(obj) {
-    var size = 0, key;
-    for (key in obj) {
-	if (obj.hasOwnProperty(key)) size++;
-    }
-    return size;
-};
-
-//calculates full url path, combines base URL and relativePath
-function fullURL(relativePath) {
-    var location = window.location.href;
-    var index = location.indexOf("url=");
-    //var index = -4;
-    location = location.substring(index + 4);
-    index = location.indexOf("&");
-    if (index >= 0) {
-	location = location.substring(0, index);
-    }
-    location = unescape(location.replace(/\+/g, " "));
-    index = location.lastIndexOf("/");
-    if (index >= 0) {
-	location = location.substring(0, index);
-    }
-    return location + "/" + relativePath;
-}
-
-
 // Does what you think it does...
-function makeBadgeTable() {
-    var url = 'http://10.45.111.143:9090/CodeSquareServlet/FrontEndServlet?email=' + glObj.email + '&bossEmail=' + glObj.bossEmail;
-    //document.getElementById('test').innerHTML += name +"<br />" + url;
+function makeBadgeTable(userEmail, bossEmail) {
+    var url = 'http://10.45.111.143:9090/CodeSquareServlet/FrontEndServlet?email=' + userEmail + '&bossEmail=' + bossEmail;
     var params = {'href' : url, 'format' : 'json', 'authz' : 'none' };
-       
+
     osapi.http.get(params).execute(function(response) {
-	    console.log(response);
-	    if (response.error) {
-		alert("Error: " + response.error.message + "\nbetter debug it..."); // Deal with this...
-	    }
-	    else {
-		// use the data 
-		var jsonObj = response.content;
-		console.log(jsonObj);
-		/*		
-    var jsonObj = {
-	"1": {
-	    "Name": "Commit 1 Badge",
-	    "IconURL": "images/1.png",
-	    "Description": "Made at least one commit",
-	    "new": "false"
-	},
-	"2": {
-	    "Name": "Commit 50 Badge",
-	    "IconURL": "images/2.png",
-	    "Description": "Made at least fifty commits",
-	    "new": "true"
-	},
-	"3": {
-	    "Name": "Unobtained",
-	    "IconURL": "images/unobtained.png",
-	    "Description": "Click to learn how to obtain",
-	    "new": "false"
-	},
-	"4": {
-	    "Name": "Unobtained",
-	    "IconURL": "images/unobtained.png",
-	    "Description": "Click to learn how to obtain",
-	    "new": "false"
-	},
-	"5": {
-	    "Name": "Unobtained",
-	    "IconURL": "images/unobtained.png",
-	    "Description": "Click to learn how to obtain",
-	    "new": "false"
-	},
-	"6": {
-	    "Name": "Unobtained",
-	    "IconURL": "images/unobtained.png",
-	    "Description": "Click to learn how to obtain",
-	    "new": "false"
-	},
-	"7": {
-	    "Name": "Unobtained",
-	    "IconURL": "images/unobtained.png",
-	    "Description": "Click to learn how to obtain",
-	    "new": "false"
-	},
-	"8": {
-	    "Name": "Unobtained",
-	    "IconURL": "images/unobtained.png",
-	    "Description": "Click to learn how to obtain",
-	    "new": "false"
-	},
-	"9": {
-	    "Name": "Unobtained",
-	    "IconURL": "images/unobtained.png",
-	    "Description": "Click to learn how to obtain",
-	    "new": "false"
-	},
-	"10": {
-	    "Name": "Unobtained",
-	    "IconURL": "images/unobtained.png",
-	    "Description": "Click to learn how to obtain",
-	    "new": "false"
-	},
-	"11": {
-	    "Name": "Unobtained",
-	    "IconURL": "images/unobtained.png",
-	    "Description": "Click to learn how to obtain",
-	    "new": "false"
-	},
-	"12": {
-	    "Name": "Unobtained",
-	    "IconURL": "images/unobtained.png",
-	    "Description": "Click to learn how to obtain",
-	    "new": "false"
-	},
-	"13": {
-	    "Name": "Unobtained",
-	    "IconURL": "images/unobtained.png",
-	    "Description": "Click to learn how to obtain",
-	    "new": "false"
-	},
-	"14": {
-	    "Name": "Unobtained",
-	    "IconURL": "images/unobtained.png",
-	    "Description": "Click to learn how to obtain",
-	    "new": "false"
-	},
-	"15": {
-	    "Name": "Unobtained",
-	    "IconURL": "images/unobtained.png",
-	    "Description": "Click to learn how to obtain",
-	    "new": "false"
-	},
-	"16": {
-	    "Name": "Unobtained",
-	    "IconURL": "images/unobtained.png",
-	    "Description": "Click to learn how to obtain",
-	    "new": "false"
-	},
-	"17": {
-	    "Name": "Unobtained",
-	    "IconURL": "images/unobtained.png",
-	    "Description": "Click to learn how to obtain",
-	    "new": "false"
-	},
-	"18": {
-	    "Name": "Unobtained",
-	    "IconURL": "images/unobtained.png",
-	    "Description": "Click to learn how to obtain",
-	    "new": "false"
-	},
-	"19": {
-	    "Name": "Unobtained",
-	    "IconURL": "images/unobtained.png",
-	    "Description": "Click to learn how to obtain",
-	    "new": "false"
-	},
-	"20": {
-	    "Name": "Unobtained",
-	    "IconURL": "images/unobtained.png",
-	    "Description": "Click to learn how to obtain",
-	    "new": "false"
-	},
-	"21": {
-	    "Name": "Unobtained",
-	    "IconURL": "images/unobtained.png",
-	    "Description": "Click to learn how to obtain",
-	    "new": "false"
-	},
-	"22": {
-	    "Name": "Unobtained",
-	    "IconURL": "images/unobtained.png",
-	    "Description": "Click to learn how to obtain",
-	    "new": "false"
-	},
-	"23": {
-	    "Name": "Unobtained",
-	    "IconURL": "images/unobtained.png",
-	    "Description": "Click to learn how to obtain",
-	    "new": "false"
-	},
-	"24": {
-	    "Name": "Unobtained",
-	    "IconURL": "images/unobtained.png",
-	    "Description": "Click to learn how to obtain",
-	    "new": "false"
-	},
-	"25": {
-	    "Name": "Unobtained",
-	    "IconURL": "images/unobtained.png",
-	    "Description": "Click to learn how to obtain",
-	    "new": "false"
-	},
-	"26": {
-	    "Name": "Unobtained",
-	    "IconURL": "images/unobtained.png",
-	    "Description": "Click to learn how to obtain",
-	    "new": "true"
-	},
-	"27": {
-	    "Name": "Unobtained",
-	    "IconURL": "images/unobtained.png",
-	    "Description": "Click to learn how to obtain",
-	    "new": "false"
-	},
-	"28": {
-	    "Name": "Unobtained",
-	    "IconURL": "images/unobtained.png",
-	    "Description": "Click to learn how to obtain",
-	    "new": "false"
-	},
-	"29": {
-	    "Name": "Unobtained",
-	    "IconURL": "images/unobtained.png",
-	    "Description": "Click to learn how to obtain",
-	    "new": "false"
-	},
-	"30": {
-	    "Name": "Unobtained",
-	    "IconURL": "images/unobtained.png",
-	    "Description": "Click to learn how to obtain",
-	    "new": "true"
+	console.log(response);
+	console.log(response);
+	if (response.error) {
+	    alert("Error: " + response.error.message + "\nbetter debug it..."); // Deal with this...
 	}
-	};*/
-    	var totalBadges = 0;
-    	var newBadges = 0;
-	var tableHTML = "";
-		for (var key = 1; key <= Object.size(jsonObj); key++) {
-		    var value = jsonObj[key];
-		    if (key % 5 == 1) {
-			 tableHTML += "<tr>";
-		     }
-		    var imgURL = fullURL(value.IconURL);
-		     console.log(fullURL(imgURL));
-		     var popupURL = fullURL("badgePopup.html");
-		     console.log(imgURL);
-		     tableHTML += "<td><form action='" + popupURL + "' method='GET'>" +
-			     "<input type='hidden' name='imgURL' value='" + imgURL + "'/>" +
-			     "<input type='hidden' name='name' value='" + value.Name + "'/>" +
-			     "<input type='hidden' name='desc' value='" + value.Description + "'/>";
-			if (value.Name !== "Unobtained") {totalBadges = totalBadges + 1;}
-			if (value.new == "true") {
-				tableHTML+= "<input class=\"highlight\" type='image' src='" + imgURL + "' value='Popup!' alt='Show badge info'/></form>";
-				newBadges = newBadges + 1;
-			}
-			else {
-			    tableHTML+= "<input class=\"shadow\" type='image' src='" + imgURL + "' value='Popup!' alt='Show badge info'/></form></td>";
-			}
-				
-		     if (key % 5 == 0) {
-			 tableHTML += "</tr>";
-		     }
+	else {
+	    // use the data 
+	    var jsonObj = response.content;
+	    var totalBadges = 0;
+    	    var newBadges = 0;
+	    var tableHTML = "";
+	    for (var key = 1; key <= Object.size(jsonObj); key++) {
+		var value = jsonObj[key];
+		if (key % 5 == 1) {
+		    tableHTML += "<tr>";
 		}
+		var imgURL = fullURL(value.IconURL);
+		var popupURL = fullURL("badgePopup.html");
+		tableHTML += "<td><form action='" + popupURL + "' method='GET'>" +
+		    "<input type='hidden' name='imgURL' value='" + imgURL + "'/>" +
+		    "<input type='hidden' name='name' value='" + value.Name + "'/>" +
+		    "<input type='hidden' name='desc' value='" + value.Description + "'/>";
+		if (value.IconURL !== "images/unobtained.png") {totalBadges = totalBadges + 1;}
+		if (value.new == "true") {
+		    tableHTML+= "<input class=\"highlight\" type='image' src='" + imgURL + "' value='Popup!' alt='Show badge info'/></form>";
+		    newBadges = newBadges + 1;
+		}
+		else {
+		    tableHTML+= "<input class=\"shadow\" type='image' src='" + imgURL + "' value='Popup!' alt='Show badge info'/></form></td>";
+		}
+		
+		if (key % 5 == 0) {
+		    tableHTML += "</tr>";
+		}
+	    }
 	    document.getElementById('badgeTable').innerHTML = tableHTML;
 
 	    var badgeCountHTML = "";
@@ -289,25 +69,9 @@ function makeBadgeTable() {
 	    }
 
 	    document.getElementById('numberOfBadges').innerHTML = badgeCountHTML;
-	    }
-	});
-    //glObj.t = setTimeout("getBadges()", glObj.refreshTime);
+	}
+    });
 }
-
-/*
-function onLoadHandler() {
-    var tabs = new gadgets.TabSet(__MODULE_ID__, null, document.getElementById('tabs_div'));
-    var params = {
-	callback: changeSelectedTab
-    };
-
-    params.contentContainer = document.getElementById('friends');
-    tabs.addTab('Friends', params);
-
-    params.contentContainer = document.getElementById('messages');
-    tabs.addTab('Messages', params);
-}
-*/
 
 function callback(tabId) {
     var p = document.createElement("p");
@@ -318,89 +82,180 @@ function callback(tabId) {
     makeBadgeTable();
 }
 
-//ditching adding tabs
-//var tabs = new gadgets.TabSet();
-function init() {
-    /*    osapi.people.getViewer().execute(function(viewerData) {
-	    if (!viewerData.error) {
-		var viewerDiv = document.getElementById('current_user_id'),
-		    viewerThumbnailImg = document.getElementById('viewerThumbnailImg');
-		viewerDiv.innerHTML += viewerData.displayName;
-		viewerThumbnailImg.attributes.getNamedItem("src").nodeValue=viewerData.thumbnailUrl;
-		
-		var user = viewerData.displayName;
-		glObj.user = user.replace(/\s/, '_');
-    */
-    /*
-    tabs.addTab("Two", {
-	    contentContainer: document.getElementById("two_id")
-    });
+function loadFancy() {
+    $("form").submit(function() {
+	$form = $(this);
+	$.fancybox({
+	    'href': $form.attr("action") + "?" + $form.serialize(),
+	    'transitionIn' : 'elastic',
+	    'transitionOut' : 'elastic',
+	    'autoScale' : false,
+	    'width': '40%',
+	    'height': '100%',
+	    'type': 'iframe',
+	});
+	console.dir($('form').data('events'));
 
-    tabs.addTab("Badges", {
-	    contentContainer: document.getElementById("badgeTab"),
-	    callback: callback
+	return false;
     });
-    */
-    makeBadgeTable();
-		//gadgets.window.adjustHeight();
-		//}
-//	})
+}
+
+
+
+function init() {
+    osapi.people.getViewer().execute(function(viewerBasicData) {
+	if (!viewerBasicData.error) {
+    	    var request = osapi.jive.core.users.get({id: viewerBasicData.id});
+    	    request.execute(function(viewer) {
+    		if (!viewer.error) {
+    		    var request2 = viewer.data.manager.get();
+    		    request2.execute(function(bossBasicData) {
+    			if (!bossBasicData.error) {
+    			    var request3 = osapi.jive.core.users.get({id: bossBasicData.data.id});
+    			    request3.execute(function(boss) {
+    				if (!boss.error) {
+    				    var user2 = boss.data
+    				    console.log("USEREMAIL: "+viewer.data.email);
+    				    console.log("BOSSEMAIL: "+boss.data.email);
+				    glObj.email = viewer.data.email;
+				    glObj.bossEmail = boss.data.email;
+				    
+    				    makeBadgeTable(viewer.data.email, boss.data.email);
+				    $("form")
+					.live('submit', function(e) {
+					    //console.log(e.type);
+					    $form = $(this);
+					    $.fancybox({
+						'href': $form.attr("action") + "?" + $form.serialize(),
+						'transitionIn' : 'elastic',
+						'transitionOut' : 'elastic',
+						'autoScale' : false,
+						'width': '40%',
+						'height': '80%',
+						'type': 'iframe',
+					    });
+					    e.preventDefault();
+					    console.log('form was submitted');
+					    return false;
+					});
+
+    				}
+    			    });
+    			}
+    		    });
+    		}
+   	    });
+    	}
+    });
 }
 
 gadgets.util.registerOnLoadHandler(init);
 
 
-//gadgets.window.adjustHeight();
-
-//Diiv Scripts
 
 //generates the array of the names of the Viewer's friends and creates an autocomplete text box using the names in nameArray
 function autoCompleteText(){
-	var nameArray = []; //Initializes a new empty array
-	var personArray = osapi.people.getViewerFriends(); // An array of Person JSON objects
-	var arrayLen = personArray.length;
-	
-	//Iterate through person objects and object the name of each person and add it to nameArray
-	for(var i = 0;i < arrayLen; i++){ 
-		var friendName = personArray[i].name; //obtain name string field from Person JSON object
-		nameArray[i] = friendName; //add name string to nameArray
-	}
-	
-	//Used in testing
-	var availableTags = [
-		"ActionScript",
-		"AppleScript",
-		"Asp",
-		"BASIC",
-		"C",
-		"C++",
-		"Clojure",
-		"COBOL",
-		"ColdFusion",
-		"Erlang",
-		"Fortran",
-		"Groovy",
-		"Haskell",
-		"Java",
-		"JavaScript",
-		"Lisp",
-		"Perl",
-		"PHP",
-		"Python",
-		"Ruby",
-		"Scala",
-		"Scheme"
-	];
-	//End used in testing
-	
-	$( "#tags" ).autocomplete({
-		//source: availableTags //used in testing
-		source: nameArray
-	});
+    var nameArray = []; //Initializes a new empty array
+    var personArray = osapi.people.getViewerFriends(); // An array of Person JSON objects
+    var arrayLen = personArray.length;
+    
+    //Iterate through person objects and object the name of each person and add it to nameArray
+    for(var i = 0;i < arrayLen; i++){ 
+	var friendName = personArray[i].name; //obtain name string field from Person JSON object
+	nameArray[i] = friendName; //add name string to nameArray
+    }
+    
+    //Used in testing
+    var availableTags = [
+	"ActionScript",
+	"AppleScript",
+	"Asp",
+	"BASIC",
+	"C",
+	"C++",
+	"Clojure",
+	"COBOL",
+	"ColdFusion",
+	"Erlang",
+	"Fortran",
+	"Groovy",
+	"Haskell",
+	"Java",
+	"JavaScript",
+	"Lisp",
+	"Perl",
+	"PHP",
+	"Python",
+	"Ruby",
+	"Scala",
+	"Scheme"
+    ];
+    //End used in testing
+    
+    $( "#tags" ).autocomplete({
+	//source: availableTags //used in testing
+	source: nameArray
+    });
+    alert(nameArray.length);
 }
 
-//sends a Jive message post to the person with friendName as their name
-function sendMessage(friendName){
-	
+
+
+//sends a Jive message post to the person with frName as their name -not working fix
+function sendMessage(frName){
+    var id = -1; 
+    var personArray = osapi.people.getViewerFriends(); // An array of Person JSON objects
+    var arrayLen = personArray.length;
+    
+    //Iterate through person objects and object the name of each person and add it to nameArray
+    for(var i = 0;i < arrayLen; i++){ 
+	var friendName = personArray[i].name; //obtain name string field from Person JSON object
+	if(frName == friendName){
+	    id = personArray[i].id; //get id to know who to send to
+	    break; //exit loop
+	}
+    }
+    
+    var idString = "" + id;
+    
+    
+    var postData = { 
+	activity: { 
+	    "title": "Bessie is leaving us", 
+	    "body": "${@actor} sold Bessie the Cow to ${@target} for $75.00", 
+	    // In the example, it resolves to "Amy Stewart sold Bessie the Cow to John Roberts for $75.00" line. 
+	    "icon": "http://example.org/icon/animal_sale.jpg", 
+	    // a 16x16 icon (png, gif, jpg) that appears in the entry. Here, it displays to the lower right of the @actor's avatar 
+	    "verb": "post", 
+	    "object": { 
+		"objectType": "article", 
+		"summary": "<strong>Adieu, Bessie.</strong><br/>I'm sure you will make one fantastic hamburger.", 
+		// keep the summary short. Under 200 characters (not including html tags), and no more than 5 lines of text. 
+		"mediaLink": { 
+		    "mediaType": "photo", 
+		    "url" : "http://example.org/photos/bessie.jpg" 
+		    // A link to attached media, thumbnails are automatically generated. 
+		} 
+	    }, 
+	    "target": { 
+		"id": "urn:jiveObject:user/1234", 
+		// A jiveObject URN for a user that will generate a user profile link when displayed. 
+		"displayName": "John Roberts" 
+	    } 
+	}, 
+	deliverTo: idString
+    };
+    
+    
+    osapi.activities.create(postData).execute(diivCallback(frName));	
+};
+
+
+function diivCallback(frName){
+    
+    var msg = new gadgets.MiniMessage(__MODULE_ID__);
+    msg.createDismissibleMessage("You sent your badge to " + frName + "!");
+    gadgets.window.adjustHeight();
 }
+
 

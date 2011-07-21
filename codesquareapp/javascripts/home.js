@@ -1,58 +1,52 @@
-var count = 0;
-function mycarousel_itemLoadCallback(carousel, state)
-{
-    // Since we get all URLs in one file, we simply add all items
-    // at once and set the size accordingly.
-    if (state != 'init')
-        return;
-
-// THIS IS WHERE YOU GET THE JSON INFO
-
-// doesn't work due to crossbrowser issues - will work when transfered to jiveapp api
-// just gives alert to show it's null.
-//    $.getJSON('http://10.45.111.143:9090/CodeSquareServlet/FrontEndServlet?email=eric.ren@jivesoftware.com', null, function(data) {
-//	alert(data);
-//    });
-
-
-    var url = 'http://10.45.111.143:9090/CodeSquareServlet/FrontEndServlet?email=eric.renm@jivesoftware.com&bossEmail=deanna.surma@jivesoftware.com';
+function makeCarousel(userEmail, bossEmail, carousel, state) {
+	var url = 'http://10.45.111.143:9090/CodeSquareServlet/FrontEndServlet?email='+userEmail+'&bossEmail='+bossEmail;
     var params = {'href' : url, 'format' : 'json', 'authz' : 'none' };
-
-    osapi.http.get(params).execute(function(response) {
-	    if (response.error) {
-		alert("Error: " + response.error.message + "\nbetter debug it..."); // Deal with this...
-	    }
+	osapi.http.get(params).execute(function(response) {
+		if (response.error) {
+			alert("Error: " + response.error.message + "\nbetter debug it..."); }
 	    else {
-		// get json data from response
-		var data = response.content;
-		console.log(data);
-		mycarousel_itemAddCallback(carousel, carousel.first, carousel.last, data);
-	    }
+			mycarousel_itemAddCallback(carousel, carousel.first, carousel.last, response.content); }
 	});
-  
-// code that actually runs everything - use and change this to jive api (not above code)
-//    jQuery.get('http://10.45.111.143:9090/CodeSquareServlet/FrontEndServlet?email=eric.ren@jivesoftware.com', function(data) {
-//       console.log(data);
-//       mycarousel_itemAddCallback(carousel, carousel.first, carousel.last, data);
+}
 
-//    });
-    
+function mycarousel_itemLoadCallback(carousel, state) {
+    if (state != 'init') return;
+
+	osapi.people.getViewer().execute(function(viewerBasicData) {
+		if (!viewerBasicData.error) {
+    		var request = osapi.jive.core.users.get({id: viewerBasicData.id});
+    		request.execute(function(viewer) {
+	   			if (!viewer.error) {
+    				var request2 = viewer.data.manager.get();
+    				request2.execute(function(bossBasicData) {
+    					if (!bossBasicData.error) {
+    						var request3 = osapi.jive.core.users.get({id: bossBasicData.data.id});
+    						request3.execute(function(boss) {
+    							if (!boss.error) {
+  	  								var user2 = boss.data
+    								console.log("USEREMAIL: "+viewer.data.email);
+    								console.log("BOSSEMAIL: "+boss.data.email);
+    								makeCarousel(viewer.data.email, boss.data.email, carousel, state);
+    							}
+    						});
+    					}
+					});
+    			}
+   			});
+    	}
+	});  
 };
 
-function mycarousel_itemAddCallback(carousel, first, last, data)
-{
-    // Simply add all items at once and set the size accordingly.
-    
-	var x = jQuery.parseJSON(data);
-	count = 0;
-
-	jQuery.each(x, function(i) {
-		if (x[i].Name !== 'Unobtained') {
-			count = count+1;
- 	 		carousel.add(count, mycarousel_getItemHTML(x[i].IconURL, x[i].Name, x[i].Description)); 
- 	 	}
- 	 });
-// CHANGE - COUNT ISSUE!!!
+function mycarousel_itemAddCallback(carousel, first, last, data) {
+	var count = 0;
+	for (var key = 1; key <= (Object.size(data)); key++) {
+		    var value = data[key];
+			if (value.IconURL !== 'images/unobtained.png') {
+				count = count+1;
+ 	 			carousel.add(count, mycarousel_getItemHTML(fullURL(value.IconURL), value.Name, value.Description)); 
+ 	 		}
+ 	 }
+    insertCount(count);
     carousel.size(count);
 };
 
@@ -63,9 +57,8 @@ function mycarousel_getItemHTML(url, name, description)
 { 
     return '<table width="293" height="110">' +
     			'<tr>' + 
-    				'<td>'+
-    				'<img class="badge" src="' + url + '" alt="'+url+'" /> </td>' +
-    				'<td><h4>'+name+'</h4>'+description+'</td>' +
+    				'<td> <img class="badge" src="' + url + '" alt="'+url+'" /> </td>' +
+    				'<td> <p> <h4>'+name+'</h4>'+description+' </p> </td>' +
     			'</tr>' +
     		'</table>';
 };
@@ -76,5 +69,29 @@ jQuery(document).ready(function() {
     });
 });
 
-function insertCount () { document.getElementById("count").innerHTML = count;}
+function insertCount(count) { document.getElementById("count").innerHTML = "You have "+count+" badges";}
 
+Object.size = function(obj) {
+    var size = 0, key;
+    for (key in obj) {
+	if (obj.hasOwnProperty(key)) size++;
+    }
+    return size;
+};
+
+function fullURL(relativePath) {
+    var location = window.location.href;
+    var index = location.indexOf("url=");
+    //var index = -4;
+    location = location.substring(index + 4);
+    index = location.indexOf("&");
+    if (index >= 0) {
+	location = location.substring(0, index);
+    }
+    location = unescape(location.replace(/\+/g, " "));
+    index = location.lastIndexOf("/");
+    if (index >= 0) {
+	location = location.substring(0, index);
+    }
+    return location + "/" + relativePath;
+}
