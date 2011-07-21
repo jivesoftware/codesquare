@@ -55,7 +55,7 @@ public class Pass2 {
 
 		job.setJarByClass(codesquare.badges.badge_20_24.Pass2.class);
 		job.setJobName("Badge_20_24");
-
+		job.setNumReduceTasks((int) (job.getNumReduceTasks()*Toolbox.reduceTaskConstant));
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(Text.class);
 		job.setMapperClass(Map.class);

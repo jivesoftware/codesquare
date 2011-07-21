@@ -35,7 +35,7 @@ public class LOC {
 
 		job.setJarByClass(codesquare.badges.sharedpasses.LOC.class);
 		job.setJobName("LOC");
-
+		job.setNumReduceTasks((int) (job.getNumReduceTasks()*Toolbox.reduceTaskConstant));
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(IntWritable.class);
 		job.setMapperClass(Map.class);
