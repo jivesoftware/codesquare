@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.NavigableSet;
+import java.util.TimeZone;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -247,6 +248,7 @@ public class HbaseTools {
 		Result data = null;
 	    Calendar cal = Calendar.getInstance();
 	    SimpleDateFormat sdf = new SimpleDateFormat("EEE MM dd HH:mm:ss z yyyy");
+	    cal.setTimeZone(TimeZone.getTimeZone("PDT"));
 	    String dateTime =  sdf.format(cal.getTime());
 		try {
 			data = table.get(get);
