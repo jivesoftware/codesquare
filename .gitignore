@@ -4,3 +4,12 @@
 /server/hbaseaccesscode/internalProcessing/.settings/
 /mapreds/14_15_20-25/nbproject/private/
 /mapreds/14_15_20-25/.settings/
+
+*.class
+.DS_Store
+*~
+*.orig
+*.BASE.*
+*.BACKUP.*
+*.LOCAL.*
+*.REMOTE.*
