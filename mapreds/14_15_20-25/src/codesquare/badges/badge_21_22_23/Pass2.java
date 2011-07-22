@@ -40,7 +40,7 @@ public class Pass2 {
 		Job job = new Job(config);
 		job.setJarByClass(codesquare.badges.badge_21_22_23.Pass2.class);
 		job.setJobName("");
-		job.setNumReduceTasks((int) (job.getNumReduceTasks()*Toolbox.reduceTaskConstant));
+		//job.setNumReduceTasks((int) (job.getNumReduceTasks()*.95));
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(Text.class);
 		job.setMapperClass(Map.class);

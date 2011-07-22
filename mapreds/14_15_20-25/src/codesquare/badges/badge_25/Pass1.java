@@ -46,7 +46,7 @@ public class Pass1 {
 
 		job.setJarByClass(Pass1.class);
 		job.setJobName("Badge25");
-		job.setNumReduceTasks((int) (job.getNumReduceTasks()*Toolbox.reduceTaskConstant));
+		//job.setNumReduceTasks((int) (job.getNumReduceTasks()*.95));
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(Text.class);
 		job.setMapperClass(Map.class);
