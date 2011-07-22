@@ -42,17 +42,9 @@ public class Pass1 {
 
 		job.setJarByClass(codesquare.badges.badge_14_15.Pass1.class);
 		job.setJobName("Badge_14_15");
-<<<<<<< HEAD
-<<<<<<< HEAD
-		ClusterMetrics cm = new ClusterMetrics();
-		cm.getReduceSlotCapacity();
+		
 		//job.setNumReduceTasks((int) (job.*.95));
-=======
-		//job.setNumReduceTasks(1);
->>>>>>> parent of 476889d... Set the number of reducers for the mapreduces
-=======
-		//job.setNumReduceTasks(1);
->>>>>>> parent of 476889d... Set the number of reducers for the mapreduces
+
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(Text.class);
 		job.setMapperClass(Map.class);

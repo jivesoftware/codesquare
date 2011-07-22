@@ -46,15 +46,9 @@ public class Pass1 {
 
 		job.setJarByClass(Pass1.class);
 		job.setJobName("Badge25");
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 		//job.setNumReduceTasks((int) (job.getNumReduceTasks()*.95));
-=======
 
->>>>>>> parent of 476889d... Set the number of reducers for the mapreduces
-=======
-
->>>>>>> parent of 476889d... Set the number of reducers for the mapreduces
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(Text.class);
 		job.setMapperClass(Map.class);
