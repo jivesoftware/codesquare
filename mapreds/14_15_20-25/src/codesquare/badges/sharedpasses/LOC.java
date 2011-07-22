@@ -35,7 +35,15 @@ public class LOC {
 
 		job.setJarByClass(codesquare.badges.sharedpasses.LOC.class);
 		job.setJobName("LOC");
+<<<<<<< HEAD
+<<<<<<< HEAD
 		//job.setNumReduceTasks((int) (job.getNumReduceTasks()*.95));
+=======
+
+>>>>>>> parent of 476889d... Set the number of reducers for the mapreduces
+=======
+
+>>>>>>> parent of 476889d... Set the number of reducers for the mapreduces
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(IntWritable.class);
 		job.setMapperClass(Map.class);

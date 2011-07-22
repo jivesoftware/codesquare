@@ -40,7 +40,15 @@ public class Pass2 {
 		Job job = new Job(config);
 		job.setJarByClass(codesquare.badges.badge_21_22_23.Pass2.class);
 		job.setJobName("");
+<<<<<<< HEAD
+<<<<<<< HEAD
 		//job.setNumReduceTasks((int) (job.getNumReduceTasks()*.95));
+=======
+
+>>>>>>> parent of 476889d... Set the number of reducers for the mapreduces
+=======
+
+>>>>>>> parent of 476889d... Set the number of reducers for the mapreduces
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(Text.class);
 		job.setMapperClass(Map.class);

@@ -26,7 +26,13 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
  * Class providing commonly used functions
  */
 public class Toolbox {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	public static final double reduceTaskConstant= (1.75) * 6;
+=======
+>>>>>>> parent of 476889d... Set the number of reducers for the mapreduces
+=======
+>>>>>>> parent of 476889d... Set the number of reducers for the mapreduces
 
 	/**
 	 * 
