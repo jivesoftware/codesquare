@@ -67,7 +67,7 @@ public class BadgeInfo {
 			// Open the file that is the first
 			// command line parameter
 			FileInputStream fstream = new FileInputStream(
-					"/Users/justin.kikuchi/Documents/githubfinal/codesquare/server/badgedescriptions");
+					"/Users/justin.kikuchi/Documents/githubrefactored/codesquare/server/badgedescriptions");
 			// Get the object of DataInputStream
 			DataInputStream in = new DataInputStream(fstream);
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
