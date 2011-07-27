@@ -41,7 +41,7 @@ public final class BasicBadges {
             awardBasicBadges(table, c); 
 	}
         
-        System.out.println("BEFORE FORLOOP");
+        System.out.println("BEFORE FORLOOP" + users.size());
         // iterate through users and add to hbase
         for (Map.Entry<String, UserInfo> entry : users.entrySet()) {
             System.out.println("INSIDE FORLOOP: "+entry.getValue().getBadges().toString());
