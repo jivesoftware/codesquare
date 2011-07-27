@@ -63,6 +63,7 @@ public final class BasicBadges {
             }
             
             System.out.println("New Badges: " + newBadges);
+            System.out.println("old new badges:" + badgeList[1]);
             
             String newBadgesString = "";
             for(String s : newBadges){
