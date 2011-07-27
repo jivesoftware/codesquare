@@ -239,17 +239,23 @@ public class Commit {
 	 * @return an Object array of commit statistical info
 	 */
 	public void addStats(String stats) {
+            
+            
                 System.out.println("Entered addStats: " + stats);
 		stats = stats.replace('[', ' ').replace(']', ' ').trim();
-                System.out.println(stats);
+                System.out.println("Stats after replace and trim to be tokenized: " + stats);
                 int totalInsertions, totalDeletions;
                 totalInsertions = totalDeletions = 0;
                 
+                
 		StringTokenizer st = new StringTokenizer(stats, " ");
+                
+                
                 int counter = 1;
                 
                 while(st.hasMoreTokens()){
                     String token = st.nextToken();
+                    System.out.println("Token: " + token);
                     System.out.println(token);
                     if(counter % 3 == 2){
                         totalInsertions += Integer.parseInt(token);
@@ -265,10 +271,7 @@ public class Commit {
                 
 		insertions = totalInsertions;
 		deletions = totalDeletions;
-		while (st.hasMoreTokens()) {
-			incrementNumFilesChanged();
-			appendFilesChanged(st.nextToken());
-		}
+		
                 System.out.println("Leaving addStats");
                 
                 
@@ -279,7 +282,11 @@ public class Commit {
 	public String filesToString() {
 		@SuppressWarnings("rawtypes")
 		Iterator iterator = filesChanged.iterator();
-		String str = iterator.next().toString();
+                String str = "";
+                if(iterator.hasNext()){
+                    str = iterator.next().toString();
+                }
+		
 		while (iterator.hasNext()) {
 			str = str + "," + iterator.next().toString();
 		}
@@ -287,7 +294,7 @@ public class Commit {
 	}
 
 	public String toString() {
-		return id + " " + email + " " + pushDate.globalToString() + " "
+		return id + " " + email + " " + pushDate.getGlobal().getTimeZone().getID() + " "
 				+ numFilesChanged + " [" + filesToString() + "] " + insertions
 				+ " " + deletions + " " + "\"" + msg + "\"";
 	}

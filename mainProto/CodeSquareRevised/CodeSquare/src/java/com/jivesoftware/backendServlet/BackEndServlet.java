@@ -43,7 +43,7 @@ public class BackEndServlet extends HttpServlet {
 		try{
 			doGetOrPost(request,response);
 		}catch(Exception e){
-			System.err.println(e.getClass() + ":" + e.getMessage());
+			e.printStackTrace();
 		}
 		
 		
@@ -57,7 +57,7 @@ public class BackEndServlet extends HttpServlet {
 				doGetOrPost(request,response);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				System.err.println(e.getClass() + ":" + e.getMessage());
+				e.printStackTrace();
 			}
 
 	}
@@ -89,8 +89,10 @@ public class BackEndServlet extends HttpServlet {
                     if(jArrCommits.length() > 0 && 
                        unixTime.length() > 0 && timeZone.length() > 0){
                         System.out.println("INFORLOOP-PARAMS1");
+                        
                         Configuration config = HDFSTools.getConfiguration();
 			FileSystem hdfs = FileSystem.get(config);
+                        
                         BasicBadges x = new BasicBadges(jArrCommits, hdfs, table, unixTime, timeZone);
                         hdfs.close();
                     }
