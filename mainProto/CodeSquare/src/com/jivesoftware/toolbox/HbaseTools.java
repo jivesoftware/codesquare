@@ -243,7 +243,7 @@ public class HbaseTools {
 		return results;
 	}
 
-	public static String getPushDate(HTable table, String email) {
+	public static String getPushDate(HTable table, String email, String sentPushDate) {
 		Get get = new Get(Bytes.toBytes(email));
 		Result data = null;
 	    Calendar cal = Calendar.getInstance();

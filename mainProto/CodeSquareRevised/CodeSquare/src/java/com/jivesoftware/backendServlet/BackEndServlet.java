@@ -12,12 +12,14 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.hbase.client.HConnectionManager;
 import org.apache.hadoop.hbase.client.HTable;
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import com.jivesoftware.toolbox.HDFSTools;
 import com.jivesoftware.toolbox.HbaseTools;
 import com.jivesoftware.badges.BasicBadges;
 import com.jivesoftware.toolbox.ServletTools;
+import java.io.OutputStream;
+import java.util.Enumeration;
+import java.util.Map;
 
 /**
  * Servlet implementation class BackEndServlet
@@ -70,59 +72,55 @@ public class BackEndServlet extends HttpServlet {
 	 * @throws IOException
 	 */
 	protected void doGetOrPost(HttpServletRequest request, HttpServletResponse response) throws Exception{
-		String queryStr = request.getQueryString();
-		Configuration hbaseConfig = HbaseTools.getHBaseConfiguration();
-		HTable table = HbaseTools.getTable(hbaseConfig);
-                System.out.println("Current time: " + System.currentTimeMillis());
-		if(queryStr == null){return;}
-		if(queryStr.contains("json") && queryStr.contains("pushDate")){
-			JSONArray jArrCommits = new JSONArray(request.getParameter("json"));
-			String pushDate = request.getParameter("pushDate");
-			System.out.println("JSON Parameter Passed: " + jArrCommits.toString());
-			System.out.println("pushDate Parameter Passed: " + pushDate);
-			
-			if(jArrCommits != null && pushDate != null && jArrCommits.toString().length() > 0 && pushDate.length() > 0){
-				Configuration config = HDFSTools.getConfiguration();
-				FileSystem hdfs = FileSystem.get(config);
-				
-				for(int i = 0;i < jArrCommits.length();i++){
-					JSONObject jCommit = new JSONObject(jArrCommits.get(i).toString());
-                                        System.out.println(jCommit.toString());
-					Commit c = ServletTools.convertToCommit(jCommit, pushDate);
-					HDFSTools.writeCommitToHDFS(hdfs, c); //writes a commit as it's own text file in the appropriate HDFS folder
-					//TODO Hey Justin mind writing this one too?
-					BasicBadges.checkUpdateBadges(table, c, 0); //checks to see if this commit earned it's commiter any basic badges
-				}
-				
-				hdfs.close(); //close connection to hdfs
+                Configuration hbaseConfig = HbaseTools.getHBaseConfiguration();
+                HTable table = HbaseTools.getTable(hbaseConfig);
+                System.out.println("QSTRING: "+request.getQueryString());
+                String[] params = {"json", "unixTime", "timeZone"};
+                String[] params2 = {"email", "unixTime", "timeZone"};
+                if (ServletTools.hasParams(request ,params)) {
+                    System.out.println("PARAMS1");
+                    String unixTime = request.getParameter(params[1]);
+                    System.out.println("unixTime: "+unixTime);
+                    String timeZone = request.getParameter(params[2]);
+                    System.out.println("timeZone: "+timeZone);
+                    System.out.println("JSON: "+request.getParameter(params[0]));
+                    JSONArray jArrCommits = new JSONArray(request.getParameter(params[0]));
+                    System.out.println("jArrCommits: "+jArrCommits+"LENGTH"+jArrCommits.length());
+                    if(jArrCommits.length() > 0 && 
+                       unixTime.length() > 0 && timeZone.length() > 0){
+                        System.out.println("INFORLOOP-PARAMS1");
+                        Configuration config = HDFSTools.getConfiguration();
+			FileSystem hdfs = FileSystem.get(config);
+                        BasicBadges x = new BasicBadges(jArrCommits, hdfs, table, unixTime, timeZone);
+                        hdfs.close();
+                    }
+                    else {
+                        System.out.println("LENGTH FAIL");
+                    }
+                }
+                else if(ServletTools.hasParams(request,params2)){
+                        System.out.println("PARAMS2");
+			String email = request.getParameter(params2[0]);
+                        String unixTime = request.getParameter(params2[1]);
+                        String timeZone = request.getParameter(params2[2]);
+			if(email.length() > 0 && 
+                                unixTime.length() > 0 && timeZone.length() > 0){
+                            System.out.println("INFORLOOP-PARAMS2");
+                            // get recent push date, update with new push date
+                            String pushDate = HbaseTools.getAndUpdatePushDate(table, email, unixTime, timeZone);
+                            // send back info
+                            OutputStream out = response.getOutputStream();
+                            out.write(pushDate.getBytes());
+                            out.close();
 				
 			}else{
-				System.err.println("One of the request parameter values is bad: " + jArrCommits.toString() + " " + pushDate);
+				System.err.println("Bad pushDate Parameter Value: " + "EX");
 			}
-			
-		}else if(queryStr.contains("recDate")){
-			String infoForRecDate = request.getParameter("recDate");
-			System.out.println("recDate Parameter Passed: " + infoForRecDate);
-			
-			if(infoForRecDate != null && infoForRecDate.length() > 0){
-				
-				JSONObject jRecDate = new JSONObject();
-				String mostRecentPushDate = HbaseTools.getPushDate(table, infoForRecDate);
-				jRecDate.put("recDate", mostRecentPushDate);
-				ServletTools.sendJSONOutput(response,jRecDate);
-				
-			}else{
-				System.err.println("Bad recDate Parameter Value: " + infoForRecDate);
-			}
-		}else{
-			System.err.println("Bad Query String: " + queryStr);
-		}
-		
+		}else{	System.err.println("BAD PARAMS: " + "EX");	
 		// free resources and close connections
 		HConnectionManager.deleteConnection(hbaseConfig, true);
 		table.close();
 	}
-	
-	
+}
 
 }

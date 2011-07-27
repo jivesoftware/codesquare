@@ -1,10 +1,13 @@
 package com.jivesoftware.toolbox;
 
+import com.jivesoftware.backendServlet.JiveDate;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.NavigableSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -206,19 +209,24 @@ public class HbaseTools {
 	 * 
 	 * @return The String of the last commit date
 	 */
-	public static String getLastCommit(Result data) {
+	public static String getLastCommit(Result data, Calendar newDate) {
 		String lastCommit = "";
 		if (data == null) {
+                    System.out.println("IN LASTCOMMIT data=null");
 			return "";
 		}
 		if (data.isEmpty()) {
+                    System.out.println("IN LASTCOMMIT data.empty");
 			return "";
 		}
-		try {
+		try { 
 			lastCommit = new String(data.getValue(Bytes.toBytes("Info"),
 					Bytes.toBytes("lastCommit")));
+                        System.out.println("IN LASTCOMMIT LastCommit: "+lastCommit);
 		} catch (java.lang.NullPointerException e) {
-			return "";
+                        System.out.println("IN LASTCOMMIT nullpointer");
+                        System.out.println("NEWDATE: "+String.valueOf(newDate.getTime().getTime())+" "+newDate.getTimeZone().getID());
+			return String.valueOf(newDate.getTime().getTime())+" "+newDate.getTimeZone().getID();
 		}
 		return lastCommit;
 	}
@@ -242,31 +250,24 @@ public class HbaseTools {
 		return results;
 	}
 
-	public static String getPushDate(HTable table, String email) {
-		Get get = new Get(Bytes.toBytes(email));
-		Result data = null;
-	    Calendar cal = Calendar.getInstance();
-	    SimpleDateFormat sdf = new SimpleDateFormat("EEE MM dd HH:mm:ss z yyyy");
-	    String dateTime =  sdf.format(cal.getTime());
-		try {
-			data = table.get(get);
-		} catch (Exception e) {
-			System.err.println();
-		}
-		if (data == null) {
-			return dateTime;
-		}
-		if (data.isEmpty()) {
-			return null;
-		}
-		String lastCommit = "";
-		try {
-			lastCommit = new String(data.getValue(Bytes.toBytes("Info"),
-					Bytes.toBytes("lastPush")));
-		} catch (java.lang.NullPointerException e) {
-			return dateTime;
-		}
-		return lastCommit;
+	public static String getAndUpdatePushDate(HTable table, String email, String unixTime, String timeZone)  {
+            Result data = null;
+            try {
+                data = table.get(new Get(Bytes.toBytes(email)));
+            } catch (IOException ex) {
+                Logger.getLogger(HbaseTools.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            if (data.isEmpty()) {
+		return null;
+            }
+            String oldPushDate = ""; // unixTimestamp
+            try {
+		oldPushDate = new String(data.getValue(Bytes.toBytes("Info"),
+             			Bytes.toBytes("lastPush")));
+            } catch (java.lang.NullPointerException e) {
+		return unixTime;
+            }
+            return oldPushDate;
 	}
 	
 	public static Result getRowData(HTable table, String email) {
@@ -323,7 +324,7 @@ public class HbaseTools {
 		String[] fields = { "badgesWeek", "numBugs", "numCommits", "consecCommits" };
 		int[] results = getFields(data, fields);
 		System.out.println("1numbugs=\t" + results[1]);
-		System.out.println("1lastCommit=\t" + getLastCommit(data));
+		// System.out.println("1lastCommit=\t" + getLastCommit(data));
 		System.out.println("1badgesWeek=\t" + results[0]);
 		System.out.println("1numCommits=\t" + results[2]);
 		System.out.println("1consecCommits=\t" + results[3]);
@@ -379,15 +380,6 @@ public class HbaseTools {
         }
 
 
-        /* checks for personal message, not used at the moment
-        String[] result =  new String[resultingBadges.size()];
-        result = resultingBadges.toArray(result);
-        
-        for(int i=0; i<result.length; i++){
-        String customDescription = new String(data.getValue(Bytes.toBytes("Badge"), Bytes.toBytes(result[i])));
-        int currentBadgeIndex = resultingBadges.indexOf(result[i]);
-        resultingBadges.add(currentBadgeIndex+1, customDescription);
-        }*/
 
         String[] result = new String[resultingBadges.size()];
         result = resultingBadges.toArray(result);
@@ -490,3 +482,15 @@ public class HbaseTools {
     }
 
 }
+
+
+
+        /* checks for personal message, not used at the moment
+        String[] result =  new String[resultingBadges.size()];
+        result = resultingBadges.toArray(result);
+        
+        for(int i=0; i<result.length; i++){
+        String customDescription = new String(data.getValue(Bytes.toBytes("Badge"), Bytes.toBytes(result[i])));
+        int currentBadgeIndex = resultingBadges.indexOf(result[i]);
+        resultingBadges.add(currentBadgeIndex+1, customDescription);
+        }*/

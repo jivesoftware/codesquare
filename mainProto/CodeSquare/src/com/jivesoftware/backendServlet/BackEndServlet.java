@@ -1,6 +1,8 @@
 package com.jivesoftware.backendServlet;
 
 import java.io.IOException;
+import java.io.OutputStream;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -106,8 +108,9 @@ public class BackEndServlet extends HttpServlet {
 				
 				JSONObject jRecDate = new JSONObject();
 				String mostRecentPushDate = HbaseTools.getPushDate(table, infoForRecDate);
-				jRecDate.put("recDate", mostRecentPushDate);
-				ServletTools.sendJSONOutput(response,jRecDate);
+				OutputStream out = response.getOutputStream();
+				out.write(mostRecentPushDate.getBytes());
+				out.close();
 				
 			}else{
 				System.err.println("Bad recDate Parameter Value: " + infoForRecDate);

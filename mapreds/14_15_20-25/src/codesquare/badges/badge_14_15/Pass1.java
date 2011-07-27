@@ -25,7 +25,6 @@ import codesquare.Toolbox;
  * accepts a directory - searches for all files recursively
  * 
  * @author deanna.surma
- * 
  */
 public class Pass1 {
 	// receives commits

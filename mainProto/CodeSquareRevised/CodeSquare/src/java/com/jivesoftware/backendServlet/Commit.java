@@ -16,8 +16,8 @@ public class Commit {
 	private String msg;
 	private String email;
 
-	private Date commitDate = new Date();
-	private Date pushDate = new Date();
+	private JiveDate commitDate;
+        private JiveDate pushDate;
 
 	private int numFilesChanged;
 	private ArrayList<String> filesChanged;
@@ -50,7 +50,7 @@ public class Commit {
 	 */
 	public Commit(String id, String email, String msg, int numFilesChanged,
 			ArrayList<String> filesChanged, int insertions, int deletions,
-			Date commitDate, Date pushDate) {
+			JiveDate commitDate, JiveDate pushDate) {
 		this.id = id;
 		this.msg = msg;
 		this.numFilesChanged = numFilesChanged;
@@ -61,12 +61,12 @@ public class Commit {
 		this.commitDate = commitDate;
 		this.pushDate = pushDate;
 	}
-
+        
 	/**
 	 * 
 	 * @return commit date
 	 */
-	public Date getCommitDate() {
+	public JiveDate getCommitDate() {
 		return commitDate;
 	}
 
@@ -74,7 +74,7 @@ public class Commit {
 	 * 
 	 * set commit date
 	 */
-	public void setCommitDate(Date commitDate) {
+	public void setCommitDate(JiveDate commitDate) {
 		this.commitDate = commitDate;
 	}
 
@@ -82,7 +82,7 @@ public class Commit {
 	 * 
 	 * @return push date
 	 */
-	public Date getPushDate() {
+	public JiveDate getPushDate() {
 		return pushDate;
 	}
 
@@ -90,7 +90,7 @@ public class Commit {
 	 * 
 	 * set push date
 	 */
-	public void setPushDate(Date pushDate) {
+	public void setPushDate(JiveDate pushDate) {
 		this.pushDate = pushDate;
 	}
 
@@ -287,7 +287,7 @@ public class Commit {
 	}
 
 	public String toString() {
-		return id + " " + email + " " + pushDate.toString() + " "
+		return id + " " + email + " " + pushDate.globalToString() + " "
 				+ numFilesChanged + " [" + filesToString() + "] " + insertions
 				+ " " + deletions + " " + "\"" + msg + "\"";
 	}

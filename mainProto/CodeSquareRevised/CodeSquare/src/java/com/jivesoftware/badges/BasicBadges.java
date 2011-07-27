@@ -1,18 +1,88 @@
 package com.jivesoftware.badges;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import org.apache.hadoop.fs.FileSystem;
 
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
 
-import com.jivesoftware.backendServlet.Commit;
 import com.jivesoftware.toolbox.HbaseTools;
+import com.jivesoftware.backendServlet.JiveDate;
+import com.jivesoftware.backendServlet.Commit;
+import java.io.IOException;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.hbase.client.HTable;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-public class BasicBadges {
+import com.jivesoftware.toolbox.HDFSTools;
+import com.jivesoftware.toolbox.HbaseTools;
+import com.jivesoftware.toolbox.ServletTools;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+public final class BasicBadges {
+    
+    HashMap<String, UserInfo> users = new HashMap<String, UserInfo>();
+    
+    public BasicBadges(JSONArray jArrCommits, FileSystem hdfs, HTable table, 
+                        String unixTime, String timeZone) throws JSONException, IOException {
+        // iterate through and process/store info locally
+        for(int i = 0;i < jArrCommits.length();i++){
+            JSONObject jCommit = new JSONObject(jArrCommits.get(i).toString());
+            System.out.println(jCommit.toString());
+            Commit c = ServletTools.convertToCommit(jCommit, unixTime, timeZone);
+            HDFSTools.writeCommitToHDFS(hdfs, c); 
+            System.out.println("BEFORE AWARDS");
+            awardBasicBadges(table, c); 
+	}
+        
+        System.out.println("BEFORE FORLOOP");
+        // iterate through users and add to hbase
+        for (Map.Entry<String, UserInfo> entry : users.entrySet()) {
+            System.out.println("INSIDE FORLOOP: "+entry.getValue().getBadges().toString());
+            ArrayList<String> arrBadges = entry.getValue().getBadges();
+            ArrayList<String> newBadges = entry.getValue().getBadges();
+            System.out.println("INSIDE FORLOOP1: "+entry.getKey());
+            Result data = HbaseTools.getRowData(table, entry.getKey());
+            System.out.println("INSIDE FORLOOP2: "+data);
+            Object[] badgeList = HbaseTools.getBadges(data);
+            System.out.println("INSIDE FORLOOP3: "+badgeList.toString());
+            System.out.println("INSIDE FORLOOP4: "+badgeList[0].toString());
+            ArrayList<String> oldBadges = (ArrayList<String>) badgeList[0];
+            System.out.println("INSIDE FORLOOP5: "+oldBadges.toString());
+            for (int i = 0; i < newBadges.size(); i++) {
+                System.out.println("INSIDE FORLOOP6: "+oldBadges.contains(newBadges.get(i)));
+                if (oldBadges.contains(newBadges.get(i))) {
+                    newBadges.remove(i--);
+		}
+            }
+            System.out.println("INSIDE FORLOOP7: "+newBadges.toString());
+            HbaseTools.addRow(table, 
+                entry.getKey(), 
+                entry.getValue().getLastCommit(), 
+                entry.getValue().getBadgesWeek(),
+		entry.getValue().getNumBugs(), 
+                entry.getValue().getNumCommits(), 
+                entry.getValue().getConsecCommits(), 
+                newBadges.toString(),
+		arrBadges.toArray(new String[arrBadges.size()]));
+            System.out.println("INSIDE FORLOOP8: "+entry.getKey());
+            System.out.println("INSIDE FORLOOP9: "+entry.getValue().getLastCommit());
+            System.out.println("INSIDE FORLOOP10: "+entry.getValue().getBadgesWeek());
+            System.out.println("INSIDE FORLOOP11: "+entry.getValue().getNumBugs());
+            System.out.println("INSIDE FORLOOP12: "+entry.getValue().getNumCommits());
+            System.out.println("INSIDE FORLOOP13: "+entry.getValue().getConsecCommits());
+            System.out.println("INSIDE FORLOOP14: "+newBadges.toString());
+            System.out.println("INSIDE FORLOOP15: "+arrBadges.toArray(new String[arrBadges.size()]));
+            }
+            
+    }
+
 	
 	/***
 	 * This method takes various information from a recent commit, and uses it
@@ -26,207 +96,171 @@ public class BasicBadges {
 	 * @param numBugs
 	 *            number of bugs the user fixed, currently not in use
 	 */
-	public static void checkUpdateBadges(HTable table, Commit c, int numBugs) {
-
-		Result data = HbaseTools.getRowData(table, c.getEmail());
-		// person does not exist
-		if (data == null) {
-			return;
-		}
-		String date = c.getCommitDate().getYear()+"-"+c.getCommitDate().getMonth()+"-"+c.getCommitDate().getDate();
-		int[] fieldValues = HbaseTools.getFields(data, new String[] { "badgesWeek", "numBugs", "numCommits", "consecCommits" });
-		String lastCommit = HbaseTools.getLastCommit(data);
-		ArrayList<String> badges = testDateTimeBadges(date, c.getCommitDate().getDay(), c.getCommitDate().getHour());
-
-		fieldValues[1] = fieldValues[1] + numBugs;
-		fieldValues[2] = fieldValues[2] + 1;
-
-		int[] consecCommits = checkConsecCommits(date, lastCommit, fieldValues[3]);
-
-		badges.addAll(checkNumericalBadges(fieldValues, consecCommits));
-		// checks for jive in the message
-		if (c.getMessage().toLowerCase().contains("jive")) {
-			badges.add("26");
-		}
-		Object[] badgeList = HbaseTools.getBadges(data);
-		@SuppressWarnings("unchecked")
-		ArrayList<String> aquiredBadges = (ArrayList<String>) badgeList[0];
-		for (int i = 0; i < badges.size(); i++) {
-			if (aquiredBadges.contains(badges.get(i))) {
-				badges.remove(i--);
-			}
-		}
-		// checks to see if there are more than 7 new badges in the week
-		// ???
-		if ((badges.size() + fieldValues[0]) > 7) {
-			if(!aquiredBadges.contains("16")){
-				badges.add("16");
-			}
-		}
-		String newBadges = (String) badgeList[1];
-		String[] results = new String[badges.size()];
-		HbaseTools.addRow(table, c.getEmail(), date, badges.size() + fieldValues[0],
-				fieldValues[1], fieldValues[2], consecCommits[0], newBadges,
-				badges.toArray(results));
+	public void awardBasicBadges(HTable table, Commit c) {
+            System.out.println("IN AWARDS"+c.getEmail());
+            // get user
+            UserInfo currentUser = null;
+            System.out.println("IF1 AWARDS: "+users.containsKey(c.getEmail()));
+            if (users.containsKey(c.getEmail())){
+                currentUser = users.get(c.getEmail());
+            }
+            else {
+                Result data = HbaseTools.getRowData(table, c.getEmail());
+                System.out.println("IF2 AWARDS: "+(data == null));
+		if (data == null) { return;}
+                else {
+                    currentUser = new UserInfo(c.getEmail(), data, c.getCommitDate().getLocal());
+                }
+            }
+            
+            System.out.println("CheckBadges"+currentUser.getEmail());
+            
+            // check badges
+            checkHolidayBadges(currentUser, c.getCommitDate());
+            System.out.println("Badges1");
+            checkTimeBadges(currentUser, c.getCommitDate());
+            System.out.println("Badges2");
+            checkNumCommitBadges(currentUser);
+            System.out.println("Badges3");
+            checkBadges27And28(currentUser, c.getCommitDate()); 
+            System.out.println("Badges4");
+            checkBadge30(currentUser, c); 
+            System.out.println("Badges5");
+            checkMessageBadges(currentUser, c.getMessage());
+            System.out.println("Badges6");
 	}
 
-	
-	/***
-	 * This method takes in information passed in from the HBase to check for
-	 * number of commits, and committed person
-	 * 
-	 * @param fieldValues
-	 *            array of three things, [0] is number of badges in week, [1] is
-	 *            bugs, [2] is number of commits
-	 * @param consecCommits
-	 *            [0] is committed person, [1] is 2 commits in a day, [2] is 2
-	 *            commits in >5days
-	 * @return ArrayList of acquired badges
-	 */
-	public static ArrayList<String> checkNumericalBadges(int[] fieldValues,
-			int[] consecCommits) {
-		ArrayList<String> badges = new ArrayList<String>();
-		int totNumBugs = fieldValues[1];
-		int totNumCommits = fieldValues[2];
 
-		if (consecCommits[0] >= 7) {
-			badges.add("30");
-		}
-		if (consecCommits[1] == 1) {
-			badges.add("27");
-		} else if (consecCommits[1] == 2) {
-			badges.add("28");
-		}
-
-		// bug stuff is not currently implemented, but is being checked for here
-		if (totNumBugs > 100) {
-			badges.add("35");
-		} else if (totNumBugs > 50) {
-			badges.add("34");
-		} else if (totNumBugs > 25) {
-			badges.add("33");
-		} else if (totNumBugs > 10) {
-			badges.add("32");
-		} else if (totNumBugs > 1) {
-			badges.add("31");
-		}
-
-		if (totNumCommits > 4999) {
-			badges.add("5");
-		} else if (totNumCommits > 999) {
-			badges.add("4");
-		} else if (totNumCommits > 499) {
-			badges.add("3");
-		} else if (totNumCommits > 49) {
-			badges.add("2");
-		} else if (totNumCommits > 0) {
-			badges.add("1");
-		}
-
-		return badges;
-	}
-	
+        // 26
+        public void checkMessageBadges(UserInfo user, String message){
+            if (message.toLowerCase().contains("jive")) {
+			user.addBadge("26");
+            }
+        }
+        
+        //30
+        public void checkBadge30(UserInfo user, Commit c) {
+            Calendar oldDate = user.getDate().getLocal();
+            oldDate.add(Calendar.DAY_OF_MONTH, 1);
+            Calendar newDate = c.getCommitDate().getLocal();
+            if (equals(oldDate, newDate)){
+                user.incrementConsecCommits();
+            } 
+            oldDate.add(Calendar.DAY_OF_MONTH, -1);
+            if (user.getConsecCommits() > 6) {
+                user.addBadge("30");
+            }
+            
+        }
+        
+        public boolean equals(Calendar x, Calendar y){
+            if (x.get(Calendar.DAY_OF_MONTH)==y.get(Calendar.DAY_OF_MONTH)) {
+                if (x.get(Calendar.MONTH)==y.get(Calendar.MONTH)) {
+                    if (x.get(Calendar.YEAR)==y.get(Calendar.YEAR)) {
+                        return true;
+                    }
+                }   
+            }
+            return false;
+        }
+        // 27, 28
 	/***
 	 * This method checks to see if there are commits on consecutive days, twice
 	 * in a day, or greater than 5days
 	 * 
-	 * @param commitDate
+	 * @param currentUser
 	 *            New commit date
-	 * @param lastCommit
+	 * @param newDate
 	 *            Previous commit date
-	 * @param consecCommitsOld
-	 *            Consecutive commits before the newest commit
-	 * @return An integer array, [0] is consecutive commits, [1] is commits in a
-	 *         day, [2] is commits in >5days
 	 */
-	public static int[] checkConsecCommits(String commitDate,
-			String lastCommit, int consecCommitsOld) {
-		int[] result = new int[2]; // result[0] is commited person field, and
-									// result[1] is (value = 1)2 commits in a
-									// day or (value = 2)2 commits in >5 days: 0
-									// is none
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		DateFormat dfcheck = new SimpleDateFormat("dd");
-		Date check = null;
-		Date date = null;
-		Date dateOld = null;
-
-		result[0] = 1;
-		result[1] = 0;
-		if (lastCommit.isEmpty()) {
-			return result;
-		}
-		try {
-			date = df.parse(commitDate);
-			dateOld = df.parse(lastCommit);
-			check = dfcheck.parse("02");
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		if ((date.getTime() - dateOld.getTime()) < check.getTime()
-				&& date.getTime() != dateOld.getTime()) {
-			result[0] = consecCommitsOld + 1;
-		} else if (date.getTime() == dateOld.getTime()) {
-			result[0] = consecCommitsOld;
-			result[1] = 1;
-		}
-		try {
-			check = dfcheck.parse("05");
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		if (date.getTime() - dateOld.getTime() > check.getTime()) {
-			result[1] = 2;
-		}
-		return result;
+	public void checkBadges27And28(UserInfo user, JiveDate newDate) {
+                long oldCommitTime = user.getLastCommitTime();
+                long timeDiff = newDate.getLocal().getTime().getTime() - oldCommitTime;
+                if (timeDiff < 24*60*60 ){
+                    user.addBadge("27");
+                }
+                if (timeDiff > (5*24*60*60) ){
+                     user.addBadge("28");
+                }
 	}
 	
-	/***
-	 * This method determines simple date and time badges
-	 * 
-	 * @param date
-	 *            date of commit
-	 * @param dayofWeek
-	 *            day of the week user committed
-	 * @param hour
-	 *            hour of the commit
-	 * @return ArrayList of the attained badges
-	 */
-
-	public static ArrayList<String> testDateTimeBadges(String date,
-			String dayofWeek, int hour) {
-		ArrayList<String> badges = new ArrayList<String>();
-
-		if (date.contains("-03-17")) {
-			badges.add("7");
-		} else if (date.contains("-10-31")) {
-			badges.add("6");
-		} else if (date.contains("-02-29")) {
-			badges.add("8");
-		} else if (date.contains("-02-14")) {
-			badges.add("9");
-		} else if (date.contains("-03-14")) {
-			badges.add("10");
+         // 1, 2, 3, 4, 5
+        public void checkNumCommitBadges(UserInfo user){
+            int numCommits = user.getNumCommits();
+            if (numCommits > 4999) {
+		user.addBadge("5");
+            } else if (numCommits > 999) {
+                user.addBadge("4");
+            } else if (numCommits > 499) {
+                user.addBadge("3");
+            } else if (numCommits > 49) {
+                user.addBadge("2");
+            } else if (numCommits > 0) {
+                user.addBadge("1");
+            }
+        }
+        
+        // 6, 7, 8, 9, 10
+        public void checkHolidayBadges(UserInfo user, JiveDate commitDate) {
+                if (commitDate.equalsLocal(10, 31)) {
+			user.addBadge("6");
+		} else if (commitDate.equalsLocal(3, 17)) {
+			user.addBadge("7");
+		} else if (commitDate.equalsLocal(2, 29)) {
+			user.addBadge("8");
+		} else if (commitDate.equalsLocal(2, 14)) {
+			user.addBadge("9");
+		} else if (commitDate.equalsLocal(3, 14)) {
+			user.addBadge("10");
 		}
-
-		if (dayofWeek.equals("Mon") && hour <= 5) {
-			badges.add("18");
-		} else if (dayofWeek.equals("Fri") && hour >= 16) {
-			badges.add("19");
-		} else if (dayofWeek.equals("Sat") || dayofWeek.equals("Sun")) {
-			badges.add("29");
+	}
+        
+        // 12, 13, 18, 19, 29
+        public void checkTimeBadges(UserInfo user, JiveDate commitDate) {
+            	if (commitDate.getLocalHour() >=22) {
+                    user.addBadge("12");
 		}
-		if (hour >= 22) {
-			badges.add("12");
+                else if (commitDate.getLocalHour() <=6) {
+                    user.addBadge("13");
 		}
-		if (hour <= 6) {
-			badges.add("13");
+		if (commitDate.getLocalDay()==1 && commitDate.getLocalHour() <=5) {
+                    user.addBadge("18");
+		} else if (commitDate.getLocalDay()==6 && commitDate.getLocalHour() >=16) {
+                    user.addBadge("19");
+		} else if (commitDate.getLocalDay()==1 || commitDate.getLocalDay()==7) {
+                    user.addBadge("29");
 		}
-
-		return badges;
 	}
 	
 }
+
+
+//		// bug stuff is not currently implemented, but is being checked for here
+//		if (totNumBugs > 100) {
+//			badges.add("35");
+//		} else if (totNumBugs > 50) {
+//			badges.add("34");
+//		} else if (totNumBugs > 25) {
+//			badges.add("33");
+//		} else if (totNumBugs > 10) {
+//			badges.add("32");
+//		} else if (totNumBugs > 1) {
+//			badges.add("31");
+//		}
+
+
+//		Object[] badgeList = HbaseTools.getBadges(data);
+//		@SuppressWarnings("unchecked")
+//		ArrayList<String> aquiredBadges = (ArrayList<String>) badgeList[0];
+//		for (int i = 0; i < badges.size(); i++) {
+//			if (aquiredBadges.contains(badges.get(i))) {
+//				badges.remove(i--);
+//			}
+//		}
+//		// checks to see if there are more than 7 new badges in the week
+//		// ???
+//		if ((badges.size() + fieldValues[0]) > 7) {
+//			if(!aquiredBadges.contains("16")){
+//				badges.add("16");
+//			} CURRENTLY NOT IMPLEMENTED!!!
+//		}

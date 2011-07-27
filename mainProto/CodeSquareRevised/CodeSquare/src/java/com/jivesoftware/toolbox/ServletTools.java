@@ -9,7 +9,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.jivesoftware.backendServlet.Commit;
-import com.jivesoftware.backendServlet.Date;
+import com.jivesoftware.backendServlet.JiveDate;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * This class includes methods that amy be useful to any servlet
@@ -17,6 +22,28 @@ import com.jivesoftware.backendServlet.Date;
  *
  */
 public class ServletTools {
+    
+         public static boolean hasParams(HttpServletRequest request, String[] params){
+             System.out.println("XXX: "+(request.getParameter(params[0]) != null));
+             System.out.println("XXX: "+(request.getParameter(params[1]) != null));
+             System.out.println("XXX: "+(request.getParameter(params[2]) != null));
+             System.out.println("XXX: "+(request.getParameter(params[0]).length() > 0));
+             System.out.println("XXX: "+(request.getParameter(params[1]).length() > 1));
+             System.out.println("XXX: "+(request.getParameter(params[2]).length() > 2));
+             
+             if((request.getParameter(params[0]) != null) &&
+                     (request.getParameter(params[1]) != null) &&
+                     (request.getParameter(params[2]) != null)
+                     ) {
+             if((request.getParameter(params[0]).length() > 0) &&
+                     (request.getParameter(params[1]).length() > 0) &&
+                     (request.getParameter(params[2]).length() > 0)
+                     ) {
+                 return true;
+             }
+             }
+             return false;
+         }
 	
 	/**
 	 * Sends a response back to the requester in JSON format. The data in the json depends on what the request was.
@@ -26,11 +53,11 @@ public class ServletTools {
 	 * @throws IOException
 	 */
 	public static void sendJSONOutput(HttpServletResponse response, JSONObject j) throws JSONException, IOException{
-		response.setContentType("application/json");
-        OutputStream out = response.getOutputStream();
-        response.setContentLength(j.toString().length());
-        out.write(j.toString().getBytes());
-        out.close(); // Closes the output stream
+            response.setContentType("application/json");
+            OutputStream out = response.getOutputStream();
+            response.setContentLength(j.toString().length());
+            out.write(j.toString().getBytes());
+            out.close(); // Closes the output stream
 	}
 	
 	/**
@@ -40,35 +67,16 @@ public class ServletTools {
 	 * @return A java Commit object
 	 * @throws JSONException
 	 */
-	public static Commit convertToCommit(JSONObject jCommit, String pushDate) throws JSONException{
-		Commit commit = new Commit();
-        System.out.println("Entered convertToCommit Method");
-                
-        commit.setPushDate(new Date(pushDate));
-        
-        System.out.println("Parsed Push Date");
-        
-        commit.setCommitDate(new Date(jCommit.getString("date")));
-        
-        System.out.println("Parsed Commit Date");
-        
-        commit.addStats(jCommit.getString("stats"));
-        
-        System.out.println("Parsed stats");
-        
-        commit.setId(jCommit.getString("cID"));
-        
-        System.out.println("cID Parsed");
-        
-        commit.setEmail(jCommit.getString("email"));
-        
-        System.out.println("Email Parsed");
-        
-        commit.setMessage(jCommit.getString("cMes"));
-        
-        System.out.println("Message Parsed");
-        
-        return commit;
+	public static Commit convertToCommit(JSONObject jCommit, 
+                String pushUnixTime, String timeZone) throws JSONException{
+            Commit commit = new Commit();
+            commit.setPushDate(new JiveDate(pushUnixTime, timeZone));
+            commit.setCommitDate(new JiveDate(jCommit.getString("unixtimestamp"), jCommit.getString("isotimestamp").split(" ")[2]));
+            commit.addStats(jCommit.getString("stats"));
+            commit.setId(jCommit.getString("cID"));
+            commit.setEmail(jCommit.getString("email"));
+            commit.setMessage(jCommit.getString("cMes"));
+            return commit;
 	}
         
 }
