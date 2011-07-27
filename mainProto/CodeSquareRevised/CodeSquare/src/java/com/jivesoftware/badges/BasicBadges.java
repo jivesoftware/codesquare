@@ -110,7 +110,7 @@ public final class BasicBadges {
 		if (data == null) { return;}
                 else {
                     currentUser = new UserInfo(c.getEmail(), data, c.getCommitDate().getLocal());
-                    users.put(c.getEmail(), currrentUser)
+                    users.put(c.getEmail(), currentUser);
                 }
             }
             
