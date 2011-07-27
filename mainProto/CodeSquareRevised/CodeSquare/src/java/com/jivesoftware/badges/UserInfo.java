@@ -63,7 +63,8 @@ public class UserInfo {
     }
     
     public void addBadge(String badgeNumber){
-        badges.add(badgeNumber);
+        if(!badges.contains(badgeNumber))
+            badges.add(badgeNumber);
     }
 
      /**
