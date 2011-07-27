@@ -13,3 +13,6 @@
 *.BACKUP.*
 *.LOCAL.*
 *.REMOTE.*
+/mainProto/CodeSquareRevised/CodeSquare/nbproject/private/
+/mainProto/CodeSquareRevised/CodeSquare/dist/
+/mainProto/CodeSquareRevised/CodeSquare/build/
