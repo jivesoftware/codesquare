@@ -118,6 +118,7 @@ public final class BasicBadges {
             System.out.println("IF1 AWARDS: "+users.containsKey(c.getEmail()));
             if (users.containsKey(c.getEmail())){
                 currentUser = users.get(c.getEmail());
+                currentUser.incrementCommits();
             }
             else {
                 Result data = HbaseTools.getRowData(table, c.getEmail());

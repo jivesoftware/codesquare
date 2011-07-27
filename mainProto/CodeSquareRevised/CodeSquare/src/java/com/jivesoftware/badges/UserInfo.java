@@ -132,6 +132,10 @@ public class UserInfo {
     	return numCommits;
     }
     
+    public void incrementCommits(){
+        this.numCommits++;
+    }
+    
     
     /**
      * 
