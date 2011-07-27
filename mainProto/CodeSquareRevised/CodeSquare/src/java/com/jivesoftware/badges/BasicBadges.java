@@ -80,7 +80,7 @@ public final class BasicBadges {
 		entry.getValue().getNumBugs(), 
                 entry.getValue().getNumCommits(), 
                 entry.getValue().getConsecCommits(), 
-                newBadgesString,
+                newBadgesString + badgeList[1],
 		arrBadges.toArray(new String[arrBadges.size()]));
                 
                 
