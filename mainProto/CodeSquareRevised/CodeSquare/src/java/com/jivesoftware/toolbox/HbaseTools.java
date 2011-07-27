@@ -49,9 +49,7 @@ public class HbaseTools {
 	public static void addRow(HTable table, String email, String lastCommit,
 			int badgesWeek, int numBugs, int numCommits, int consecCommits,
 			String newBadges, String[] badges) {
-		for (int i = 0; i < badges.length; i++) {
-			newBadges = newBadges + " " + badges[i];
-		}
+		
 
 		Put row = new Put(Bytes.toBytes(email));
 
