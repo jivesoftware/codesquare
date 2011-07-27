@@ -61,7 +61,18 @@ public final class BasicBadges {
                     newBadges.remove(i--);
 		}
             }
-            System.out.println("INSIDE FORLOOP7: "+newBadges.toString());
+            
+            System.out.println("New Badges: " + newBadges);
+            
+            String newBadgesString = "";
+            for(String s : newBadges){
+                newBadgesString += s + " ";
+            }
+            
+            newBadgesString = newBadgesString.trim();
+            
+            System.out.println("INSIDE FORLOOP7: "+newBadgesString.toString());
+            
             HbaseTools.addRow(table, 
                 entry.getKey(), 
                 entry.getValue().getLastCommit(), 
@@ -69,8 +80,11 @@ public final class BasicBadges {
 		entry.getValue().getNumBugs(), 
                 entry.getValue().getNumCommits(), 
                 entry.getValue().getConsecCommits(), 
-                newBadges.toString(),
+                newBadgesString,
 		arrBadges.toArray(new String[arrBadges.size()]));
+                
+                
+            
             System.out.println("INSIDE FORLOOP8: "+entry.getKey());
             System.out.println("INSIDE FORLOOP9: "+entry.getValue().getLastCommit());
             System.out.println("INSIDE FORLOOP10: "+entry.getValue().getBadgesWeek());
@@ -182,6 +196,9 @@ public final class BasicBadges {
 	public void checkBadges27And28(UserInfo user, JiveDate newDate) {
                 long oldCommitTime = user.getLastCommitTime();
                 long timeDiff = newDate.getLocal().getTime().getTime() - oldCommitTime;
+                if(user.getNumCommits()==1){
+                    return;
+                }
                 if (timeDiff < 24*60*60 ){
                     user.addBadge("27");
                 }
