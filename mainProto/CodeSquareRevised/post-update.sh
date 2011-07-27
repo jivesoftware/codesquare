@@ -3,7 +3,7 @@
 email=`git config user.email`
 beforeDate=`date`
 # get from jar
-afterDate="Tue Jul 25 07:59:13 2011"
+afterDate="Wed Jul 27 11:24:24 2011 -0700"i
 email=justin.kikuchi@jivesoftware.com
 unixTime=`date +%s`
 timeZone=`date +%z`

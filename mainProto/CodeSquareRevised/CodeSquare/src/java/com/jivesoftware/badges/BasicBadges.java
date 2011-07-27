@@ -107,10 +107,15 @@ public final class BasicBadges {
             else {
                 Result data = HbaseTools.getRowData(table, c.getEmail());
                 System.out.println("IF2 AWARDS: "+(data == null));
-		if (data == null) { return;}
+		if (data == null) { 
+                    System.out.println("Data is null");
+                    return;
+                }
                 else {
                     currentUser = new UserInfo(c.getEmail(), data, c.getCommitDate().getLocal());
+                    System.out.println("Current User Inside award: " + currentUser.toString());
                     users.put(c.getEmail(), currentUser);
+                    System.out.println("Current User Hashmap retrieval inside award: " + users.get(c.getEmail()) + "Size: " + users.size());
                 }
             }
             
