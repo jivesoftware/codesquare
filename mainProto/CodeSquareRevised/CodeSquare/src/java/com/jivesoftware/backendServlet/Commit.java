@@ -258,9 +258,17 @@ public class Commit {
                     System.out.println("Token: " + token);
                     System.out.println(token);
                     if(counter % 3 == 2){
-                        totalInsertions += Integer.parseInt(token);
+                        try{
+                            totalInsertions += Integer.parseInt(token);
+                        }catch(NumberFormatException e){
+                            totalInsertions = 0;
+                        }
                     }else if(counter % 3 == 1){
-                        totalDeletions += Integer.parseInt(token);
+                        try{
+                            totalDeletions += Integer.parseInt(token);
+                        }catch(NumberFormatException e){
+                            totalDeletions = 0;
+                        }
                     }else{//counter % 3 == 0
                         incrementNumFilesChanged();
                         appendFilesChanged(token);
