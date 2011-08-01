@@ -13,6 +13,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
+import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
@@ -248,7 +249,7 @@ public class HbaseTools {
 		return results;
 	}
 
-	public static String getAndUpdatePushDate(HTable table, String email, String unixTime, String timeZone)  {
+	public static String getLastCommitId(HTable table, String email, String firstId, String newId)  {
             Result data = null;
             try {
                 data = table.get(new Get(Bytes.toBytes(email)));
@@ -258,14 +259,17 @@ public class HbaseTools {
             if (data.isEmpty()) {
 		return null;
             }
-            String oldPushDate = ""; // unixTimestamp
+            String oldId = ""; // unixTimestamp
             try {
-		oldPushDate = new String(data.getValue(Bytes.toBytes("Info"),
-             			Bytes.toBytes("lastPush")));
+		oldId = new String(data.getValue(Bytes.toBytes("Info"),
+             			Bytes.toBytes("lastCommitId")));
             } catch (java.lang.NullPointerException e) {
-		return unixTime;
+                //change for first commit
+		oldId = firstId;
             }
-            return oldPushDate;
+            Put row = new Put(Bytes.toBytes(email));
+            row.add(Bytes.toBytes("Info"), Bytes.toBytes("lastCommitId"), Bytes.toBytes(newId));
+            return oldId;
 	}
 	
 	public static Result getRowData(HTable table, String email) {
