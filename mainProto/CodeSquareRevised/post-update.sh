@@ -1,14 +1,16 @@
 #!/bin/sh
 
-email=`git config user.email`
-beforeDate=`date`
-# get from jar
-afterDate="Wed Jul 20 11:24:24 2011 -0700"
-email=justin.kikuchi@jivesoftware.com
+firstId=23l4asdfjkl2390dfsjkl290dfs
+newId=12345asdf
+
+email=`git show $firstId --format=%ce -s`
+lastId=`curl -v --data-urlencode "email=$email" --data-urlencode "firstId=$firstId" --data-urlencode "newId=$newId" http://10.45.111.143:9090/CodeSquare/BackEndServlet`
+echo $lastId
+
 unixTime=`date +%s`
 timeZone=`date +%z`
 
-com=`git log --pretty=format:']"},{ "cID": "%H", "cMes": "%f", "unixtimestamp": "%ct", "isotimestamp": "%ci", "name": "%cn", "email": "%ce", "stats": "[' --numstat --before="$beforeDate" --after="$afterDate"  --committer=$email`
+com=`git log --pretty=format:']"},{ "cID": "%H", "cMes": "%f", "unixtimestamp": "%ct", "isotimestamp": "%ci", "name": "%cn", "email": "%ce", "stats": "[' ^$lastId --all --graph --committer=$email`
 com="["${com:4}"]\"}]"; 
 x=`echo $com`
 
