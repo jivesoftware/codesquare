@@ -24,12 +24,16 @@ import javax.servlet.http.HttpServletRequest;
 public class ServletTools {
     
          public static boolean hasParams(HttpServletRequest request, String[] params){
-             System.out.println("XXX: "+(request.getParameter(params[0]) != null));
-             System.out.println("XXX: "+(request.getParameter(params[1]) != null));
-             System.out.println("XXX: "+(request.getParameter(params[2]) != null));
-             System.out.println("XXX: "+(request.getParameter(params[0]).length() > 0));
-             System.out.println("XXX: "+(request.getParameter(params[1]).length() > 1));
-             System.out.println("XXX: "+(request.getParameter(params[2]).length() > 2));
+             try{
+                 System.out.println("XXX: "+(request.getParameter(params[0]) != null));
+                 System.out.println("XXX: "+(request.getParameter(params[1]) != null));
+                 System.out.println("XXX: "+(request.getParameter(params[2]) != null));
+                 System.out.println("XXX: "+(request.getParameter(params[0]).length() > 0));
+                 System.out.println("XXX: "+(request.getParameter(params[1]).length() > 1));
+                 System.out.println("XXX: "+(request.getParameter(params[2]).length() > 2));
+             } catch(NullPointerException e){
+                 //added to catch error in testing print outs
+             }
              
              if((request.getParameter(params[0]) != null) &&
                      (request.getParameter(params[1]) != null) &&
