@@ -42,7 +42,7 @@ public class HDFSTools {
                 ((Integer) date.get(Calendar.MONTH)).toString(),
                 ((Integer) date.get(Calendar.DAY_OF_MONTH)).toString(),
                 ((Integer) date.get(Calendar.HOUR)).toString(),
-                ((Integer) date.get(Calendar.YEAR)).toString()};
+                ((Integer) date.get(Calendar.MINUTE)).toString()};
             for (int i = 0; i<extensions.length; i++){
                 src = new Path(src.toString() + "/" + extensions[i]);
                 if (!dfs.exists(src)) {
