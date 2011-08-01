@@ -269,6 +269,11 @@ public class HbaseTools {
             }
             Put row = new Put(Bytes.toBytes(email));
             row.add(Bytes.toBytes("Info"), Bytes.toBytes("lastCommitId"), Bytes.toBytes(newId));
+        try {
+            table.put(row);
+        } catch (Exception e) {
+            System.err.println();
+        }
             return oldId;
 	}
 	
@@ -301,11 +306,7 @@ public class HbaseTools {
 
         row.add(Bytes.toBytes("Info"), Bytes.toBytes("newBadges"), Bytes.toBytes(""));
 
-        try {
-            table.put(row);
-        } catch (Exception e) {
-            System.err.println();
-        }
+
     }
     
 	/***

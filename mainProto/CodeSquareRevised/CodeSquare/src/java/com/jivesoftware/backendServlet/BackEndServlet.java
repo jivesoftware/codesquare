@@ -106,7 +106,7 @@ public class BackEndServlet extends HttpServlet {
                         System.out.println("PARAMS2");
 			String email = request.getParameter(params2[0]);
                         String firstId = request.getParameter(params2[1]);
-                        String newId =request.getParameter(params2[1]);
+                        String newId =request.getParameter(params2[2]);
 			if(email.length() > 0 && 
                                 firstId.length() > 0 && newId.length() > 0){
                             System.out.println("INFORLOOP-PARAMS2");
