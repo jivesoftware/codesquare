@@ -78,7 +78,7 @@ public class BackEndServlet extends HttpServlet {
                 HTable table = HbaseTools.getTable(hbaseConfig);
                 System.out.println("QSTRING: "+request.getQueryString());
                 String[] params = {"json", "unixTime", "timeZone"};
-                String[] params2 = {"email", "firstId", "newId"};
+                String[] params2 = {"email", "newId"};
                 if (ServletTools.hasParams(request ,params)) {
                     System.out.println("PARAMS1");
                     String unixTime = request.getParameter(params[1]);
@@ -111,7 +111,7 @@ public class BackEndServlet extends HttpServlet {
                                 firstId.length() > 0 && newId.length() > 0){
                             System.out.println("INFORLOOP-PARAMS2");
                             // get recent push date, update with new push date
-                            String pushDate = HbaseTools.getLastCommitId(table, email, firstId, newId);
+                            String pushDate = HbaseTools.getLastCommitId(table, email, newId);
                             // send back info
                             OutputStream out = response.getOutputStream();
                             out.write(pushDate.getBytes());
