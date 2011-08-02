@@ -33,7 +33,10 @@ public class ServletTools {
                  System.out.println("XXX: "+(request.getParameter(params[2]).length() > 2));
              } catch(NullPointerException e){
                  //added to catch error in testing print outs
+             } catch( ArrayIndexOutOfBoundsException e){
+                 //added to catch error in testing print outs
              }
+             
              for(int i=0; i<params.length;i++){
                  if(request.getParameter(params[i]) == null){
                      return false;
