@@ -122,9 +122,13 @@ public class BackEndServlet extends HttpServlet {
 		//testing printouts
                 try{
                     HbaseTools.test(HbaseTools.getRowData(table, "eric.ren@jivesoftware.com"));
+                }catch(NullPointerException e){
+                    System.out.println("could not print eric");
+                }
+                try{
                     HbaseTools.test(HbaseTools.getRowData(table, "justin.kikuchi@jivesoftware.com"));
                 }catch(NullPointerException e){
-                    //do nothing
+                    System.out.println("could not print justin");
                 }
                 // free resources and close connections
 		HConnectionManager.deleteConnection(hbaseConfig, true);
