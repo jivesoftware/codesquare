@@ -305,6 +305,12 @@ public class HbaseTools {
 
 
         row.add(Bytes.toBytes("Info"), Bytes.toBytes("newBadges"), Bytes.toBytes(""));
+        
+        try {
+            table.put(row);
+	} catch (Exception e) {
+            System.err.println();
+	}
 
 
     }

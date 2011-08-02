@@ -119,7 +119,14 @@ public class BackEndServlet extends HttpServlet {
 				System.err.println("Bad pushDate Parameter Value: " + "EX");
 			}
 		}else{	System.err.println("BAD PARAMS: " + "EX");	
-		// free resources and close connections
+		//testing printouts
+                try{
+                    HbaseTools.test(HbaseTools.getRowData(table, "eric.ren@jivesoftware.com"));
+                    HbaseTools.test(HbaseTools.getRowData(table, "justin.kikuchi@jivesoftware.com"));
+                }catch(NullPointerException e){
+                    //do nothing
+                }
+                // free resources and close connections
 		HConnectionManager.deleteConnection(hbaseConfig, true);
 		table.close();
 	}
