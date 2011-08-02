@@ -34,7 +34,12 @@ public class ServletTools {
              } catch(NullPointerException e){
                  //added to catch error in testing print outs
              }
-             
+             for(int i=0; i<params.length;i++){
+                 if(request.getParameter(params[i]) == null){
+                     return false;
+                 }
+             }
+             /*
              if((request.getParameter(params[0]) != null) &&
                      (request.getParameter(params[1]) != null) &&
                      (request.getParameter(params[2]) != null)
@@ -45,8 +50,8 @@ public class ServletTools {
                      ) {
                  return true;
              }
-             }
-             return false;
+             }*/
+             return true;
          }
 	
 	/**
