@@ -205,6 +205,7 @@ public final class BasicBadges {
                     user.addBadge("27");
                 }
                 if (timeDiff > (5*24*60*60) ){
+                     System.out.println("TIME DIFFERENCE: "+String.valueOf(timeDiff) +"  5days: "+ (5*24*60*60));
                      user.addBadge("28");
                 }
 	}
