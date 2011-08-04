@@ -27,10 +27,8 @@ public class ServletTools {
              try{
                  System.out.println("XXX: "+(request.getParameter(params[0]) != null));
                  System.out.println("XXX: "+(request.getParameter(params[1]) != null));
-                 System.out.println("XXX: "+(request.getParameter(params[2]) != null));
                  System.out.println("XXX: "+(request.getParameter(params[0])));
                  System.out.println("XXX: "+(request.getParameter(params[1])));
-                 System.out.println("XXX: "+(request.getParameter(params[2])));
              } catch(NullPointerException e){
                  //added to catch error in testing print outs
              } catch( ArrayIndexOutOfBoundsException e){
@@ -80,9 +78,9 @@ public class ServletTools {
 	 * @throws JSONException
 	 */
 	public static Commit convertToCommit(JSONObject jCommit, 
-                String pushUnixTime, String timeZone) throws JSONException{
+                String pushUnixTime) throws JSONException{
             Commit commit = new Commit();
-            commit.setPushDate(new JiveDate(pushUnixTime, timeZone));
+            commit.setPushDate(new JiveDate(pushUnixTime));
             commit.setCommitDate(new JiveDate(jCommit.getString("unixtimestamp"), jCommit.getString("isotimestamp").split(" ")[2]));
             commit.addStats(jCommit.getString("stats"));
             commit.setId(jCommit.getString("cID"));

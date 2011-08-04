@@ -1,13 +1,9 @@
 package com.jivesoftware.badges;
 
 import java.util.ArrayList;
-import java.util.Date;
-import org.apache.hadoop.fs.FileSystem;
 
-import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
 
-import com.jivesoftware.toolbox.HbaseTools;
 import com.jivesoftware.backendServlet.JiveDate;
 import com.jivesoftware.backendServlet.Commit;
 import java.io.IOException;
@@ -22,7 +18,6 @@ import com.jivesoftware.toolbox.HbaseTools;
 import com.jivesoftware.toolbox.ServletTools;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public final class BasicBadges {
@@ -30,12 +25,12 @@ public final class BasicBadges {
     HashMap<String, UserInfo> users = new HashMap<String, UserInfo>();
     
     public BasicBadges(JSONArray jArrCommits, FileSystem hdfs, HTable table, 
-                        String unixTime, String timeZone) throws JSONException, IOException {
+                        String unixTime) throws JSONException, IOException {
         // iterate through and process/store info locally
         for(int i = 0;i < jArrCommits.length();i++){
             JSONObject jCommit = new JSONObject(jArrCommits.get(i).toString());
             System.out.println(jCommit.toString());
-            Commit c = ServletTools.convertToCommit(jCommit, unixTime, timeZone);
+            Commit c = ServletTools.convertToCommit(jCommit, unixTime);
             if(!HDFSTools.writeCommitToHDFS(hdfs, c)){
                 continue;
             }
