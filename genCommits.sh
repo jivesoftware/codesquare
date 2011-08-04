@@ -362,6 +362,11 @@ prompt="Successfully created "
 prompt+=$times
 prompt+=" test commits"
 echo $prompt
+echo "Copying to HDFS"
+hadoop fs -copyFromLocal TestCommits /user/interns/
+echo "Deleting local copy"
+rm -r TestCommits
+echo "Done!"
 
 
 
