@@ -205,6 +205,8 @@ public final class BasicBadges {
                     user.addBadge("27");
                 }
                 if (timeDiff > (5*24*60*60) ){
+                    System.out.println("OLD DATE: "+String.valueOf(oldCommitTime) +"  NEW DATE: "+ String.valueOf(newDate.getLocal().getTime().getTime()));
+                     System.out.println("TIME DIFFERENCE: "+String.valueOf(timeDiff) +"  5days: "+ (5*24*60*60));
                      user.addBadge("28");
                 }
 	}

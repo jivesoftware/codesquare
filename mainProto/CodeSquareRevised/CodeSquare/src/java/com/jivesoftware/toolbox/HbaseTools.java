@@ -249,7 +249,7 @@ public class HbaseTools {
 		return results;
 	}
 
-	public static String getLastCommitId(HTable table, String email, String firstId, String newId)  {
+	public static String getLastCommitId(HTable table, String email, String newId)  {
             Result data = null;
             try {
                 data = table.get(new Get(Bytes.toBytes(email)));
@@ -265,7 +265,7 @@ public class HbaseTools {
              			Bytes.toBytes("lastCommitId")));
             } catch (java.lang.NullPointerException e) {
                 //change for first commit
-		oldId = firstId;
+		oldId = String.valueOf(System.currentTimeMillis()/1000);
             }
             Put row = new Put(Bytes.toBytes(email));
             row.add(Bytes.toBytes("Info"), Bytes.toBytes("lastCommitId"), Bytes.toBytes(newId));
@@ -305,6 +305,12 @@ public class HbaseTools {
 
 
         row.add(Bytes.toBytes("Info"), Bytes.toBytes("newBadges"), Bytes.toBytes(""));
+        
+        try {
+            table.put(row);
+	} catch (Exception e) {
+            System.err.println();
+	}
 
 
     }
