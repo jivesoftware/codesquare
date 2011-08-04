@@ -108,6 +108,7 @@ public class HbaseTools {
 			admin.disableTable("EmpBadges");
 			admin.addColumn("EmpBadges", new HColumnDescriptor("Info"));
 			admin.addColumn("EmpBadges", new HColumnDescriptor("Badge"));
+                        admin.addColumn("EmpBadges", new HColumnDescriptor("LastCommitId"));
 			admin.enableTable("EmpBadges");
 		}
 		HTable table = new HTable(config, "EmpBadges");
@@ -249,7 +250,7 @@ public class HbaseTools {
 		return results;
 	}
 
-	public static String getLastCommitId(HTable table, String email, String newId)  {
+	public static String getLastCommitId(HTable table, String email, String branch, String newId)  {
             Result data = null;
             try {
                 data = table.get(new Get(Bytes.toBytes(email)));
@@ -261,19 +262,19 @@ public class HbaseTools {
             }
             String oldId = ""; // unixTimestamp
             try {
-		oldId = new String(data.getValue(Bytes.toBytes("Info"),
-             			Bytes.toBytes("lastCommitId")));
+		oldId = new String(data.getValue(Bytes.toBytes("LastCommitId"),
+             			Bytes.toBytes(branch)));
             } catch (java.lang.NullPointerException e) {
                 //change for first commit
 		oldId = String.valueOf(System.currentTimeMillis()/1000);
             }
             Put row = new Put(Bytes.toBytes(email));
-            row.add(Bytes.toBytes("Info"), Bytes.toBytes("lastCommitId"), Bytes.toBytes(newId));
-        try {
-            table.put(row);
-        } catch (Exception e) {
-            System.err.println();
-        }
+            row.add(Bytes.toBytes("LastCommitId"), Bytes.toBytes(branch), Bytes.toBytes(newId));
+            try {
+                table.put(row);
+            } catch (Exception e) {
+                System.err.println();
+            }
             return oldId;
 	}
 	

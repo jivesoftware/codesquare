@@ -78,7 +78,7 @@ public class BackEndServlet extends HttpServlet {
                 HTable table = HbaseTools.getTable(hbaseConfig);
                 System.out.println("QSTRING: "+request.getQueryString());
                 String[] params = {"json", "unixTime", "timeZone"};
-                String[] params2 = {"email", "newId"};
+                String[] params2 = {"email", "branch", "newId"};
                 if (ServletTools.hasParams(request ,params)) {
                     System.out.println("PARAMS1");
                     String unixTime = request.getParameter(params[1]);
@@ -105,21 +105,24 @@ public class BackEndServlet extends HttpServlet {
                 else if(ServletTools.hasParams(request,params2)){
                         System.out.println("PARAMS2");
 			String email = request.getParameter(params2[0]);
-                        String newId =request.getParameter(params2[1]);
-			if(email.length() > 0 &&  newId.length() > 0){
+                        String branch = request.getParameter(params2[1]); 
+                        String newId = request.getParameter(params2[2]);
+			if(email.length() > 0 &&  newId.length() > 0 && newId.length() >0){
                             System.out.println("INFORLOOP-PARAMS2");
                             // get recent push date, update with new push date
-                            String pushDate = HbaseTools.getLastCommitId(table, email, newId);
+                            String lastId = HbaseTools.getLastCommitId(table, email, branch, newId);
                             // send back info
                             OutputStream out = response.getOutputStream();
-                            out.write(pushDate.getBytes());
+                            out.write(lastId.getBytes());
                             out.close();
 				
 			}else{
 				System.err.println("Bad pushDate Parameter Value: " + "EX");
 			}
-		}else{	System.err.println("BAD PARAMS: " + "EX");	
-		//testing printouts
+		}else{	
+                    System.err.println("BAD PARAMS: " + "EX");
+                }
+                		//testing printouts
                 try{
                     HbaseTools.test(HbaseTools.getRowData(table, "eric.ren@jivesoftware.com"));
                 }catch(NullPointerException e){
@@ -133,7 +136,5 @@ public class BackEndServlet extends HttpServlet {
                 // free resources and close connections
 		HConnectionManager.deleteConnection(hbaseConfig, true);
 		table.close();
-	}
-}
-
+        }
 }
