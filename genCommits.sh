@@ -92,6 +92,13 @@ function randMinute
     return
 }
 
+function randSec
+{
+    rsec=`expr $RANDOM % 60`
+    echo $rsec
+    return
+}
+
 function getUNIXTime #only works on a LINUX machine
 {
     uyear=$1
@@ -99,6 +106,7 @@ function getUNIXTime #only works on a LINUX machine
     uday=$3
     uhour=$4
     uminute=$5
+    usec=$6
     yrstr=$uyear
     yrstr+="-"
     yrstr+=$umonth
@@ -107,7 +115,7 @@ function getUNIXTime #only works on a LINUX machine
     yrmonsec=`date -d $yrstr "+%s"`
     hrsec=`expr $uhour \* 3600`
     minsec=`expr $uminute \* 60`
-    sumsec=`expr $yrmonsec + $hrsec + $minsec`
+    sumsec=`expr $yrmonsec + $hrsec + $minsec + $usec`
     echo $sumsec
     return
 }
@@ -129,43 +137,57 @@ case $argNum in
        month=`randMonth`
        day=`randDay`
        hour=`randHour`
-       minute=`randMinute`;;
+       minute=`randMinute`
+       second=`randSec`;;
     2) times=$1
        year= $2
        month=`randMonth`
        day=`randDay`
        hour=`randHour`
-       minute=`randMinute`;;
+       minute=`randMinute`
+       second=`randSec`;;
     3) times=$1
        year=$2
        month=$3
        day=`randDay`
        hour=`randHour`
-       minute=`randMinute`;;
+       minute=`randMinute`
+       second=`randSec`;;
     4) times=$1
        year=$2
        month=$3
        day=$4
        hour=`randHour`
-       minute=`randMinute`;;
+       minute=`randMinute`
+       second=`randSec`;;
     5) times=$1
        year=$2
        month=$3
        day=$4
        hour=$5
-       minute=`randMinute`;;
+       minute=`randMinute`
+       second=`randSec`;;
     6) times=$1
        year=$2
        month=$3
        day=$4
        hour=$5
-       minute=$6;;
+       minute=$6
+       second=`randSec`;;
+    7) times=$1
+       year=$2
+       month=$3
+       day=$4
+       hour=$5
+       minute=$6
+       second=$7;;
     *) times=1
        year=`getYear`
        month=`randMonth`
        day=`randDay`
        hour=`randHour`
-       minute=`randMinute`;;
+       minute=`randMinute`
+       second=`randSec`;;
 esac
 
 #Debugging again delete later
@@ -177,5 +199,7 @@ echo $hour
 echo $minute
 #End Debugging again
 
-echo `getUNIXTime $year $month $day $hour $minute`
+echo `getUNIXTime $year $month $day $hour $minute $second`
+
+
 
