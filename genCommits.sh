@@ -104,10 +104,10 @@ function getUNIXTime #only works on a LINUX machine
     yrstr+=$umonth
     yrstr+="-"
     yrstr+=$uday
-    yrmonsec=`date -d $yrstr "+%s"` 
+    yrmonsec=`date -d $yrstr "+%s"`
     hrsec=`expr $uhour \* 3600`
     minsec=`expr $uminute \* 60`
-    sumsec=`expr $yrmonsec + $hrsec + $sumsec`
+    sumsec=`expr $yrmonsec + $hrsec + $minsec`
     echo $sumsec
     return
 }
