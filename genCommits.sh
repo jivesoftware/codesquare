@@ -249,6 +249,7 @@ function createCommit
 	fullFilePath=`makeFolder $year $month $day $hour $minute $commitIDFileString`
 	commitOb=`echo $commitID $emailString $unixTime $timezone $args`
 	echo $commitOb > $fullFilePath
+	echo $fullFilePath " written"
 	year=`getYear`
 	month=`randMonth`
 	day=`randDay`
