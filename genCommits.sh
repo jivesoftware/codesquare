@@ -1,6 +1,6 @@
 #!/bin/sh
 
-
+#WARNING: THIS SCRIPT WILL ONLY RUN FLAWLESSLY ON A LINUX MACHINE
 
 function genRanStr
 {
@@ -99,6 +99,64 @@ function randSec
     return
 }
 
+function defTZ
+{
+    echo GMT-7
+    return
+}
+
+function testFC
+{
+    if [ $# == 0 ]
+    then
+	type=1
+    else
+	type=$1
+    fi
+    case $type in
+	0) stringy="0 []";;
+	1) stringy="1 [app.xml]";;
+	2) stringy="2 [/home/app.xml,/home/hello.html]";;
+	3) stringy="3 [app.xml,home/hello.html,home/hi.jsp]";;
+	*) stringy="0 []";;
+    esac
+    echo $stringy
+    return
+}
+
+function testMsg
+{
+    if [ $# == 0 ]
+    then
+	type=1
+    else
+	type=$1
+    fi
+	
+    case $type in
+	0) stringy="\"\"";;
+	1) stringy="\"This is a Jive test commit\"";;
+	*) stringy="\"This is a Jive test commit\"";;
+    esac
+    echo $stringy
+    return
+}
+
+function insDels
+{
+    command=$1
+    
+    case $command in
+	0) stringy="10 0";;
+	1) stringy="0 10";;
+	2) stringy="0 0";;
+	3) stringy="3 3";;
+	*) stringy="5 5";;
+    esac
+    echo $stringy
+    return
+}
+
 function getUNIXTime #only works on a LINUX machine
 {
     uyear=$1
@@ -120,6 +178,29 @@ function getUNIXTime #only works on a LINUX machine
     return
 }
 
+function defArgs
+{
+    if [ $# == 0 ]
+    then
+	num1=`expr $RANDOM % 4`
+	num2=`expr $RANDOM % 4`
+	num3=`expr $RANDOM % 2`
+	fcArg=$num1
+	insArg=$num2
+	msgArg=$num3
+    else
+	stringToParse=$1
+	fcArg=`echo ${stringToParse:0:1}`
+	insArg=`echo ${stringToParse:1:1}`
+	msgArg=`echo ${stringToParse:2:1}`
+    fi
+    fcVal=`testFC $fcArg`
+    insVal=`insDels $insArg`
+    msgVal=`testMsg $msgArg`
+    echo $fcVal $insVal $msgVal
+    return
+}
+
 #debugging delete these later
 stringy=`genRanStr`
 usery=`randUsr`
@@ -138,56 +219,90 @@ case $argNum in
        day=`randDay`
        hour=`randHour`
        minute=`randMinute`
-       second=`randSec`;;
+       second=`randSec`
+       tz=`defTZ`
+       args=`defArgs`;;
     2) times=$1
        year= $2
        month=`randMonth`
        day=`randDay`
        hour=`randHour`
        minute=`randMinute`
-       second=`randSec`;;
+       second=`randSec`
+       tz=`defTZ`
+       args=`defArgs`;;
     3) times=$1
        year=$2
        month=$3
        day=`randDay`
        hour=`randHour`
        minute=`randMinute`
-       second=`randSec`;;
+       second=`randSec`
+       tz=`defTZ`
+       args=`defArgs`;;
     4) times=$1
        year=$2
        month=$3
        day=$4
        hour=`randHour`
        minute=`randMinute`
-       second=`randSec`;;
+       second=`randSec`
+       tz=`defTZ`
+       args=`defArgs`;;
     5) times=$1
        year=$2
        month=$3
        day=$4
        hour=$5
        minute=`randMinute`
-       second=`randSec`;;
+       second=`randSec`
+       tz=`defTZ`
+       args=`defArgs`;;
     6) times=$1
        year=$2
        month=$3
        day=$4
        hour=$5
        minute=$6
-       second=`randSec`;;
+       second=`randSec`
+       tz=`defTZ`
+       args=`defArgs`;;
     7) times=$1
        year=$2
        month=$3
        day=$4
        hour=$5
        minute=$6
-       second=$7;;
+       second=$7
+       tz=`defTZ`
+       args=`defArgs`;;
+    8) times=$1
+       year=$2
+       month=$3
+       day=$4
+       hour=$5
+       minute=$6
+       second=$7
+       tz=$8
+       args=`defArgs`;;
+    9) times=$1
+       year=$2
+       month=$3
+       day=$4
+       hour=$5
+       minute=$6
+       second=$7
+       tz=$8
+       args=`defArgs $9`;;
     *) times=1
        year=`getYear`
        month=`randMonth`
        day=`randDay`
        hour=`randHour`
        minute=`randMinute`
-       second=`randSec`;;
+       second=`randSec`
+       tz=`defTZ`
+       args=`defArgs`;;
 esac
 
 #Debugging again delete later
@@ -197,9 +312,9 @@ echo $month
 echo $day
 echo $hour
 echo $minute
-#End Debugging again
-
+echo $second
+echo $tz
+echo $args
 echo `getUNIXTime $year $month $day $hour $minute $second`
-
-
+#End Debuggin again
 
