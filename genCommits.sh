@@ -92,20 +92,23 @@ function randMinute
     return
 }
 
-function getUNIXTime
+function getUNIXTime #only works on a LINUX machine
 {
     uyear=$1
     umonth=$2
     uday=$3
     uhour=$4
     uminute=$5
-
     yrstr=$uyear
-    $yrstr+="-"
-    $yrstr+=$umonth
-    $yrstr+="-"
-    $yrstr+=$uday
-    echo $yrstr
+    yrstr+="-"
+    yrstr+=$umonth
+    yrstr+="-"
+    yrstr+=$uday
+    yrmonsec=`date -d $yrstr "+%s"` 
+    hrsec=`expr $uhour \* 3600`
+    minsec=`expr $uminute \* 60`
+    sumsec=`expr $yrmonsec + $hrsec + $sumsec`
+    echo $sumsec
     return
 }
 
@@ -174,5 +177,5 @@ echo $hour
 echo $minute
 #End Debugging again
 
-`getUNIXTime $year $month $day $hour $minute`
+echo `getUNIXTime $year $month $day $hour $minute`
 
