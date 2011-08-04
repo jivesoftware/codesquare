@@ -1,0 +1,45 @@
+#!/bin/bash
+
+echo "user:$GL_USER"
+echo "repo:$GL_REPO"
+echo "repo abs path:$GL_REPO_BASE_ABS"
+echo -e "ref name:$1\told hash:$2\tnew hash:$3\n"
+
+ref=$1
+firstId=$2
+newId=$3
+
+email=`git show $newId --format=%ce -s`
+echo $email
+
+#lastId="df3eb3d"                                                                                                                                                                                                                                                         
+lastId=`curl -v --data-urlencode "email=$email" --data-urlencode "branch=$ref" --data-urlencode "newId=$newId" http://10.45.111.143:9090/CodeSquare/BackEndServlet`
+echo "lastId:$lastId"
+echo "show recent commit object:$(git show -s $newId)"
+echo "recent logs:"
+echo `git log --all -10`
+echo "\nrev-list:"
+echo `git rev-list HEAD -10`
+
+unixTime=`date +%s`
+timeZone=`date +%z`
+
+#com=$(git log $lastId --all --graph --committer=$email --pretty=format:']"},{ "cID": "%H", "cMes": "%f", "unixtimestamp": "%ct", "isotimestamp": "%ci", "name": "%cn", "email": "%ce", "stats": "[')                                        
+length=${#lastId}
+
+if [ $length -eq 10 ]
+then
+    lastId=`git log --reverse --after=$lastId | if read a commit ; then echo $commit ; fi`
+
+    #com=`git log --after=$lastId --all --committer=$email --pretty=format:']"},{ "cID": "%H", "cMes": "%f", "unixtimestamp": "%ct", "isotimestamp": "%ci", "name": "%cn", "email": "%ce", "stats": "['`
+fi
+
+com=`git log $lastId..$newId --all --committer=$email --pretty=format:']"},{ "cID": "%H", "cMes": "%f", "unixtimestamp": "%ct", "isotimestamp": "%ci", "name": "%cn", "email": "%ce", "stats": "['`
+
+
+com="["${com:4}"]\"}]";
+x=`echo $com`
+
+`curl -v --data-urlencode "timeZone=$timeZone" --data-urlencode "unixTime=$unixTime" --data-urlencode "json=$x" http://10.45.111.143:9090/CodeSquare/BackEndServlet`
+
+#git log --pretty=format:']"},{ "cID": "%H", "cMes": "%f", "unixtimestamp": "%ct", "isotimestamp": "%ci", "name": "%cn", "email": "%ce", "stats": "[' --numstat --before="Wed Jul 27 10:46:33 PDT 2011" --after="Tue Jul 27 07:59:13 2011"  --committer=justin.kikuchi@jivesoftware.com
