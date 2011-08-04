@@ -28,9 +28,9 @@ public class ServletTools {
                  System.out.println("XXX: "+(request.getParameter(params[0]) != null));
                  System.out.println("XXX: "+(request.getParameter(params[1]) != null));
                  System.out.println("XXX: "+(request.getParameter(params[2]) != null));
-                 System.out.println("XXX: "+(request.getParameter(params[0]).length() > 0));
-                 System.out.println("XXX: "+(request.getParameter(params[1]).length() > 1));
-                 System.out.println("XXX: "+(request.getParameter(params[2]).length() > 2));
+                 System.out.println("XXX: "+(request.getParameter(params[0])));
+                 System.out.println("XXX: "+(request.getParameter(params[1])));
+                 System.out.println("XXX: "+(request.getParameter(params[2])));
              } catch(NullPointerException e){
                  //added to catch error in testing print outs
              } catch( ArrayIndexOutOfBoundsException e){
