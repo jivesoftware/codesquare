@@ -58,16 +58,20 @@ public class HDFSTools {
 	 * @param c The Commit object
 	 * @throws IOException
 	 */
-	public static void writeCommitToHDFS(FileSystem dfs, Commit c) throws IOException{
+	public static boolean writeCommitToHDFS(FileSystem dfs, Commit c) throws IOException{
             // If the folders don't exist, create them
             Path src = makePath(dfs, c.getPushDate().getGlobal());
                 
             // Write file
             src = new Path(src.toString() + "/" + c.getId() + ".txt");
+            if(dfs.exists(src)){
+                return false;
+            }
             FSDataOutputStream fs = dfs.create(src);
             fs.write(c.toString().getBytes());
             fs.close();
             System.out.println("File Written: " + src.toString() + "; " + c.toString());
+            return true;
 	}
 	
 }
