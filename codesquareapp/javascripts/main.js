@@ -1,78 +1,68 @@
-var glObj = {};
-glObj.timer_is_on = 0;
-glObj.refreshTime = 3000;
-
-//continually request data from server
-function startBadges() {
-    if (!glObj.timer_is_on) {
-	glObj.timer_is_on = 1;
-	alert("timer on: " + glObj.timer_is_on); //test
-	getBadges();
-	document.getElementById('button').innerHTML = "Stop requesting";
-    } 
-    else {
-	glObj.timer_is_on = 0;
-	alert("timer off: " + glObj.timer_is_on); //test
-	clearTimeout(glObj.t);
-	document.getElementById('button').innerHTML = "Continue requesting";
-    }
-}
-
 // Does what you think it does...
-function makeBadgeTable(userEmail, bossEmail) {
-    var url = 'http://10.45.111.143:9090/CodeSquareServlet/FrontEndServlet?email=' + userEmail + '&bossEmail=' + bossEmail;
-    var params = {'href' : url, 'format' : 'json', 'authz' : 'none' };
-
+function makeBadgeTable(userEmail, bossEmail, self, fName) {
+    var url = 'http://10.45.111.143:9090/CodeSquare/AppServlet?email=' + userEmail  + '&bossEmail=' + bossEmail;
+    var params = {'href' : url, 'format' : 'json', 'authz' : 'none', 'nocache' : 'true' };
+    
     osapi.http.get(params).execute(function(response) {
-	console.log(response);
-	console.log(response);
 	if (response.error) {
-	    alert("Error: " + response.error.message + "\nbetter debug it..."); // Deal with this...
+	    alert("Error: " + resp.error.message + "\nbetter debug it..."); // Deal with this..
 	}
 	else {
-	    // use the data 
 	    var jsonObj = response.content;
+	    console.log(jsonObj);
 	    var totalBadges = 0;
-    	    var newBadges = 0;
+	    var newBadges = 0;
 	    var tableHTML = "";
-	    for (var key = 1; key <= Object.size(jsonObj); key++) {
-		var value = jsonObj[key];
+	    var stateClass = "shadow";
+	    var key, value, imgURL, popupURl;
+	    
+	    for (key = 1; key <= Object.size(jsonObj); key++) {
+		value = jsonObj[key];
 		if (key % 5 == 1) {
 		    tableHTML += "<tr>";
 		}
-		var imgURL = fullURL(value.IconURL);
-		var popupURL = fullURL("badgePopup.html");
-		tableHTML += "<td><form action='" + popupURL + "' method='GET'>" +
+		imgURL = fullURL(value.IconURL);
+		popupURL = fullURL("badgePopup.html");
+		tableHTML += "<td><form class='badges' action='" + popupURL + "' method='GET'>" +
 		    "<input type='hidden' name='imgURL' value='" + imgURL + "'/>" +
 		    "<input type='hidden' name='name' value='" + value.Name + "'/>" +
 		    "<input type='hidden' name='desc' value='" + value.Description + "'/>";
-		if (value.IconURL !== "images/unobtained.png") {totalBadges = totalBadges + 1;}
-		if (value.new == "true") {
-		    tableHTML+= "<input class=\"highlight\" type='image' src='" + imgURL + "' value='Popup!' alt='Show badge info'/></form>";
+		if (value.IconURL !== "images/unobtained.png") {
+		    totalBadges = totalBadges + 1;
+		}
+		console.log('value.New is ' + value.New);
+		if (value.New == "true") {
+		    stateClass = "highlight";
 		    newBadges = newBadges + 1;
+		    console.log(stateClass);
 		}
-		else {
-		    tableHTML+= "<input class=\"shadow\" type='image' src='" + imgURL + "' value='Popup!' alt='Show badge info'/></form></td>";
-		}
-		
+		console.log('stateClass is ' + stateClass);
+		tableHTML+= "<input class='" + stateClass + "' type='image' src='" + imgURL + "' value='Popup!' alt='Show badge info'/></form></td>";
 		if (key % 5 == 0) {
 		    tableHTML += "</tr>";
 		}
 	    }
+
 	    document.getElementById('badgeTable').innerHTML = tableHTML;
 
 	    var badgeCountHTML = "";
-	    if (newBadges > 0) {
-		badgeCountHTML += "You earned "+newBadges+" new badges! ";
-	    } else {
-		badgeCountHTML+="You currently have "+totalBadges+" badges.";
+	    
+	    if (self==true) {
+	    	if (newBadges > 0) {
+			badgeCountHTML += "You earned "+newBadges+" new badges! ";
+	    	} else {
+			badgeCountHTML+="You currently have "+totalBadges+" badges.";
+	    	}
 	    }
-
+	    else {
+	    	badgeCountHTML+=fName+" has "+totalBadges+" badges.";
+	    }
 	    document.getElementById('numberOfBadges').innerHTML = badgeCountHTML;
 	}
-    });
+    });    
 }
 
+// this function is not needed since we're not using gadget tabs
 function callback(tabId) {
     var p = document.createElement("p");
     // Get selected tab
@@ -82,6 +72,7 @@ function callback(tabId) {
     makeBadgeTable();
 }
 
+// this function is not being used right now
 function loadFancy() {
     $("form").submit(function() {
 	$form = $(this);
@@ -120,8 +111,9 @@ function init() {
 				    glObj.email = viewer.data.email;
 				    glObj.bossEmail = boss.data.email;
 				    
-    				    makeBadgeTable(viewer.data.email, boss.data.email);
-				    $("form")
+    				    makeBadgeTable(viewer.data.email, boss.data.email, true);
+						
+				    $("form.badges")
 					.live('submit', function(e) {
 					    //console.log(e.type);
 					    $form = $(this);
@@ -147,115 +139,37 @@ function init() {
    	    });
     	}
     });
+
+
+
 }
 
 gadgets.util.registerOnLoadHandler(init);
+gadgets.window.adjustHeight();
 
 
 
-//generates the array of the names of the Viewer's friends and creates an autocomplete text box using the names in nameArray
-function autoCompleteText(){
-    var nameArray = []; //Initializes a new empty array
-    var personArray = osapi.people.getViewerFriends(); // An array of Person JSON objects
-    var arrayLen = personArray.length;
+function viewShare() {
     
-    //Iterate through person objects and object the name of each person and add it to nameArray
-    for(var i = 0;i < arrayLen; i++){ 
-	var friendName = personArray[i].name; //obtain name string field from Person JSON object
-	nameArray[i] = friendName; //add name string to nameArray
-    }
-    
-    //Used in testing
-    var availableTags = [
-	"ActionScript",
-	"AppleScript",
-	"Asp",
-	"BASIC",
-	"C",
-	"C++",
-	"Clojure",
-	"COBOL",
-	"ColdFusion",
-	"Erlang",
-	"Fortran",
-	"Groovy",
-	"Haskell",
-	"Java",
-	"JavaScript",
-	"Lisp",
-	"Perl",
-	"PHP",
-	"Python",
-	"Ruby",
-	"Scala",
-	"Scheme"
-    ];
-    //End used in testing
-    
-    $( "#tags" ).autocomplete({
-	//source: availableTags //used in testing
-	source: nameArray
+    osapi.people.getViewerFriends().execute(function(viewerFriends) {
+	var tableHTML="<table>"; 
+        if (!viewerFriends.error){
+            jQuery.each(viewerFriends.list, function() {
+                tableHTML+="<tr> <td> <img src='"+this.thumbnailUrl+"' /> </td> <td> <a href=\"javascript:viewFollowing('"+this.id+"')\">"+this.displayName+"</a> </td> </tr>";
+                console.log(this);
+                // tableHTML+=this.id;
+            });
+            console.log("2"+tableHTML);
+        }
+        tableHTML+="</table>";
+        
+        document.getElementById('vertTabs').innerHTML = tableHTML;
     });
-    alert(nameArray.length);
+    
 }
 
 
 
-//sends a Jive message post to the person with frName as their name -not working fix
-function sendMessage(frName){
-    var id = -1; 
-    var personArray = osapi.people.getViewerFriends(); // An array of Person JSON objects
-    var arrayLen = personArray.length;
-    
-    //Iterate through person objects and object the name of each person and add it to nameArray
-    for(var i = 0;i < arrayLen; i++){ 
-	var friendName = personArray[i].name; //obtain name string field from Person JSON object
-	if(frName == friendName){
-	    id = personArray[i].id; //get id to know who to send to
-	    break; //exit loop
-	}
-    }
-    
-    var idString = "" + id;
-    
-    
-    var postData = { 
-	activity: { 
-	    "title": "Bessie is leaving us", 
-	    "body": "${@actor} sold Bessie the Cow to ${@target} for $75.00", 
-	    // In the example, it resolves to "Amy Stewart sold Bessie the Cow to John Roberts for $75.00" line. 
-	    "icon": "http://example.org/icon/animal_sale.jpg", 
-	    // a 16x16 icon (png, gif, jpg) that appears in the entry. Here, it displays to the lower right of the @actor's avatar 
-	    "verb": "post", 
-	    "object": { 
-		"objectType": "article", 
-		"summary": "<strong>Adieu, Bessie.</strong><br/>I'm sure you will make one fantastic hamburger.", 
-		// keep the summary short. Under 200 characters (not including html tags), and no more than 5 lines of text. 
-		"mediaLink": { 
-		    "mediaType": "photo", 
-		    "url" : "http://example.org/photos/bessie.jpg" 
-		    // A link to attached media, thumbnails are automatically generated. 
-		} 
-	    }, 
-	    "target": { 
-		"id": "urn:jiveObject:user/1234", 
-		// A jiveObject URN for a user that will generate a user profile link when displayed. 
-		"displayName": "John Roberts" 
-	    } 
-	}, 
-	deliverTo: idString
-    };
-    
-    
-    osapi.activities.create(postData).execute(diivCallback(frName));	
-};
 
-
-function diivCallback(frName){
-    
-    var msg = new gadgets.MiniMessage(__MODULE_ID__);
-    msg.createDismissibleMessage("You sent your badge to " + frName + "!");
-    gadgets.window.adjustHeight();
-}
 
 

@@ -60,16 +60,33 @@ div.outer{float:left;margin-right:10px}
 .twit-rss{padding:0 10px 7px;width:276px}
 .clear{clear:both}
 
+#listOfFriends p{
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+#listOfFriends a{
+	position: relative;
+	top: -12px;
+}
 
 #lsidebar-wrapper{
 	width:189px;
 	float:left;
 	padding-top:0px;
-	padding-left:17px;
+	padding-left:5px;
 	margin-left:0px;
 	margin-right:5px;
 	word-wrap:break-word;
-	overflow:hidden; }
+	overflow:hidden; 
+	margin-top: 120px;
+	}
+	
+#lsidebar-wrapper img{
+	height: 35px;
+	width: 35px;
+	}
+
 #rsidebar-wrapper{
 	width:189px;
 	float:right;
