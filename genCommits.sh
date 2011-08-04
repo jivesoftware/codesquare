@@ -20,7 +20,6 @@ function genRanStr
 }
 
 
-
 function randUsr
 {
     #Email variables
@@ -101,7 +100,7 @@ function randSec
 
 function defTZ
 {
-    echo GMT-7
+    echo GMT-07:00
     return
 }
 
@@ -201,14 +200,67 @@ function defArgs
     return
 }
 
-#debugging delete these later
-stringy=`genRanStr`
-usery=`randUsr`
-bossy=`randUsrBoss $usery`
-echo $stringy
-echo $usery
-echo $bossy
-#End debugging
+function makeFolder
+{
+    year=$1
+    year+="/"
+    month=$2
+    month+="/"
+    day=$3
+    day+="/"
+    hour=$4
+    hour+="/"
+    minute=$5
+    minute+="/"
+    start="TestCommits/"
+    filePathString=$start$year$month$day$hour$minute
+    mkdir -p $filePathString
+    file=$6
+    filePathString+=$file
+    touch $filePathString
+    echo $filePathString
+    return
+}
+
+function createCommit
+{
+    times=$1
+    year=$2
+    month=$3
+    day=$4
+    hour=$5
+    minute=$6
+    second=$7
+    timezone=$8
+    args=$9
+
+    if [ ${#args} -le 1 ]
+    then
+	args=`defArgs`
+    fi
+
+    for(( i=0; i<$times; i++ ))
+    do
+	unixTime=`getUNIXTime $2 $3 $4 $5 $6 $7`
+	commitID=`genRanStr`
+	commitIDFileString=$commitID
+	commitIDFileString+=".txt"
+	emailString=`randUsr`
+	fullFilePath=`makeFolder $year $month $day $hour $minute $commitIDFileString`
+	commitOb=`echo $commitID $emailString $unixTime $timezone $args`
+	echo $commitOb > $fullFilePath
+	echo $fullFilePath " written"
+	year=`getYear`
+	month=`randMonth`
+	day=`randDay`
+	hour=`randHour`
+	minute=`randMinute`
+	second=`randSec`
+	tz=`defTZ`
+	args=`defArgs`
+    done
+    return
+}
 
 argNum=$#
 
@@ -305,16 +357,16 @@ case $argNum in
        args=`defArgs`;;
 esac
 
-#Debugging again delete later
-echo $times
-echo $year
-echo $month
-echo $day
-echo $hour
-echo $minute
-echo $second
-echo $tz
-echo $args
-echo `getUNIXTime $year $month $day $hour $minute $second`
-#End Debuggin again
+createCommit $times $year $month $day $hour $minute $second $tz $args
+prompt="Successfully created "
+prompt+=$times
+prompt+=" test commits"
+echo $prompt
+echo "Copying to HDFS"
+hadoop fs -copyFromLocal TestCommits /user/interns/
+echo "Deleting local copy"
+rm -r TestCommits
+echo "Done!"
+
+
 
