@@ -135,8 +135,8 @@ function testMsg
 	
     case $type in
 	0) stringy="\"\"";;
-	1) stringy="\"This is a test commit\"";;
-	*) stringy="\"This is a test commit\"";;
+	1) stringy="\"This is a Jive test commit\"";;
+	*) stringy="\"This is a Jive test commit\"";;
     esac
     echo $stringy
     return
