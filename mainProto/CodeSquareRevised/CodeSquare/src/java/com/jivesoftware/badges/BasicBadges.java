@@ -36,7 +36,9 @@ public final class BasicBadges {
             JSONObject jCommit = new JSONObject(jArrCommits.get(i).toString());
             System.out.println(jCommit.toString());
             Commit c = ServletTools.convertToCommit(jCommit, unixTime, timeZone);
-            HDFSTools.writeCommitToHDFS(hdfs, c); 
+            if(!HDFSTools.writeCommitToHDFS(hdfs, c)){
+                continue;
+            }
             System.out.println("BEFORE AWARDS");
             awardBasicBadges(table, c); 
 	}
@@ -70,7 +72,7 @@ public final class BasicBadges {
                 newBadgesString += s + " ";
             }
             
-            newBadgesString = newBadgesString.trim();
+            //newBadgesString = newBadgesString.trim();
             
             System.out.println("INSIDE FORLOOP7: "+newBadgesString.toString());
             
@@ -81,7 +83,7 @@ public final class BasicBadges {
 		entry.getValue().getNumBugs(), 
                 entry.getValue().getNumCommits(), 
                 entry.getValue().getConsecCommits(), 
-                newBadgesString + badgeList[1],
+                (newBadgesString + badgeList[1]).trim(),
 		arrBadges.toArray(new String[arrBadges.size()]));
                 
                 
