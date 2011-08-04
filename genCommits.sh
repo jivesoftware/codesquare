@@ -117,7 +117,7 @@ function testFC
 	0) stringy="0 []";;
 	1) stringy="1 [app.xml]";;
 	2) stringy="2 [/home/app.xml,/home/hello.html]";;
-	3) stringy="3 [app.xml,home/hello.html,home/hi.jsp";;
+	3) stringy="3 [app.xml,home/hello.html,home/hi.jsp]";;
 	*) stringy="0 []";;
     esac
     echo $stringy
@@ -134,7 +134,7 @@ function testMsg
     fi
 	
     case $type in
-	0) stringy="";;
+	0) stringy="\"\"";;
 	1) stringy="\"This is a test commit\"";;
 	*) stringy="\"This is a test commit\"";;
     esac
@@ -182,24 +182,22 @@ function defArgs
 {
     if [ $# == 0 ]
     then
-	fcArg=3
-	insArg=1
-	msgArg=1
+	num1=`expr $RANDOM % 4`
+	num2=`expr $RANDOM % 4`
+	num3=`expr $RANDOM % 2`
+	fcArg=$num1
+	insArg=$num2
+	msgArg=$num3
     else
 	stringToParse=$1
 	fcArg=`echo ${stringToParse:0:1}`
 	insArg=`echo ${stringToParse:1:1}`
 	msgArg=`echo ${stringToParse:2:1}`
     fi
-    stringToParse=$1
-    fcArg=`echo ${stringToParse:0:1}`
-    insArg=`echo ${stringToParse:1:1}`
-    msgArg=`echo ${stringToParse:2:1}`
     fcVal=`testFC $fcArg`
     insVal=`insDels $insArg`
     msgVal=`testMsg $msgArg`
-    
-    echo fcVal insVal msgVal
+    echo $fcVal $insVal $msgVal
     return
 }
 
