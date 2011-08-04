@@ -6,14 +6,14 @@ echo "repo abs path:$GL_REPO_BASE_ABS"
 echo -e "ref name:$1\told hash:$2\tnew hash:$3\n"
 
 ref=$1
-firstId=$2
+lastId=$2
 newId=$3
 
 email=`git show $newId --format=%ce -s`
 echo $email
 
 #lastId="df3eb3d"                                                                                                                                                                                                                                                         
-lastId=`curl -v --data-urlencode "email=$email" --data-urlencode "branch=$ref" --data-urlencode "newId=$newId" http://10.45.111.143:9090/CodeSquare/BackEndServlet`
+#lastId=`curl -v --data-urlencode "email=$email" --data-urlencode "branch=$ref" --data-urlencode "newId=$newId" http://10.45.111.143:9090/CodeSquare/BackEndServlet`
 echo "lastId:$lastId"
 echo "show recent commit object:$(git show -s $newId)"
 echo "recent logs:"
@@ -27,14 +27,14 @@ timeZone=`date +%z`
 #com=$(git log $lastId --all --graph --committer=$email --pretty=format:']"},{ "cID": "%H", "cMes": "%f", "unixtimestamp": "%ct", "isotimestamp": "%ci", "name": "%cn", "email": "%ce", "stats": "[')                                        
 length=${#lastId}
 
-if [ $length -eq 10 ]
-then
-    lastId=`git log --reverse --after=$lastId | if read a commit ; then echo $commit ; fi`
+#if [ $length -eq 10 ]
+#then
+#    lastId=`git log --reverse --after=$lastId | if read a commit ; then echo $commit ; fi`
 
     #com=`git log --after=$lastId --all --committer=$email --pretty=format:']"},{ "cID": "%H", "cMes": "%f", "unixtimestamp": "%ct", "isotimestamp": "%ci", "name": "%cn", "email": "%ce", "stats": "['`
-fi
+#fi
 
-com=`git log $lastId..$newId --all --committer=$email --pretty=format:']"},{ "cID": "%H", "cMes": "%f", "unixtimestamp": "%ct", "isotimestamp": "%ci", "name": "%cn", "email": "%ce", "stats": "['`
+com=`git log $lastId..$newId --committer=$email --pretty=format:']"},{ "cID": "%H", "cMes": "%f", "unixtimestamp": "%ct", "isotimestamp": "%ci", "name": "%cn", "email": "%ce", "stats": "['`
 
 
 com="["${com:4}"]\"}]";
