@@ -226,15 +226,15 @@ public final class BasicBadges {
         
         // 6, 7, 8, 9, 10
         public void checkHolidayBadges(UserInfo user, JiveDate commitDate) {
-                if (commitDate.equalsLocal(10, 31)) {
+                if (commitDate.equalsLocal(9, 31)) {
 			user.addBadge("6");
-		} else if (commitDate.equalsLocal(3, 17)) {
+		} else if (commitDate.equalsLocal(2, 17)) {
 			user.addBadge("7");
-		} else if (commitDate.equalsLocal(2, 29)) {
+		} else if (commitDate.equalsLocal(1, 29)) {
 			user.addBadge("8");
-		} else if (commitDate.equalsLocal(2, 14)) {
+		} else if (commitDate.equalsLocal(1, 14)) {
 			user.addBadge("9");
-		} else if (commitDate.equalsLocal(3, 14)) {
+		} else if (commitDate.equalsLocal(2, 14)) {
 			user.addBadge("10");
 		}
 	}
