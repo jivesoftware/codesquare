@@ -238,10 +238,12 @@ function createCommit
     then
 	args=`defArgs`
     fi
-
+    rm -f testCommitLog.txt
+    touch testCommitLog.txt
+    echo "BEGIN" >> testCommitLog.txt
     for(( i=0; i<$times; i++ ))
     do
-	unixTime=`getUNIXTime $2 $3 $4 $5 $6 $7`
+	unixTime=`getUNIXTime $year $month $day $hour $minute $second`
 	commitID=`genRanStr`
 	commitIDFileString=$commitID
 	commitIDFileString+=".txt"
@@ -249,7 +251,10 @@ function createCommit
 	fullFilePath=`makeFolder $year $month $day $hour $minute $commitIDFileString`
 	commitOb=`echo $commitID $emailString $unixTime $timezone $args`
 	echo $commitOb > $fullFilePath
-	echo $fullFilePath " written"
+	echo $fullFilePath " written, see testCommitLog.txt for more info"
+	echo $fullFilePath >> testCommitLog.txt
+	echo $commitOb >> testCommitLog.txt
+	echo "" >> testCommitLog.txt
 	year=`getYear`
 	month=`randMonth`
 	day=`randDay`
@@ -259,6 +264,7 @@ function createCommit
 	tz=`defTZ`
 	args=`defArgs`
     done
+    echo "END" >> testCommitLog.txt
     return
 }
 
@@ -364,6 +370,7 @@ prompt+=" test commits"
 echo $prompt
 echo "Copying to HDFS"
 hadoop fs -copyFromLocal TestCommits /user/interns/
+echo "Copying done"
 echo "Deleting local copy"
 rm -r TestCommits
 echo "Done!"
