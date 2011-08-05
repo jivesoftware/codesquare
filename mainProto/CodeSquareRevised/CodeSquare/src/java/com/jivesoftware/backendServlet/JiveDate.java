@@ -20,7 +20,10 @@ public class JiveDate {
      * 			  A String cointaining timezone
      *  // isoTime is in ISO 8601 Format
      *  // global = GMT-7 (aka PDT)
+     * local date is PDT
+     * global date is wherever they are
      */
+    // only for commitDate!
     public JiveDate(String unixTime, String timeZone){
         Long uTime = Long.parseLong(unixTime);
     	date = new Date(uTime*1000);
@@ -32,6 +35,16 @@ public class JiveDate {
     	globalDate = Calendar.getInstance();
     	globalDate.setTime(date);
     	globalDate.setTimeZone(TimeZone.getTimeZone("GMT"+timeZone));
+    }
+    
+    // only for pushDate!
+        public JiveDate(String unixTime){
+        Long uTime = Long.parseLong(unixTime);
+    	date = new Date(uTime*1000);
+    	
+    	localDate = Calendar.getInstance();
+    	localDate.setTime(date);
+    	localDate.setTimeZone(TimeZone.getTimeZone("GMT-7"));
     }
     
     // NOTE: decided to forgo setter methods because it should all be 

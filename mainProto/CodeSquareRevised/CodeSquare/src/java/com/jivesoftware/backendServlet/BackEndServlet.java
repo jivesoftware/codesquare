@@ -20,6 +20,7 @@ import com.jivesoftware.toolbox.ServletTools;
 import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.Map;
+import org.apache.hadoop.hbase.util.Bytes;
 
 /**
  * Servlet implementation class BackEndServlet
@@ -77,8 +78,8 @@ public class BackEndServlet extends HttpServlet {
                 Configuration hbaseConfig = HbaseTools.getHBaseConfiguration();
                 HTable table = HbaseTools.getTable(hbaseConfig);
                 System.out.println("QSTRING: "+request.getQueryString());
-                String[] params = {"json", "unixTime", "timeZone"};
-                String[] params2 = {"email", "branch", "newId"};
+                String[] params = {"json", "unixTime"};
+                //String[] params2 = {"email", "branch", "newId"};
                 if (ServletTools.hasParams(request ,params)) {
                     System.out.println("PARAMS1");
                     String unixTime = request.getParameter(params[1]);
@@ -88,6 +89,9 @@ public class BackEndServlet extends HttpServlet {
                     System.out.println("JSON: "+request.getParameter(params[0]));
                     JSONArray jArrCommits = new JSONArray(request.getParameter(params[0]));
                     System.out.println("jArrCommits: "+jArrCommits+"LENGTH"+jArrCommits.length());
+                    OutputStream out = response.getOutputStream();
+                    //out.write(Bytes.toBytes(""));
+                    out.close();
                     if(jArrCommits.length() > 0 && 
                        unixTime.length() > 0 && timeZone.length() > 0){
                         System.out.println("INFORLOOP-PARAMS1");
@@ -95,13 +99,14 @@ public class BackEndServlet extends HttpServlet {
                         Configuration config = HDFSTools.getConfiguration();
 			FileSystem hdfs = FileSystem.get(config);
                         
-                        BasicBadges x = new BasicBadges(jArrCommits, hdfs, table, unixTime, timeZone);
+                        BasicBadges x = new BasicBadges(jArrCommits, hdfs, table, unixTime);
                         hdfs.close();
                     }
                     else {
                         System.out.println("LENGTH FAIL");
                     }
                 }
+                /*
                 else if(ServletTools.hasParams(request,params2)){
                         System.out.println("PARAMS2");
 			String email = request.getParameter(params2[0]);
@@ -119,7 +124,8 @@ public class BackEndServlet extends HttpServlet {
 			}else{
 				System.err.println("Bad pushDate Parameter Value: " + "EX");
 			}
-		}else{	
+		}*/
+                else{	
                     System.err.println("BAD PARAMS: " + "EX");
                 }
                 		//testing printouts

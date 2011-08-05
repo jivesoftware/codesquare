@@ -60,7 +60,7 @@ public class HDFSTools {
 	 */
 	public static boolean writeCommitToHDFS(FileSystem dfs, Commit c) throws IOException{
             // If the folders don't exist, create them
-            Path src = makePath(dfs, c.getPushDate().getGlobal());
+            Path src = makePath(dfs, c.getPushDate().getLocal());
                 
             // Write file
             src = new Path(src.toString() + "/" + c.getId() + ".txt");

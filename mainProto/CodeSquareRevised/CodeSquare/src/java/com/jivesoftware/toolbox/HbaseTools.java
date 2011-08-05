@@ -108,7 +108,7 @@ public class HbaseTools {
 			admin.disableTable("EmpBadges");
 			admin.addColumn("EmpBadges", new HColumnDescriptor("Info"));
 			admin.addColumn("EmpBadges", new HColumnDescriptor("Badge"));
-                        admin.addColumn("EmpBadges", new HColumnDescriptor("LastCommitId"));
+                        //admin.addColumn("EmpBadges", new HColumnDescriptor("LastCommitId"));
 			admin.enableTable("EmpBadges");
 		}
 		HTable table = new HTable(config, "EmpBadges");
