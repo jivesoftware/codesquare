@@ -10,10 +10,6 @@ import org.json.JSONObject;
 
 import com.jivesoftware.backendServlet.Commit;
 import com.jivesoftware.backendServlet.JiveDate;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 /**
