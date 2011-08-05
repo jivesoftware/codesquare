@@ -49,7 +49,7 @@ public class HbaseTools {
 	 */
 	public static void addRow(HTable table, String email, String lastCommit,
 			int badgesWeek, int numBugs, int numCommits, int consecCommits,
-			String newBadges, String[] badges) {
+			String newBadges, String[] badges, String pushTime) {
 		
 
 		Put row = new Put(Bytes.toBytes(email));
@@ -69,7 +69,7 @@ public class HbaseTools {
 		if (badges != null) {
 			for (int i = 0; i < badges.length; i++) {
 				row.add(Bytes.toBytes("Badge"), Bytes.toBytes(badges[i]),
-						Bytes.toBytes("1"));
+						Bytes.toBytes(pushTime));
 			}
 		}
 		try {
@@ -438,6 +438,24 @@ public class HbaseTools {
 		return output;
 	}
 	
+        public static ArrayList<String> getBadgeDates(Result data){
+            ArrayList<String> dates = new ArrayList<String>();
+            if (data == null) {
+                System.out.println("Not found");
+                return dates;
+            }
+            if (data.isEmpty()) {
+                return dates;
+            }
+            
+            NavigableSet<byte[]> badges_awarded = data.getFamilyMap(Bytes.toBytes("Badge"))
+                            .descendingKeySet();
+            for (byte[] badge : badges_awarded) {
+                    dates.add(new String(data.getValue(Bytes.toBytes("Badge"), badge)));
+            }
+            
+            return dates;
+        }
 	/***
 	 * This method is a helper function to getFields that converts a byte array
 	 * to an integer

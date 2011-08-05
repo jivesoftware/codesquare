@@ -302,7 +302,7 @@ public class Commit {
 	}
 
 	public String toString() {
-		return id + " " + email + " " + commitDate.getGlobal().getTime().getTime() + " " + pushDate.getGlobal().getTimeZone().getID() + " "
+		return id + " " + email + " " + (commitDate.getLocal().getTime().getTime()/1000) + " " + pushDate.getLocal().getTimeZone().getID() + " "
 				+ numFilesChanged + " [" + filesToString() + "] " + insertions
 				+ " " + deletions + " " + "\"" + msg + "\"";
 	}

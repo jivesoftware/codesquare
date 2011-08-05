@@ -145,4 +145,7 @@ public class UserInfo {
     public void incrementConsecCommits() {
     	this.consecCommits = consecCommits+1;
     }
+    public void resetConsecCommits() {
+        this.consecCommits = 1;
+    }
 }

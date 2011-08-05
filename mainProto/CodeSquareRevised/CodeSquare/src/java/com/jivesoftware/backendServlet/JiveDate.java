@@ -207,10 +207,10 @@ public class JiveDate {
     // toStrings
     
     public String localToString() {
-        return localDate.getTime()+" "+localDate.getTimeZone();
+        return (localDate.getTime().getTime()/1000)+" "+localDate.getTimeZone();
     }
     
     public String globalToString() {
-        return globalDate.getTime()+" "+globalDate.getTimeZone();
+        return (globalDate.getTime().getTime()/1000)+" "+globalDate.getTimeZone();
     }
 }
