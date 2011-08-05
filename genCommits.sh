@@ -238,7 +238,6 @@ function createCommit
     then
 	args=`defArgs`
     fi
-    rm -f testCommitLog.txt
     touch testCommitLog.txt
     echo "BEGIN" >> testCommitLog.txt
     for(( i=0; i<$times; i++ ))
