@@ -372,7 +372,7 @@ echo "Copying to HDFS"
 hadoop fs -copyFromLocal TestCommits /user/interns/
 echo "Copying done"
 echo "Deleting local copy"
-rm -r TestCommits
+rm -rf TestCommits
 echo "Done!"
 
 
