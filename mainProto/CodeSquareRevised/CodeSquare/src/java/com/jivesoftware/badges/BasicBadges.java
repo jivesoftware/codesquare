@@ -127,6 +127,10 @@ public final class BasicBadges {
                     System.out.println("Data is null");
                     return;
                 }
+                else if(data.isEmpty()){
+                    System.out.println("Data is empty");
+                    return;
+                }
                 else {
                     currentUser = new UserInfo(c.getEmail(), data, c.getCommitDate().getLocal());
                     System.out.println("Current User Inside award: " + currentUser.toString());
@@ -224,6 +228,8 @@ public final class BasicBadges {
                     return;
                 }
                 if (timeDiff < 24*60*60 ){
+                     System.out.println("OLD DATE: "+String.valueOf(oldCommitTime) +"  NEW DATE: "+ String.valueOf(newDate.getLocal().getTime().getTime()/1000));
+                     System.out.println("TIME DIFFERENCE: "+String.valueOf(timeDiff) +"  1day: "+ (24*60*60));
                     user.addBadge("27");
                 }
                 if (timeDiff > (5*24*60*60) ){

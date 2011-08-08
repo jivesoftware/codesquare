@@ -211,14 +211,6 @@ public class HbaseTools {
 	 */
 	public static String getLastCommit(Result data, Calendar newDate) {
 		String lastCommit = "";
-		if (data == null) {
-                    System.out.println("IN LASTCOMMIT data=null");
-			return "";
-		}
-		if (data.isEmpty()) {
-                    System.out.println("IN LASTCOMMIT data.empty");
-			return "";
-		}
 		try { 
 			lastCommit = new String(data.getValue(Bytes.toBytes("Info"),
 					Bytes.toBytes("lastCommit")));
@@ -226,8 +218,11 @@ public class HbaseTools {
 		} catch (java.lang.NullPointerException e) {
                         System.out.println("IN LASTCOMMIT nullpointer");
                         System.out.println("NEWDATE: "+String.valueOf(newDate.getTime().getTime())+" "+newDate.getTimeZone().getID());
-			return String.valueOf(newDate.getTime().getTime())+" "+newDate.getTimeZone().getID();
+                        return String.valueOf((newDate.getTime().getTime())/1000)+" "+newDate.getTimeZone().getID();
 		}
+                if(lastCommit.isEmpty()){
+                    return String.valueOf((newDate.getTime().getTime())/1000)+" "+newDate.getTimeZone().getID();
+                }
 		return lastCommit;
 	}
 
@@ -249,7 +244,7 @@ public class HbaseTools {
 		}
 		return results;
 	}
-
+        /*
 	public static String getLastCommitId(HTable table, String email, String branch, String newId)  {
             Result data = null;
             try {
@@ -276,7 +271,7 @@ public class HbaseTools {
                 System.err.println();
             }
             return oldId;
-	}
+	}*/
 	
 	public static Result getRowData(HTable table, String email) {
 		Get get = new Get(Bytes.toBytes(email));
