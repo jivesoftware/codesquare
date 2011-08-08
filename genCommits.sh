@@ -114,9 +114,9 @@ function testFC
     fi
     case $type in
 	0) stringy="0 []";;
-	1) stringy="1 [app.xml]";;
+	1) stringy="1 [/home/app.xml]";;
 	2) stringy="2 [/home/app.xml,/home/hello.html]";;
-	3) stringy="3 [app.xml,home/hello.html,home/hi.jsp]";;
+	3) stringy="3 [/app.xml,/home/hello.html,/home/hi.jsp]";;
 	*) stringy="0 []";;
     esac
     echo $stringy
