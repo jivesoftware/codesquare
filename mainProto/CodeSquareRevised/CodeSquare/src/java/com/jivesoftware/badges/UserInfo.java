@@ -30,7 +30,7 @@ public class UserInfo {
     UserInfo(String email, Result data, Calendar newDate) {
         int[] fieldValues = HbaseTools.getFields(data, new String[] {"numBugs", "numCommits", "consecCommits" });
         numBugs = fieldValues[0];
-        numCommits = fieldValues[1] + 1;
+        numCommits = fieldValues[1];
         consecCommits = fieldValues[2];
         lastCommit = HbaseTools.getLastCommit(data, newDate);
         String[] temp = lastCommit.split(" ");
