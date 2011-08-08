@@ -4,10 +4,15 @@
  */
 package com.jivesoftware.badges;
 
+import java.io.IOException;
+import org.apache.hadoop.conf.Configuration;
+import com.jivesoftware.toolbox.HbaseTools;
 import com.jivesoftware.backendServlet.Commit;
 import com.jivesoftware.backendServlet.JiveDate;
+import java.util.ArrayList;
 import java.util.Calendar;
 import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.client.Result;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -26,9 +31,30 @@ public class BasicBadgesTest {
      * Test of checkMessageBadges method, of class BasicBadges.
      */
     @Test
-    public void testCheckMessageBadges() {
+    public void testCheckMessageBadges() throws IOException {
         System.out.println("checkMessageBadges");
-        UserInfo user = null;
+        
+        Configuration hbaseConfig = HbaseTools.getHBaseConfiguration();
+        HTable table = HbaseTools.getTable(hbaseConfig);
+        JSONArray jArrCommits = new JSONArray(request.getParameter(params[0]));
+        Configuration config = HDFSTools.getConfiguration();
+	FileSystem hdfs = FileSystem.get(config);
+        
+        
+                        
+                        
+                        BasicBadges x = new BasicBadges(jArrCommits, hdfs, table, unixTime);
+                        hdfs.close();
+        
+        
+        Configuration conf = HbaseTools.getHBaseConfiguration();
+        HTable table = new HTable(conf, "EmpBadges"); //Employee table
+        System.out.println("getBadgeDates");
+        
+        Result data = HbaseTools.getRowData(table, "justin.kikuchi@jivesoftware.com");
+        
+        UserInfo user = new UserInfo("justin.kikuchi@jivesoftware.com", );
+         // UserInfo(String email, Result data, Calendar newDate) {
         String message = "";
         BasicBadges instance = null;
         instance.checkMessageBadges(user, message);
@@ -117,6 +143,35 @@ public class BasicBadgesTest {
         JiveDate commitDate = null;
         BasicBadges instance = null;
         instance.checkTimeBadges(user, commitDate);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of awardBasicBadges method, of class BasicBadges.
+     */
+    @Test
+    public void testAwardBasicBadges() {
+        System.out.println("awardBasicBadges");
+        HTable table = null;
+        Commit c = null;
+        BasicBadges instance = null;
+        instance.awardBasicBadges(table, c);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of checkBadge16 method, of class BasicBadges.
+     */
+    @Test
+    public void testCheckBadge16() {
+        System.out.println("checkBadge16");
+        ArrayList<String> newBadges = null;
+        Result data = null;
+        String unixTime = "";
+        BasicBadges instance = null;
+        instance.checkBadge16(newBadges, data, unixTime);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }

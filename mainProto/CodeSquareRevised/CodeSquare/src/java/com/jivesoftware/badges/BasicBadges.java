@@ -17,6 +17,7 @@ import com.jivesoftware.toolbox.HDFSTools;
 import com.jivesoftware.toolbox.HbaseTools;
 import com.jivesoftware.toolbox.ServletTools;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,6 +62,8 @@ public final class BasicBadges {
             System.out.println("New Badges: " + newBadges);
             System.out.println("old new badges:" + badgeList[1]);
             
+            checkBadge16(newBadges, data, unixTime);
+            
             String newBadgesString = "";
             for(String s : newBadges){
                 newBadgesString += s + " ";
@@ -69,6 +72,7 @@ public final class BasicBadges {
             //newBadgesString = newBadgesString.trim();
             
             System.out.println("INSIDE FORLOOP7: "+newBadgesString.toString());
+
             
             HbaseTools.addRow(table, 
                 entry.getKey(), 
@@ -146,12 +150,23 @@ public final class BasicBadges {
             System.out.println("Badges5");
             checkMessageBadges(currentUser, c.getMessage());
             System.out.println("Badges6");
-            checkBadge15(currentUser, c);
 	}
 
         // 16
-        public void checkBadge16(UserInfo user, Commit c){
-            HbaseTools.getBadgeDates();
+        public void checkBadge16(ArrayList<String> newBadges, Result data, String unixTime){
+            ArrayList<String> badgeDates = HbaseTools.getBadgeDates(data);
+            for(int i=0;i < newBadges.size();i++){
+                badgeDates.add(unixTime);
+            }
+            Collections.sort(badgeDates);
+            for(int i=0;(i+7) < badgeDates.size(); i++){
+                int timeDiff = Integer.parseInt(badgeDates.get(i)) - Integer.parseInt(badgeDates.get(i+7));
+                if(timeDiff < 7*24*60*60){
+                    if(!newBadges.contains("16")){
+                        newBadges.add("16");
+                    }
+                }
+            }
         }
 
         // 26
