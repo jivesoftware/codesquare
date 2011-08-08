@@ -47,6 +47,7 @@ public final class BasicBadges {
             if(!HDFSTools.writeCommitToHDFS(hdfs, c)){
                 continue;
             }
+            user.incrementCommits();
             awardBasicBadges(user, c); 
 	}
         
