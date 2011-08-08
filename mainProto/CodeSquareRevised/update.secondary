@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#useless comment
 echo 'Codesquare processing...'
 
 ref=$1
