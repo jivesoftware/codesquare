@@ -17,6 +17,7 @@ import com.jivesoftware.toolbox.HDFSTools;
 import com.jivesoftware.toolbox.HbaseTools;
 import com.jivesoftware.toolbox.ServletTools;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,9 +43,8 @@ public final class BasicBadges {
         // iterate through users and add to hbase
         for (Map.Entry<String, UserInfo> entry : users.entrySet()) {
             System.out.println("INSIDE FORLOOP: "+entry.getValue().getBadges().toString());
-            ArrayList<String> arrBadges = entry.getValue().getBadges();
+            //ArrayList<String> arrBadges = entry.getValue().getBadges();
             ArrayList<String> newBadges = entry.getValue().getBadges();
-            System.out.println("INSIDE FORLOOP1: "+entry.getKey());
             Result data = HbaseTools.getRowData(table, entry.getKey());
             System.out.println("INSIDE FORLOOP2: "+data);
             Object[] badgeList = HbaseTools.getBadges(data);
@@ -62,6 +62,8 @@ public final class BasicBadges {
             System.out.println("New Badges: " + newBadges);
             System.out.println("old new badges:" + badgeList[1]);
             
+            checkBadge16(newBadges, data, unixTime);
+            
             String newBadgesString = "";
             for(String s : newBadges){
                 newBadgesString += s + " ";
@@ -70,6 +72,7 @@ public final class BasicBadges {
             //newBadgesString = newBadgesString.trim();
             
             System.out.println("INSIDE FORLOOP7: "+newBadgesString.toString());
+
             
             HbaseTools.addRow(table, 
                 entry.getKey(), 
@@ -79,7 +82,8 @@ public final class BasicBadges {
                 entry.getValue().getNumCommits(), 
                 entry.getValue().getConsecCommits(), 
                 (newBadgesString + badgeList[1]).trim(),
-		arrBadges.toArray(new String[arrBadges.size()]));
+		newBadges.toArray(new String[newBadges.size()]),
+                unixTime);
                 
                 
             
@@ -90,7 +94,6 @@ public final class BasicBadges {
             System.out.println("INSIDE FORLOOP12: "+entry.getValue().getNumCommits());
             System.out.println("INSIDE FORLOOP13: "+entry.getValue().getConsecCommits());
             System.out.println("INSIDE FORLOOP14: "+newBadges.toString());
-            System.out.println("INSIDE FORLOOP15: "+arrBadges.toArray(new String[arrBadges.size()]));
             }
             
     }
@@ -149,6 +152,22 @@ public final class BasicBadges {
             System.out.println("Badges6");
 	}
 
+        // 16
+        public void checkBadge16(ArrayList<String> newBadges, Result data, String unixTime){
+            ArrayList<String> badgeDates = HbaseTools.getBadgeDates(data);
+            for(int i=0;i < newBadges.size();i++){
+                badgeDates.add(unixTime);
+            }
+            Collections.sort(badgeDates);
+            for(int i=0;(i+7) < badgeDates.size(); i++){
+                int timeDiff = Integer.parseInt(badgeDates.get(i)) - Integer.parseInt(badgeDates.get(i+7));
+                if(timeDiff < 7*24*60*60){
+                    if(!newBadges.contains("16")){
+                        newBadges.add("16");
+                    }
+                }
+            }
+        }
 
         // 26
         public void checkMessageBadges(UserInfo user, String message){
@@ -160,11 +179,17 @@ public final class BasicBadges {
         //30
         public void checkBadge30(UserInfo user, Commit c) {
             Calendar oldDate = user.getDate().getLocal();
-            oldDate.add(Calendar.DAY_OF_MONTH, 1);
             Calendar newDate = c.getCommitDate().getLocal();
+            if(equals(oldDate, newDate)){
+                return;
+            }
+            oldDate.add(Calendar.DAY_OF_MONTH, 1);
             if (equals(oldDate, newDate)){
                 user.incrementConsecCommits();
             } 
+            else {
+                user.resetConsecCommits();
+            }
             oldDate.add(Calendar.DAY_OF_MONTH, -1);
             if (user.getConsecCommits() > 6) {
                 user.addBadge("30");
@@ -194,7 +219,7 @@ public final class BasicBadges {
 	 */
 	public void checkBadges27And28(UserInfo user, JiveDate newDate) {
                 long oldCommitTime = user.getLastCommitTime();
-                long timeDiff = newDate.getLocal().getTime().getTime() - oldCommitTime;
+                long timeDiff = (newDate.getLocal().getTime().getTime()/1000) - oldCommitTime;
                 if(user.getNumCommits()==1){
                     return;
                 }
@@ -202,7 +227,7 @@ public final class BasicBadges {
                     user.addBadge("27");
                 }
                 if (timeDiff > (5*24*60*60) ){
-                    System.out.println("OLD DATE: "+String.valueOf(oldCommitTime) +"  NEW DATE: "+ String.valueOf(newDate.getLocal().getTime().getTime()));
+                    System.out.println("OLD DATE: "+String.valueOf(oldCommitTime) +"  NEW DATE: "+ String.valueOf(newDate.getLocal().getTime().getTime()/1000));
                      System.out.println("TIME DIFFERENCE: "+String.valueOf(timeDiff) +"  5days: "+ (5*24*60*60));
                      user.addBadge("28");
                 }
