@@ -48,7 +48,7 @@ public class HbaseTools {
 	 *            already acquired badges
 	 */
 	public static void addRow(HTable table, String email, String lastCommit,
-			int badgesWeek, int numBugs, int numCommits, int consecCommits,
+			int numBugs, int numCommits, int consecCommits,
 			String newBadges, String[] badges, String pushTime) {
 		
 
@@ -56,8 +56,6 @@ public class HbaseTools {
 
 		row.add(Bytes.toBytes("Info"), Bytes.toBytes("lastCommit"),
 				Bytes.toBytes(lastCommit));
-		row.add(Bytes.toBytes("Info"), Bytes.toBytes("badgesWeek"),
-				Bytes.toBytes(badgesWeek));
 		row.add(Bytes.toBytes("Info"), Bytes.toBytes("numBugs"),
 				Bytes.toBytes(numBugs));
 		row.add(Bytes.toBytes("Info"), Bytes.toBytes("numCommits"),
@@ -108,7 +106,6 @@ public class HbaseTools {
 			admin.disableTable("EmpBadges");
 			admin.addColumn("EmpBadges", new HColumnDescriptor("Info"));
 			admin.addColumn("EmpBadges", new HColumnDescriptor("Badge"));
-                        //admin.addColumn("EmpBadges", new HColumnDescriptor("LastCommitId"));
 			admin.enableTable("EmpBadges");
 		}
 		HTable table = new HTable(config, "EmpBadges");
@@ -214,14 +211,11 @@ public class HbaseTools {
 		try { 
 			lastCommit = new String(data.getValue(Bytes.toBytes("Info"),
 					Bytes.toBytes("lastCommit")));
-                        System.out.println("IN LASTCOMMIT LastCommit: "+lastCommit);
 		} catch (java.lang.NullPointerException e) {
-                        System.out.println("IN LASTCOMMIT nullpointer");
-                        System.out.println("NEWDATE: "+String.valueOf(newDate.getTime().getTime())+" "+newDate.getTimeZone().getID());
                         return String.valueOf((newDate.getTime().getTime())/1000)+" "+newDate.getTimeZone().getID();
 		}
                 if(lastCommit.isEmpty()){
-                    return String.valueOf((newDate.getTime().getTime())/1000)+" "+newDate.getTimeZone().getID();
+                    return String.valueOf(newDate.getTime().getTime()/1000)+" "+newDate.getTimeZone().getID();
                 }
 		return lastCommit;
 	}
@@ -330,7 +324,6 @@ public class HbaseTools {
 		int[] results = getFields(data, fields);
 		System.out.println("1numbugs=\t" + results[1]);
 		// System.out.println("1lastCommit=\t" + getLastCommit(data));
-		System.out.println("1badgesWeek=\t" + results[0]);
 		System.out.println("1numCommits=\t" + results[2]);
 		System.out.println("1consecCommits=\t" + results[3]);
 		System.out

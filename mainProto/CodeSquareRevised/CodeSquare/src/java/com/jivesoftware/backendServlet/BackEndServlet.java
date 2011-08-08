@@ -18,9 +18,6 @@ import com.jivesoftware.toolbox.HbaseTools;
 import com.jivesoftware.badges.BasicBadges;
 import com.jivesoftware.toolbox.ServletTools;
 import java.io.OutputStream;
-import java.util.Enumeration;
-import java.util.Map;
-import org.apache.hadoop.hbase.util.Bytes;
 
 /**
  * Servlet implementation class BackEndServlet
@@ -77,23 +74,17 @@ public class BackEndServlet extends HttpServlet {
 	protected void doGetOrPost(HttpServletRequest request, HttpServletResponse response) throws Exception{
                 Configuration hbaseConfig = HbaseTools.getHBaseConfiguration();
                 HTable table = HbaseTools.getTable(hbaseConfig);
-                System.out.println("QSTRING: "+request.getQueryString());
                 String[] params = {"json", "unixTime"};
                 //String[] params2 = {"email", "branch", "newId"};
                 if (ServletTools.hasParams(request ,params)) {
-                    System.out.println("PARAMS1");
                     String unixTime = request.getParameter(params[1]);
-                    System.out.println("unixTime: "+unixTime);
-                    System.out.println("JSON: "+request.getParameter(params[0]));
                     JSONArray jArrCommits = new JSONArray(request.getParameter(params[0]));
-                    System.out.println("jArrCommits: "+jArrCommits+"LENGTH"+jArrCommits.length());
                     OutputStream out = response.getOutputStream();
                     //out.write(Bytes.toBytes(""));
                     out.close();
                     if(jArrCommits.length() > 0 && 
                        unixTime.length() > 0){
-                        System.out.println("INFORLOOP-PARAMS1");
-                        
+                       
                         Configuration config = HDFSTools.getConfiguration();
 			FileSystem hdfs = FileSystem.get(config);
                         
