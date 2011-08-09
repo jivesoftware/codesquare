@@ -99,7 +99,7 @@ public class AppServlet extends HttpServlet {
             HttpServletResponse response) throws ServletException, IOException {
 
         // Get parameter info from Jive App
-
+        long time = System.currentTimeMillis();
 
         String email = request.getParameter("email");
         String bossEmail = request.getParameter("bossEmail");
@@ -174,6 +174,7 @@ public class AppServlet extends HttpServlet {
                     System.out.println(e.getMessage());
                 }
             }
+            System.out.println("time: "+ (System.currentTimeMillis()-time));
 
             HbaseTools.resetNewBadges(table, email);
             table.close();
@@ -201,8 +202,82 @@ public class AppServlet extends HttpServlet {
     private static JSONObject convertOutputToJSON(ArrayList<String> badges, HTable badgeTable, String newBadges, boolean earnedOnly)
             throws JSONException, IOException {
         JSONObject j = new JSONObject();
+        
+        String[][] badgesList = {
+            {"First Commit", "User committed 1 time."},
+            {"Fifty Commits", "User committed 50 times."},
+            {"Five Hundred Commits", "User committed 500 times,"},
+            {"One Thousand Commits", "User committed 1000 times."},
+            {"Five Thousand Commits", "User committed 5000 times."},
+            {"Trick or Treat Badge", "User committed on Halloween."},
+            {"Leprechaun Badge", "User committed on St. Patrick's Day."},
+            {"Leap Year Badge", "User committed on Leap Year Day."},
+            {"Love Badge", "User committed on Valentine's Day."},
+            {"Pi Day", "User committed on 3.14"},
+            {"Humming Bird", "User committed twice within a minute."},
+            {"Night Owl", "User committed after 10pm."},
+            {"Early Bird", "User committed before 6am."},
+            {"Team Player", "User and 2 or more people made changes to the same directory in the same hour."},
+            {"United We Stand", "User and 9 or more people made changes to the same directory in the same hour."},
+            {"Grape Squasher", "User gained 8 or more badges in 1 week"},
+            {"Numa Numa", "User had the least lines of code per file in a given week."},
+            {"Manic Monday", "User committed on Monday before 8am."},
+            {"Rebecca Black Friday", "User committed on Friday after 4pm."},
+            {"Charlotte Takes Tumble", "User committed a negative amount of lines code in a day."},
+            {"Boss is Better", "User committed more lines of code than all of his employees."},
+            {"Good Employee", "User committed more lines of code than his boss."},
+            {"Best Employee", "User committed more lines of code than each of his peers."},
+            {"Best day", "User committed those most lines of code in a single day."},
+            {"Soul mate(s)", "User and one or more people commit within a 10 second time span in same directory."},
+            {"Jiver", "User's commit message included the word Jive."},
+            {"Dos Commits", "User committed twice in the same day."},
+            {"Slacker", "User had 5 or more days in between commits."},
+            {"Weekend Warrior", "User committed on the weekend."},
+            {"Committed Person", "User committed every day of a give week."},
+            {"Author", "Users commit message was greater than 20 words."}
+        };
+        
+        for (Integer i = 0; i < badges.size(); i++) {
+            System.out.println("Processing Badge No: " + badges.get(i));
+            String[] badgeInfo = badgesList[Integer.parseInt(badges.get(i))-1];
 
-        ResultScanner s = badgeTable.getScanner(Bytes.toBytes("Info"));
+            JSONObject j2 = new JSONObject();
+            j2.put("Name", badgeInfo[0]);
+            j2.put("Description", badgeInfo[1]);
+            j2.put("IconURL", "images/"+badges.get(i)+".png");
+            if (newBadges.contains(badges.get(i))) {
+                j2.put("New", true);
+            } else {
+                j2.put("New", false);
+            }
+            System.out.println(j2.toString());
+            j.put(badges.get(i), j2);
+
+        }
+
+
+        for (Integer k = new Integer(1); k <= 30; k++) {
+
+            if (!j.has(k.toString())) {
+                JSONObject j3 = new JSONObject();
+                String[] badgeInfo = badgesList[k];
+                j3.put("Name", badgeInfo[0]);
+                j3.put("Description", badgeInfo[1]);
+                j3.put("IconURL", "images/unobtained.png");
+                j3.put("New", false);
+                j.put(k.toString(), j3);
+            }
+        }
+
+
+
+        return j;
+        
+        
+        
+        
+        
+        /*ResultScanner s = badgeTable.getScanner(Bytes.toBytes("Info"));
         Iterator<Result> badgeList = s.iterator();
         while(badgeList.hasNext()){
                 Result r = badgeList.next();
@@ -228,14 +303,14 @@ public class AppServlet extends HttpServlet {
                     j.put(new String(r.getRow()), j3);
                 }
         }
-        return j;
+        return j;*/
 
         
-        
         /*
-        for (i = 0; i < badges.size(); i++) {
+        
+        for (Integer i = 0; i < badges.size(); i++) {
             System.out.println("Processing Badge No: " + badges.get(i));
-            String[] badgeInfo = HbaseTools.getBadgeInfo(BadgeTable, badges.get(i));
+            String[] badgeInfo = HbaseTools.getBadgeInfo(badgeTable, badges.get(i));
 
             JSONObject j2 = new JSONObject();
             j2.put("Name", badgeInfo[1]);
@@ -252,11 +327,11 @@ public class AppServlet extends HttpServlet {
         }
 
 
-        for (Integer k = new Integer(1); i <= 30; i++) {
+        for (Integer k = new Integer(1); k <= 30; k++) {
 
             if (!j.has(k.toString())) {
                 JSONObject j3 = new JSONObject();
-                String[] badgeInfo = HbaseTools.getBadgeInfo(BadgeTable, k.toString());
+                String[] badgeInfo = HbaseTools.getBadgeInfo(badgeTable, k.toString());
                 j3.put("Name", badgeInfo[1]);
                 j3.put("Description", badgeInfo[2]);
                 j3.put("IconURL", "images/unobtained.png");
@@ -267,11 +342,8 @@ public class AppServlet extends HttpServlet {
 
 
 
-        return j;*/
+        return j;
+    }*/
     }
-
-
-
-  
 
 }
