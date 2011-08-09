@@ -28,20 +28,32 @@ function randUsr
     semail=deanna.surma@jivesoftware.com #Deanna email
     eemail=eric.ren@jivesoftware.com #Eric email
     
-    num=`expr $RANDOM % 4`
+    if [$# == 0 ]
+    then
+        num=`expr $RANDOM % 12`
+    else
+        num=$1
+    fi
     if [ $num == 0 ]
     then
-	echo diivanand.ramalingam@jivesoftware.com
+        echo diivanand.ramalingam@jivesoftware.com
     elif [ $num == 1 ]
     then
-	echo justin.kikuchi@jivesoftware.com
+        echo justin.kikuchi@jivesoftware.com
     elif [ $num == 2 ]
     then
-	echo deanna.surma@jivesoftware.com
+        echo deanna.surma@jivesoftware.com
+    elif [ $num == 3 ]
+    then
+        echo eric.ren@jivesoftware.com
     else
-	echo eric.ren@jivesoftware.com
+        var1="tmp"
+        var1+=$num
+        var1+="@testme.com"
+        echo $var1
     fi
     return
+
 }
 
 function randUsrBoss
@@ -114,9 +126,9 @@ function testFC
     fi
     case $type in
 	0) stringy="0 []";;
-	1) stringy="1 [app.xml]";;
+	1) stringy="1 [/home/app.xml]";;
 	2) stringy="2 [/home/app.xml,/home/hello.html]";;
-	3) stringy="3 [app.xml,home/hello.html,home/hi.jsp]";;
+	3) stringy="3 [/app.xml,/home/hello.html,/home/hi.jsp]";;
 	*) stringy="0 []";;
     esac
     echo $stringy
@@ -231,7 +243,8 @@ function createCommit
     hour=$5
     minute=$6
     second=$7
-    timezone=$8
+    num=$8
+    timezone=`defTZ`
     args=$9
 
     if [ ${#args} -le 1 ]
@@ -246,7 +259,7 @@ function createCommit
 	commitID=`genRanStr`
 	commitIDFileString=$commitID
 	commitIDFileString+=".txt"
-	emailString=`randUsr`
+	emailString=`randUsr $num`
 	fullFilePath=`makeFolder $year $month $day $hour $minute $commitIDFileString`
 	commitOb=`echo $commitID $emailString $unixTime $timezone $args`
 	echo $commitOb > $fullFilePath
@@ -277,7 +290,7 @@ case $argNum in
        hour=`randHour`
        minute=`randMinute`
        second=`randSec`
-       tz=`defTZ`
+       tz=0
        args=`defArgs`;;
     2) times=$1
        year= $2
@@ -286,7 +299,7 @@ case $argNum in
        hour=`randHour`
        minute=`randMinute`
        second=`randSec`
-       tz=`defTZ`
+       tz=0
        args=`defArgs`;;
     3) times=$1
        year=$2
@@ -295,7 +308,7 @@ case $argNum in
        hour=`randHour`
        minute=`randMinute`
        second=`randSec`
-       tz=`defTZ`
+       tz=0
        args=`defArgs`;;
     4) times=$1
        year=$2
@@ -304,7 +317,7 @@ case $argNum in
        hour=`randHour`
        minute=`randMinute`
        second=`randSec`
-       tz=`defTZ`
+       tz=0
        args=`defArgs`;;
     5) times=$1
        year=$2
@@ -313,7 +326,7 @@ case $argNum in
        hour=$5
        minute=`randMinute`
        second=`randSec`
-       tz=`defTZ`
+       tz=0
        args=`defArgs`;;
     6) times=$1
        year=$2
@@ -322,7 +335,7 @@ case $argNum in
        hour=$5
        minute=$6
        second=`randSec`
-       tz=`defTZ`
+       tz=0
        args=`defArgs`;;
     7) times=$1
        year=$2
@@ -331,7 +344,7 @@ case $argNum in
        hour=$5
        minute=$6
        second=$7
-       tz=`defTZ`
+       tz=0
        args=`defArgs`;;
     8) times=$1
        year=$2
@@ -358,7 +371,7 @@ case $argNum in
        hour=`randHour`
        minute=`randMinute`
        second=`randSec`
-       tz=`defTZ`
+       tz=0
        args=`defArgs`;;
 esac
 
@@ -367,12 +380,5 @@ prompt="Successfully created "
 prompt+=$times
 prompt+=" test commits"
 echo $prompt
-echo "Copying to HDFS"
-hadoop fs -copyFromLocal TestCommits /user/interns/
 echo "Copying done"
-echo "Deleting local copy"
-rm -rf TestCommits
 echo "Done!"
-
-
-

@@ -15,7 +15,6 @@ import org.apache.hadoop.hbase.client.Result;
  * @author deanna.surma
  */
 public class UserInfo {
-    int badgesWeek;
     int consecCommits;
     String lastCommit;
     Long lastCommitTime;
@@ -29,30 +28,16 @@ public class UserInfo {
     JiveDate date;
     
     UserInfo(String email, Result data, Calendar newDate) {
-        System.out.println("IN USER");
-        int[] fieldValues = HbaseTools.getFields(data, new String[] { "badgesWeek", "numBugs", "numCommits", "consecCommits" });
-	System.out.println("IN USER");
-        badgesWeek = fieldValues[0];
-        System.out.println("IN USER0: "+fieldValues[0]);
-        numBugs = fieldValues[1];
-        System.out.println("IN USER1: "+fieldValues[1]);
-        numCommits = fieldValues[2] + 1;
-        System.out.println("IN USER2: "+fieldValues[2]);
-        consecCommits = fieldValues[3];
-        System.out.println("IN USER3: "+fieldValues[3]);
-        
+        int[] fieldValues = HbaseTools.getFields(data, new String[] {"numBugs", "numCommits", "consecCommits" });
+        numBugs = fieldValues[0];
+        numCommits = fieldValues[1];
+        consecCommits = fieldValues[2];
         lastCommit = HbaseTools.getLastCommit(data, newDate);
-        System.out.println("IN USER4: "+lastCommit);
         String[] temp = lastCommit.split(" ");
         lastCommitTime = Long.parseLong(temp[0]); 
-        System.out.println("IN USER5: "+lastCommitTime);
         lastCommitZone = temp[1];
-        System.out.println("IN USER6: "+lastCommitZone);
         date = new JiveDate(temp[0], lastCommitZone);
-        System.out.println("JIVEDATE1: "+date.getLocal());
-        System.out.println("JIVEDATE2: "+date.getGlobal());
         this.email = email;
-        System.out.println("IN USER7: "+email);
     }
     
             /**
@@ -75,15 +60,6 @@ public class UserInfo {
     public ArrayList<String> getBadges() {
     	return badges;
     }
-    
-     /**
-     * 
-     * @return badgesWeek
-     */
-    public int getBadgesWeek() {
-    	return badgesWeek;
-    }
-    
     
      /**
      * 

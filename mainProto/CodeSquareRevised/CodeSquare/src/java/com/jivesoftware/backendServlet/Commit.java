@@ -239,52 +239,40 @@ public class Commit {
 	 * @return an Object array of commit statistical info
 	 */
 	public void addStats(String stats) {
-            
-            
-                System.out.println("Entered addStats: " + stats);
-		stats = stats.replace('[', ' ').replace(']', ' ').trim();
-                System.out.println("Stats after replace and trim to be tokenized: " + stats);
-                int totalInsertions, totalDeletions;
-                totalInsertions = totalDeletions = 0;
-                
-                
-		StringTokenizer st = new StringTokenizer(stats, " ");
-                
-                
-                int counter = 1;
-                
-                while(st.hasMoreTokens()){
-                    String token = st.nextToken();
-                    System.out.println("Token: " + token);
-                    System.out.println(token);
-                    if(counter % 3 == 2){
-                        try{
-                            totalInsertions += Integer.parseInt(token);
-                        }catch(NumberFormatException e){
-                            totalInsertions = 0;
-                        }
-                    }else if(counter % 3 == 1){
-                        try{
-                            totalDeletions += Integer.parseInt(token);
-                        }catch(NumberFormatException e){
-                            totalDeletions = 0;
-                        }
-                    }else{//counter % 3 == 0
-                        incrementNumFilesChanged();
-                        appendFilesChanged(token);
+            stats = stats.replace('[', ' ').replace(']', ' ').trim();
+            int totalInsertions, totalDeletions;
+            totalInsertions = totalDeletions = 0;
+
+
+            StringTokenizer st = new StringTokenizer(stats, " ");
+
+
+            int counter = 1;
+
+            while(st.hasMoreTokens()){
+                String token = st.nextToken();;
+                if(counter % 3 == 2){
+                    try{
+                        totalInsertions += Integer.parseInt(token);
+                    }catch(NumberFormatException e){
+                        totalInsertions = 0;
                     }
-                    counter++;
+                }else if(counter % 3 == 1){
+                    try{
+                        totalDeletions += Integer.parseInt(token);
+                    }catch(NumberFormatException e){
+                        totalDeletions = 0;
+                    }
+                }else{//counter % 3 == 0
+                    incrementNumFilesChanged();
+                    appendFilesChanged(token);
                 }
-                
-                
-		insertions = totalInsertions;
-		deletions = totalDeletions;
-		
-                System.out.println("Leaving addStats");
-                
-                
-               
-                
+                counter++;
+            }
+
+
+            insertions = totalInsertions;
+            deletions = totalDeletions;
 	}
 
 	public String filesToString() {

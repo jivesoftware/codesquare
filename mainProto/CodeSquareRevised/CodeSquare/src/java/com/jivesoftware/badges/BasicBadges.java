@@ -18,61 +18,77 @@ import com.jivesoftware.toolbox.HbaseTools;
 import com.jivesoftware.toolbox.ServletTools;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 public final class BasicBadges {
-    
-    HashMap<String, UserInfo> users = new HashMap<String, UserInfo>();
     
     public BasicBadges() {};
     
     public BasicBadges(JSONArray jArrCommits, FileSystem hdfs, HTable table, 
                         String unixTime) throws JSONException, IOException {
-        // iterate through and process/store info locally
+    // iterate through and process/store info locally
+        UserInfo user = null;
+        Result data = null;
+        // get user
+        
         for(int i = 0;i < jArrCommits.length();i++){
             JSONObject jCommit = new JSONObject(jArrCommits.get(i).toString());
-            System.out.println(jCommit.toString());
             Commit c = ServletTools.convertToCommit(jCommit, unixTime);
+            //first iteration, create user object
+            if(i==0){
+                data = HbaseTools.getRowData(table, c.getEmail());
+                if (data == null) {
+                    return;
+                }
+                else if(data.isEmpty()){
+                    return;
+                }
+                else {
+                    user = new UserInfo(c.getEmail(), data, c.getCommitDate().getLocal());
+                }
+            }
             if(!HDFSTools.writeCommitToHDFS(hdfs, c)){
                 continue;
             }
-            System.out.println("BEFORE AWARDS");
-            awardBasicBadges(table, c); 
-	}
-       
+            user.incrementCommits();
+            awardBasicBadges(user, c);
+        }
+        
         // iterate through users and add to hbase
-        for (Map.Entry<String, UserInfo> entry : users.entrySet()) {
-            ArrayList<String> newBadges = entry.getValue().getBadges();
-            Result data = HbaseTools.getRowData(table, entry.getKey());
-            Object[] badgeList = HbaseTools.getBadges(data);
-            ArrayList<String> oldBadges = (ArrayList<String>) badgeList[0];
-            for (int i = 0; i < newBadges.size(); i++) {
-                if (oldBadges.contains(newBadges.get(i))) {
-                    newBadges.remove(i--);
-		}
+        //ArrayList<String> arrBadges = entry.getValue().getBadges();
+        ArrayList<String> newBadges = user.getBadges();
+        Object[] badgeList = HbaseTools.getBadges(data);
+        ArrayList<String> oldBadges = (ArrayList<String>) badgeList[0];
+        for (int i = 0; i < newBadges.size(); i++) {
+            if (oldBadges.contains(newBadges.get(i))) {
+                newBadges.remove(i--);
             }
-            
-            checkBadge16(newBadges, data, unixTime);
-            
-            String newBadgesString = "";
-            for(String s : newBadges){
-                newBadgesString += s + " ";
-            }
-            
-            HbaseTools.addRow(table, 
-                entry.getKey(), 
-                entry.getValue().getLastCommit(), 
-                entry.getValue().getBadgesWeek(),
-		entry.getValue().getNumBugs(), 
-                entry.getValue().getNumCommits(), 
-                entry.getValue().getConsecCommits(), 
-                (newBadgesString + badgeList[1]).trim(),
-		newBadges.toArray(new String[newBadges.size()]),
-                unixTime);
+        }
 
-            }
-            
+        checkBadge16(newBadges, data, unixTime);
+        System.out.println(newBadges.toString() + "old: " + oldBadges.toString());
+        if(oldBadges.contains("16")){
+                    System.out.println(newBadges.toString() + "2old: " + oldBadges.toString());
+
+            newBadges.remove(newBadges.lastIndexOf("16"));
+        }
+
+        String newBadgesString = "";
+        for(String s : newBadges){
+            newBadgesString += s + " ";
+        }
+
+        //newBadgesString = newBadgesString.trim();
+
+
+        HbaseTools.addRow(table,
+            user.getEmail(),
+            user.getLastCommit(),
+            user.getNumBugs(),
+            user.getNumCommits(),
+            user.getConsecCommits(),
+            (newBadgesString + badgeList[1]).trim(),
+            newBadges.toArray(new String[newBadges.size()]),
+            unixTime);    
     }
 
 	
@@ -88,32 +104,14 @@ public final class BasicBadges {
 	 * @param numBugs
 	 *            number of bugs the user fixed, currently not in use
 	 */
-	public void awardBasicBadges(HTable table, Commit c) {
-            UserInfo currentUser = null;
-            if (users.containsKey(c.getEmail())){
-                currentUser = users.get(c.getEmail());
-                currentUser.incrementCommits();
-            }
-            else {
-                Result data = HbaseTools.getRowData(table, c.getEmail());
-		if (data == null) { 
-                    return;
-                }
-                else {
-                    currentUser = new UserInfo(c.getEmail(), data, c.getCommitDate().getLocal());
-                    users.put(c.getEmail(), currentUser);
-                }
-            }
-            
-            
-            // check badges
-            checkHolidayBadges(currentUser, c.getCommitDate()); // tests done
-            checkTimeBadges(currentUser, c.getCommitDate()); // tests done
-            checkNumCommitBadges(currentUser); 
-            checkBadges27And28(currentUser, c.getCommitDate()); // tests done
-            checkBadge30(currentUser, c); // tests done
-            checkMessageBadges(currentUser, c.getMessage()); // tests done
-	}
+	public void awardBasicBadges(UserInfo currentUser, Commit c) {
+            checkHolidayBadges(currentUser, c.getCommitDate());
+            checkTimeBadges(currentUser, c.getCommitDate());
+            checkNumCommitBadges(currentUser);
+            checkBadges27And28(currentUser, c.getCommitDate());
+            checkBadge30(currentUser, c);
+            checkMessageBadges(currentUser, c.getMessage());
+        }
 
         // 16
         public void checkBadge16(ArrayList<String> newBadges, Result data, String unixTime){
@@ -125,9 +123,8 @@ public final class BasicBadges {
             for(int i=0;(i+7) < badgeDates.size(); i++){
                 int timeDiff = Integer.parseInt(badgeDates.get(i)) - Integer.parseInt(badgeDates.get(i+7));
                 if(timeDiff < 7*24*60*60){
-                    if(!newBadges.contains("16")){
                         newBadges.add("16");
-                    }
+                        return;
                 }
             }
         }
@@ -143,14 +140,10 @@ public final class BasicBadges {
         public void checkBadge30(UserInfo user, Commit c) {
             Calendar oldDate = user.getDate().getLocal();
             Calendar newDate = c.getCommitDate().getLocal();
-            System.out.println(user.getDate().getLocal());
-            System.out.println(c.getCommitDate().getLocal());
-            System.out.println(equals(oldDate, newDate));
             if(equals(oldDate, newDate)){
                 return;
             }
             oldDate.add(Calendar.DAY_OF_MONTH, 1);
-            System.out.println(equals(oldDate, newDate));
             if (equals(oldDate, newDate)){
                 user.incrementConsecCommits();
                 user.setDate(c.getCommitDate());
@@ -160,9 +153,7 @@ public final class BasicBadges {
                 user.setDate(c.getCommitDate());
             }
             oldDate.add(Calendar.DAY_OF_MONTH, -1);
-            System.out.println(user.getConsecCommits());
-            System.out.println(user.getConsecCommits() > 6);
-            if (user.getConsecCommits() > 6) {
+            if (user.getConsecCommits() > 5) { // it is 5 (not 6) because conseccommits starts at 0
                 user.addBadge("30");
             } 
         }

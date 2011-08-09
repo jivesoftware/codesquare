@@ -20,16 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 public class ServletTools {
     
          public static boolean hasParams(HttpServletRequest request, String[] params){
-             try{
-                 System.out.println("XXX: "+(request.getParameter(params[0]) != null));
-                 System.out.println("XXX: "+(request.getParameter(params[1]) != null));
-                 System.out.println("XXX: "+(request.getParameter(params[0])));
-                 System.out.println("XXX: "+(request.getParameter(params[1])));
-             } catch(NullPointerException e){
-                 //added to catch error in testing print outs
-             } catch( ArrayIndexOutOfBoundsException e){
-                 //added to catch error in testing print outs
-             }
              
              for(int i=0; i<params.length;i++){
                  if(request.getParameter(params[i]) == null){
@@ -77,7 +67,6 @@ public class ServletTools {
                 String pushUnixTime) throws JSONException{
             Commit commit = new Commit();
             commit.setPushDate(new JiveDate(pushUnixTime));
-            System.out.println("ISOTIME: "+jCommit.getString("isotimestamp").split(" ")[2]);
             String x = jCommit.getString("isotimestamp").split(" ")[2];
             commit.setCommitDate(new JiveDate(jCommit.getString("unixtimestamp"), jCommit.getString("isotimestamp")));
             commit.addStats(jCommit.getString("stats"));

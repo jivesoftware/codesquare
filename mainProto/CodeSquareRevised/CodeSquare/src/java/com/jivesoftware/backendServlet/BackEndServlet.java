@@ -18,9 +18,6 @@ import com.jivesoftware.toolbox.HbaseTools;
 import com.jivesoftware.badges.BasicBadges;
 import com.jivesoftware.toolbox.ServletTools;
 import java.io.OutputStream;
-import java.util.Enumeration;
-import java.util.Map;
-import org.apache.hadoop.hbase.util.Bytes;
 
 /**
  * Servlet implementation class BackEndServlet
@@ -42,7 +39,6 @@ public class BackEndServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try{
-                    System.out.println("GET");
                     doGetOrPost(request,response);
 		}catch(Exception e){
 			e.printStackTrace();
@@ -56,7 +52,6 @@ public class BackEndServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 			try {
-                            System.out.println("POST");
                             doGetOrPost(request,response);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -77,7 +72,6 @@ public class BackEndServlet extends HttpServlet {
 	protected void doGetOrPost(HttpServletRequest request, HttpServletResponse response) throws Exception{
                 Configuration hbaseConfig = HbaseTools.getHBaseConfiguration();
                 HTable table = HbaseTools.getTable(hbaseConfig);
-                System.out.println("QSTRING: "+request.getQueryString());
                 String[] params = {"json", "unixTime"};
                 //String[] params2 = {"email", "branch", "newId"};
                 if (ServletTools.hasParams(request ,params)) {
@@ -88,7 +82,7 @@ public class BackEndServlet extends HttpServlet {
                     out.close();
                     if(jArrCommits.length() > 0 && 
                        unixTime.length() > 0){
-                        
+                       
                         Configuration config = HDFSTools.getConfiguration();
 			FileSystem hdfs = FileSystem.get(config);
                         
