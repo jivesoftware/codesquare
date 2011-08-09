@@ -380,9 +380,9 @@ public class HbaseTools {
 
 
 
-        String[] result = new String[resultingBadges.size()];
-        result = resultingBadges.toArray(result);
-        output[0] = result;
+        //String[] result = new String[resultingBadges.size()];
+        //result = resultingBadges.toArray(result);
+        output[0] = resultingBadges;
         output[1] = newBadges;
         return output;
     }
