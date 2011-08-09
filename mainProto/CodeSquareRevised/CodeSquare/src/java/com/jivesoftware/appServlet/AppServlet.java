@@ -175,8 +175,9 @@ public class AppServlet extends HttpServlet {
                 }
             }
             System.out.println("time: "+ (System.currentTimeMillis()-time));
-
-            HbaseTools.resetNewBadges(table, email);
+            if(bossEmail.endsWith("noBoss@nogmail.com")){
+                HbaseTools.resetNewBadges(table, email);
+            }
             table.close();
             //free resources and close connections
             HConnectionManager.deleteConnection(conf, true);
@@ -256,11 +257,11 @@ public class AppServlet extends HttpServlet {
         }
 
 
-        for (Integer k = new Integer(1); k <= 30; k++) {
+        for (Integer k = new Integer(1); k <= badgesList.length; k++) {
 
-            if (!j.has(k.toString())) {
+            if (!j.has((k).toString())) {
                 JSONObject j3 = new JSONObject();
-                String[] badgeInfo = badgesList[k];
+                String[] badgeInfo = badgesList[k-1];
                 j3.put("Name", badgeInfo[0]);
                 j3.put("Description", badgeInfo[1]);
                 j3.put("IconURL", "images/unobtained.png");
