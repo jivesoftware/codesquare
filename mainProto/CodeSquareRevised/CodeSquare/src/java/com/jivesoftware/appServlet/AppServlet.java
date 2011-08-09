@@ -20,6 +20,11 @@ import org.apache.hadoop.hbase.client.HTable;
 import org.json.*;
 
 import com.jivesoftware.toolbox.HbaseTools;
+import java.util.ArrayList;
+import java.util.Iterator;
+import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.client.ResultScanner;
+import org.apache.hadoop.hbase.util.Bytes;
 
 /**
  * Retrieves email information from the Jive App and uses it to query
@@ -128,13 +133,14 @@ public class AppServlet extends HttpServlet {
  
             //Create a table
             HTable table = new HTable(conf, "EmpBadges"); //Employee table
-            HTable BadgeTable = new HTable(conf, "Badges"); //Badges table
-
-            HbaseTools.addUserOrUpdateBoss(table, email, bossEmail);
-
+            HTable badgeTable = new HTable(conf, "Badges"); //Badges table
+            if(!bossEmail.equals("noBoss@nomail.com")){
+                HbaseTools.addUserOrUpdateBoss(table, email, bossEmail);
+            }
+            
             Object[] badgeInfo = HbaseTools.getBadges(table, email);
 
-            String[] badgesWithDescription = (String[]) badgeInfo[0]; // Elements
+            ArrayList<String> badgesWithDescription = (ArrayList<String>) badgeInfo[0]; // Elements
             // in
             // array
             // have
@@ -148,7 +154,7 @@ public class AppServlet extends HttpServlet {
             } else {
                 try {
                     if (email.length() != 0) {
-                        JSONObject j = convertOutputToJSON(badgesWithDescription, BadgeTable, newBadges, earnedOnly);
+                        JSONObject j = convertOutputToJSON(badgesWithDescription, badgeTable, newBadges, earnedOnly);
                         // Output Area
                         
                         
@@ -173,6 +179,8 @@ public class AppServlet extends HttpServlet {
             table.close();
             //free resources and close connections
             HConnectionManager.deleteConnection(conf, true);
+            table.close();
+            badgeTable.close();
 
         } else {
             System.out.println("Invalid email address");
@@ -190,44 +198,76 @@ public class AppServlet extends HttpServlet {
      * @throws JSONException
      * @throws IOException 
      */
-    private static JSONObject convertOutputToJSON(String[] badges, HTable BadgeTable, String newBadges, boolean earnedOnly)
+    private static JSONObject convertOutputToJSON(ArrayList<String> badges, HTable badgeTable, String newBadges, boolean earnedOnly)
             throws JSONException, IOException {
         JSONObject j = new JSONObject();
 
-        for (int i = 0; i < badges.length; i++) {
-            System.out.println("Processing Badge No: " + badges[i]);
-            String[] badgeInfo = HbaseTools.getBadgeInfo(BadgeTable, badges[i]);
+        ResultScanner s = badgeTable.getScanner(Bytes.toBytes("Info"));
+        Iterator<Result> badgeList = s.iterator();
+        while(badgeList.hasNext()){
+                Result r = badgeList.next();
+                if(badges.contains(new String(r.getRow()))){
+                    JSONObject j2 = new JSONObject();
+                    j2.put("Name", new String(r.getValue(Bytes.toBytes("Info"), Bytes.toBytes("name"))));
+                    j2.put("Description", new String(r.getValue(Bytes.toBytes("Info"), Bytes.toBytes("description"))));
+                    j2.put("IconURL", new String(r.getValue(Bytes.toBytes("Info"), Bytes.toBytes("iconURL"))));
+                    if (newBadges.contains(new String(r.getRow()))) {
+                        j2.put("New", true);
+                    } else {
+                        j2.put("New", false);
+                    }
+                    System.out.println(j2.toString());
+                    j.put(new String(r.getRow()), j2);
+                }
+                else if(earnedOnly == false){
+                    JSONObject j3 = new JSONObject();
+                    j3.put("Name", new String(r.getValue(Bytes.toBytes("Info"), Bytes.toBytes("name"))));
+                    j3.put("Description", new String(r.getValue(Bytes.toBytes("Info"), Bytes.toBytes("description"))));
+                    j3.put("IconURL", "images/unobtained.png");
+                    j3.put("New", false);
+                    j.put(new String(r.getRow()), j3);
+                }
+        }
+        return j;
+
+        
+        
+        /*
+        for (i = 0; i < badges.size(); i++) {
+            System.out.println("Processing Badge No: " + badges.get(i));
+            String[] badgeInfo = HbaseTools.getBadgeInfo(BadgeTable, badges.get(i));
 
             JSONObject j2 = new JSONObject();
             j2.put("Name", badgeInfo[1]);
             j2.put("Description", badgeInfo[2]);
             j2.put("IconURL", badgeInfo[3]);
-            if (newBadges.contains(badges[i])) {
+            if (newBadges.contains(badges.get(i))) {
                 j2.put("New", true);
             } else {
                 j2.put("New", false);
             }
             System.out.println(j2.toString());
-            j.put(badges[i], j2);
+            j.put(badges.get(i), j2);
 
         }
 
 
-        for (Integer i = new Integer(1); i <= 30; i++) {
+        for (Integer k = new Integer(1); i <= 30; i++) {
 
-            if (!j.has(i.toString())) {
+            if (!j.has(k.toString())) {
                 JSONObject j3 = new JSONObject();
-                j3.put("Name", HbaseTools.getBadgeInfo(BadgeTable, i.toString())[1]);
-                j3.put("Description", HbaseTools.getBadgeInfo(BadgeTable, i.toString())[2]);
+                String[] badgeInfo = HbaseTools.getBadgeInfo(BadgeTable, k.toString());
+                j3.put("Name", badgeInfo[1]);
+                j3.put("Description", badgeInfo[2]);
                 j3.put("IconURL", "images/unobtained.png");
                 j3.put("New", false);
-                j.put(i.toString(), j3);
+                j.put(k.toString(), j3);
             }
         }
 
 
 
-        return j;
+        return j;*/
     }
 
 
