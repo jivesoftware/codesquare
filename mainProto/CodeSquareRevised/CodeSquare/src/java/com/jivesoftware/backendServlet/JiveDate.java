@@ -25,6 +25,7 @@ public class JiveDate {
      */
     // only for commitDate!
     public JiveDate(String unixTime, String timeZone){
+        System.out.println("JIVEDATEHERE");
         Long uTime = Long.parseLong(unixTime);
     	date = new Date(uTime*1000);
     	
@@ -35,6 +36,8 @@ public class JiveDate {
     	globalDate = Calendar.getInstance();
     	globalDate.setTime(date);
     	globalDate.setTimeZone(TimeZone.getTimeZone("GMT"+timeZone));
+        System.out.println(globalDate);
+        System.out.println(localDate);
     }
     
     // only for pushDate!

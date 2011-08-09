@@ -49,7 +49,8 @@ public class UserInfo {
         lastCommitZone = temp[1];
         System.out.println("IN USER6: "+lastCommitZone);
         date = new JiveDate(temp[0], lastCommitZone);
-        System.out.println("HERE");
+        System.out.println("JIVEDATE1: "+date.getLocal());
+        System.out.println("JIVEDATE2: "+date.getGlobal());
         this.email = email;
         System.out.println("IN USER7: "+email);
     }
@@ -103,6 +104,14 @@ public class UserInfo {
     
     /**
      * 
+     * set date
+     */
+    public void setDate(JiveDate date) {
+    	this.date=date;
+    }
+    
+    /**
+     * 
      * @return lastCommit
      */
     public String getLastCommit() {
@@ -148,4 +157,6 @@ public class UserInfo {
     public void resetConsecCommits() {
         this.consecCommits = 1;
     }
+    
+    
 }

@@ -77,7 +77,9 @@ public class ServletTools {
                 String pushUnixTime) throws JSONException{
             Commit commit = new Commit();
             commit.setPushDate(new JiveDate(pushUnixTime));
-            commit.setCommitDate(new JiveDate(jCommit.getString("unixtimestamp"), jCommit.getString("isotimestamp").split(" ")[2]));
+            System.out.println("ISOTIME: "+jCommit.getString("isotimestamp").split(" ")[2]);
+            String x = jCommit.getString("isotimestamp").split(" ")[2];
+            commit.setCommitDate(new JiveDate(jCommit.getString("unixtimestamp"), jCommit.getString("isotimestamp")));
             commit.addStats(jCommit.getString("stats"));
             commit.setId(jCommit.getString("cID"));
             commit.setEmail(jCommit.getString("email"));

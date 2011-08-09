@@ -210,6 +210,9 @@ public class HbaseTools {
 	 * @return The String of the last commit date
 	 */
 	public static String getLastCommit(Result data, Calendar newDate) {
+                System.out.println("Data: "+data);
+                System.out.println("Calendar: "+newDate);
+                
 		String lastCommit = "";
 		if (data == null) {
                     System.out.println("IN LASTCOMMIT data=null");
@@ -219,9 +222,9 @@ public class HbaseTools {
                     System.out.println("IN LASTCOMMIT data.empty");
 			return "";
 		}
-		try { 
+		try {   
 			lastCommit = new String(data.getValue(Bytes.toBytes("Info"),
-					Bytes.toBytes("lastCommit")));
+					Bytes.toBytes("lastCommitX")));
                         System.out.println("IN LASTCOMMIT LastCommit: "+lastCommit);
 		} catch (java.lang.NullPointerException e) {
                         System.out.println("IN LASTCOMMIT nullpointer");
