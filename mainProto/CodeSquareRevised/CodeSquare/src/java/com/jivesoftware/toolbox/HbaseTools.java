@@ -207,6 +207,7 @@ public class HbaseTools {
 	 * @return The String of the last commit date
 	 */
 	public static String getLastCommit(Result data, Calendar newDate) {
+                
 		String lastCommit = "";
 		try { 
 			lastCommit = new String(data.getValue(Bytes.toBytes("Info"),

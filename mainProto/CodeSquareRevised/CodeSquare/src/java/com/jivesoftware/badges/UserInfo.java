@@ -80,6 +80,14 @@ public class UserInfo {
     
     /**
      * 
+     * set date
+     */
+    public void setDate(JiveDate date) {
+    	this.date=date;
+    }
+    
+    /**
+     * 
      * @return lastCommit
      */
     public String getLastCommit() {
@@ -125,4 +133,6 @@ public class UserInfo {
     public void resetConsecCommits() {
         this.consecCommits = 1;
     }
+    
+    
 }

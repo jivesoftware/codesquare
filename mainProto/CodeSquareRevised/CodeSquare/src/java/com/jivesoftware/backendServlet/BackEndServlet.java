@@ -39,7 +39,6 @@ public class BackEndServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try{
-                    System.out.println("GET");
                     doGetOrPost(request,response);
 		}catch(Exception e){
 			e.printStackTrace();
@@ -53,7 +52,6 @@ public class BackEndServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 			try {
-                            System.out.println("POST");
                             doGetOrPost(request,response);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block

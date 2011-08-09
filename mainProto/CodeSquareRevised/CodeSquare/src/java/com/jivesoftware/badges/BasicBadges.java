@@ -21,9 +21,11 @@ import java.util.Collections;
 
 public final class BasicBadges {
     
+    public BasicBadges() {};
+    
     public BasicBadges(JSONArray jArrCommits, FileSystem hdfs, HTable table, 
                         String unixTime) throws JSONException, IOException {
-        // iterate through and process/store info locally
+    // iterate through and process/store info locally
         UserInfo user = null;
         Result data = null;
         // get user
@@ -34,7 +36,7 @@ public final class BasicBadges {
             //first iteration, create user object
             if(i==0){
                 data = HbaseTools.getRowData(table, c.getEmail());
-                if (data == null) { 
+                if (data == null) {
                     return;
                 }
                 else if(data.isEmpty()){
@@ -48,8 +50,8 @@ public final class BasicBadges {
                 continue;
             }
             user.incrementCommits();
-            awardBasicBadges(user, c); 
-	}
+            awardBasicBadges(user, c);
+        }
         
         // iterate through users and add to hbase
         //ArrayList<String> arrBadges = entry.getValue().getBadges();
@@ -78,16 +80,15 @@ public final class BasicBadges {
         //newBadgesString = newBadgesString.trim();
 
 
-        HbaseTools.addRow(table, 
-            user.getEmail(), 
-            user.getLastCommit(), 
-            user.getNumBugs(), 
-            user.getNumCommits(), 
-            user.getConsecCommits(), 
+        HbaseTools.addRow(table,
+            user.getEmail(),
+            user.getLastCommit(),
+            user.getNumBugs(),
+            user.getNumCommits(),
+            user.getConsecCommits(),
             (newBadgesString + badgeList[1]).trim(),
             newBadges.toArray(new String[newBadges.size()]),
-            unixTime);
-            
+            unixTime);    
     }
 
 	
@@ -104,15 +105,13 @@ public final class BasicBadges {
 	 *            number of bugs the user fixed, currently not in use
 	 */
 	public void awardBasicBadges(UserInfo currentUser, Commit c) {
-
-            // check badges
             checkHolidayBadges(currentUser, c.getCommitDate());
             checkTimeBadges(currentUser, c.getCommitDate());
             checkNumCommitBadges(currentUser);
-            checkBadges27And28(currentUser, c.getCommitDate()); 
-            checkBadge30(currentUser, c); 
+            checkBadges27And28(currentUser, c.getCommitDate());
+            checkBadge30(currentUser, c);
             checkMessageBadges(currentUser, c.getMessage());
-	}
+        }
 
         // 16
         public void checkBadge16(ArrayList<String> newBadges, Result data, String unixTime){
@@ -147,15 +146,16 @@ public final class BasicBadges {
             oldDate.add(Calendar.DAY_OF_MONTH, 1);
             if (equals(oldDate, newDate)){
                 user.incrementConsecCommits();
+                user.setDate(c.getCommitDate());
             } 
             else {
                 user.resetConsecCommits();
+                user.setDate(c.getCommitDate());
             }
             oldDate.add(Calendar.DAY_OF_MONTH, -1);
-            if (user.getConsecCommits() > 6) {
+            if (user.getConsecCommits() > 5) { // it is 5 (not 6) because conseccommits starts at 0
                 user.addBadge("30");
-            }
-            
+            } 
         }
         
         public boolean equals(Calendar x, Calendar y){
@@ -179,18 +179,19 @@ public final class BasicBadges {
 	 *            Previous commit date
 	 */
 	public void checkBadges27And28(UserInfo user, JiveDate newDate) {
-                long oldCommitTime = user.getLastCommitTime();
+                long oldCommitTime = (user.getDate().getLocal().getTime().getTime())/1000;
                 long timeDiff = (newDate.getLocal().getTime().getTime()/1000) - oldCommitTime;
+                user.setDate(newDate);                
                 if(user.getNumCommits()==1){
                     return;
                 }
                 if (timeDiff < 24*60*60 ){
                     user.addBadge("27");
                 }
-                if (timeDiff > (5*24*60*60) ){;
-                     user.addBadge("28");
+                if (timeDiff > (5*24*60*60)){
+                    user.addBadge("28");
                 }
-	}
+        }
 	
          // 1, 2, 3, 4, 5
         public void checkNumCommitBadges(UserInfo user){
@@ -225,13 +226,15 @@ public final class BasicBadges {
         
         // 12, 13, 18, 19, 29
         public void checkTimeBadges(UserInfo user, JiveDate commitDate) {
+
             	if (commitDate.getLocalHour() >=22) {
                     user.addBadge("12");
 		}
                 else if (commitDate.getLocalHour() <=6) {
                     user.addBadge("13");
 		}
-		if (commitDate.getLocalDay()==1 && commitDate.getLocalHour() <=5) {
+                
+		if (commitDate.getLocalDay()==2 && commitDate.getLocalHour() <=5) {
                     user.addBadge("18");
 		} else if (commitDate.getLocalDay()==6 && commitDate.getLocalHour() >=16) {
                     user.addBadge("19");
