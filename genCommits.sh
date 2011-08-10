@@ -28,7 +28,7 @@ function randUsr
     semail=deanna.surma@jivesoftware.com #Deanna email
     eemail=eric.ren@jivesoftware.com #Eric email
     
-    if [$# == 0 ]
+    if [ $# -eq 0 ]
     then
         num=`expr $RANDOM % 12`
     else
@@ -147,7 +147,7 @@ function testMsg
     case $type in
 	0) stringy="\"\"";;
 	1) stringy="\"This is a Jive test commit\"";;
-	*) stringy="\"This is a Jive test commit\"";;
+	*) stringy="\"This is a Jive test commit odd arg\"";;
     esac
     echo $stringy
     return

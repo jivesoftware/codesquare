@@ -22,22 +22,23 @@ commitID=`genRanStr`
 commitEmail=$1
 commitMsg=$2
 isotimestamp=$3
-unixtimestamp=`date --date="$isotimestamp" +%s`
-commitName=$4
-stats=$5
+#unixtimestamp=`date --date="$isotimestamp"`
+unixtimestamp=$4
+commitName=$5
+stats=$6
 pushDate=`date`
-times=$6
+times=$7
 
-if [ $# -lt 5 ]; then
+if [ $# -lt 6 ]; then
     echo ERRRGLANG! That is my way of saying you did something WRRRRONG! Must have at least 6 arguments and no more than 7, all enclosed as strings
     exit 3
 fi
     
-if [ $# -gt 6 ]; then
+if [ $# -gt 7 ]; then
     echo ERRRGLANG! That is my way of saying you did something WRRRRONG! Must have at least 6 arguments and no more than 7, all enclosed as strings
 fi
 
-if [ $# == 5 ]; then
+if [ $# == 6 ]; then
     times=1
 fi
 
@@ -49,6 +50,11 @@ param3=`echo \"json=$jCommit\"`
 
 unixTime=`date +%s`
 timeZone=`date +%z`
+
+touch testCommitLog.txt
+echo BEGIN >> testCommitLog.txt
+echo $jCommit >> testCommitLog.txt
+echo END >> testCommitLog.txt
 
 `curl -v --data-urlencode "timeZone=$timeZone" --data-urlencode "unixTime=$unixTime" --data-urlencode "json=$jCommit" http://10.45.111.143:9090/CodeSquare/BackEndServlet`
 
