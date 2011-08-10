@@ -237,41 +237,71 @@ public class AppServlet extends HttpServlet {
             {"Committed Person", "User committed every day of a give week."},
             {"Author", "Users commit message was greater than 20 words."}
         };
-        
-        for (Integer i = 0; i < badges.size(); i++) {
-            System.out.println("Processing Badge No: " + badges.get(i));
-            String[] badgeInfo = badgesList[Integer.parseInt(badges.get(i))-1];
+        if(!earnedOnly){
+            for (Integer i = 0; i < badges.size(); i++) {
+                System.out.println("Processing Badge No: " + badges.get(i));
+                String[] badgeInfo = badgesList[Integer.parseInt(badges.get(i))-1];
 
-            JSONObject j2 = new JSONObject();
-            j2.put("Name", badgeInfo[0]);
-            j2.put("Description", badgeInfo[1]);
-            j2.put("IconURL", "images/"+badges.get(i)+".png");
-            if (newBadges.contains(badges.get(i))) {
-                j2.put("New", true);
-            } else {
-                j2.put("New", false);
+                JSONObject j2 = new JSONObject();
+                j2.put("Name", badgeInfo[0]);
+                j2.put("Description", badgeInfo[1]);
+                j2.put("IconURL", "images/"+badges.get(i)+".png");
+                if (newBadges.contains(badges.get(i))) {
+                    j2.put("New", true);
+                } else {
+                    j2.put("New", false);
+                }
+                System.out.println(j2.toString());
+                j.put(badges.get(i), j2);
+
             }
-            System.out.println(j2.toString());
-            j.put(badges.get(i), j2);
 
+
+            for (Integer k = new Integer(1); k <= badgesList.length; k++) {
+
+                if (!j.has((k).toString())) {
+                    JSONObject j3 = new JSONObject();
+                    String[] badgeInfo = badgesList[k-1];
+                    j3.put("Name", badgeInfo[0]);
+                    j3.put("Description", badgeInfo[1]);
+                    j3.put("IconURL", "images/unobtained.png");
+                    j3.put("New", false);
+                    j.put(k.toString(), j3);
+                }
+            }
         }
-
-
-        for (Integer k = new Integer(1); k <= badgesList.length; k++) {
-
-            if (!j.has((k).toString())) {
-                JSONObject j3 = new JSONObject();
+        else{
+            Integer back=badgesList.length-1;
+            Integer forward=0;
+            for (Integer k = new Integer(1); k <= badgesList.length; k++) {
                 String[] badgeInfo = badgesList[k-1];
-                j3.put("Name", badgeInfo[0]);
-                j3.put("Description", badgeInfo[1]);
-                j3.put("IconURL", "images/unobtained.png");
-                j3.put("New", false);
-                j.put(k.toString(), j3);
+                if(badges.contains(k.toString())){
+                    JSONObject j2 = new JSONObject();
+                    j2.put("Name", badgeInfo[0]);
+                    j2.put("Description", badgeInfo[1]);
+                    j2.put("IconURL", "images/"+k.toString()+".png");
+                    if (newBadges.contains(k.toString())) {
+                        j2.put("New", true);
+                    } else {
+                        j2.put("New", false);
+                    }
+                    System.out.println(j2.toString());
+                    j.put(forward.toString(), j2);
+                    forward++;
+                }
+                else {
+                    JSONObject j3 = new JSONObject();
+                    j3.put("Name", badgeInfo[0]);
+                    j3.put("Description", badgeInfo[1]);
+                    j3.put("IconURL", "images/unobtained.png");
+                    j3.put("New", false);
+                    j.put(back.toString(), j3);
+                    back--;
+                }
             }
         }
 
-
-
+        
         return j;
         
         
