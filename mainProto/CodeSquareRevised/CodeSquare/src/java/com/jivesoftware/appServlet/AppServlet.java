@@ -99,11 +99,12 @@ public class AppServlet extends HttpServlet {
             HttpServletResponse response) throws ServletException, IOException {
 
         // Get parameter info from Jive App
-        long time = System.currentTimeMillis();
 
         String email = request.getParameter("email");
         String bossEmail = request.getParameter("bossEmail");
         String earned = request.getParameter("earned");
+        String id = request.getParameter("id");
+        String name = request.getParameter("name");
         boolean earnedOnly = false;
 
         if (email == null || email.length() <= 0) {
@@ -134,8 +135,8 @@ public class AppServlet extends HttpServlet {
             //Create a table
             HTable table = new HTable(conf, "EmpBadges"); //Employee table
             HTable badgeTable = new HTable(conf, "Badges"); //Badges table
-            if(!bossEmail.equals("noBoss@nomail.com")){
-                HbaseTools.addUserOrUpdateBoss(table, email, bossEmail);
+            if(!bossEmail.equals("noBoss@nomail.com") && name != null && id != null){
+                HbaseTools.addUserOrUpdateBoss(table, email, bossEmail, name, id);
             }
             
             Object[] badgeInfo = HbaseTools.getBadges(table, email);
@@ -174,7 +175,6 @@ public class AppServlet extends HttpServlet {
                     System.out.println(e.getMessage());
                 }
             }
-            System.out.println("time: "+ (System.currentTimeMillis()-time));
             if(bossEmail.endsWith("noBoss@nogmail.com")){
                 HbaseTools.resetNewBadges(table, email);
             }

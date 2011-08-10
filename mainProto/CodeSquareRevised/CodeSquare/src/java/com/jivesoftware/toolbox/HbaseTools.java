@@ -162,11 +162,15 @@ public class HbaseTools {
      * @param email the user's email
      * @param bossEmail the user's boss's email 
      */
-    public static void addUserOrUpdateBoss(HTable table, String email, String bossEmail) {
+    public static void addUserOrUpdateBoss(HTable table, String email, String bossEmail, String name, String id) {
         Put row = new Put(Bytes.toBytes(email));
 
         row.add(Bytes.toBytes("Info"), Bytes.toBytes("bossEmail"),
                 Bytes.toBytes(bossEmail));
+        row.add(Bytes.toBytes("Info"), Bytes.toBytes("name"),
+                Bytes.toBytes(name));
+        row.add(Bytes.toBytes("Info"), Bytes.toBytes("id"),
+                Bytes.toBytes(id));
 
         try {
             table.put(row);
