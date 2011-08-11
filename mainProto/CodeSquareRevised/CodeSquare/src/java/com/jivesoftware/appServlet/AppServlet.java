@@ -246,6 +246,7 @@ public class AppServlet extends HttpServlet {
                 j2.put("Name", badgeInfo[0]);
                 j2.put("Description", badgeInfo[1]);
                 j2.put("IconURL", "images/"+badges.get(i)+".png");
+                j2.put("thumbnail", "images/thumbnails/"+badges.get(i)+"TH.png");
                 if (newBadges.contains(badges.get(i))) {
                     j2.put("New", true);
                 } else {
@@ -265,6 +266,7 @@ public class AppServlet extends HttpServlet {
                     j3.put("Name", badgeInfo[0]);
                     j3.put("Description", badgeInfo[1]);
                     j3.put("IconURL", "images/unobtained.png");
+                    j3.put("thumbnail", "images/thumbnails/unobtainedTH.png");
                     j3.put("New", false);
                     j.put(k.toString(), j3);
                 }
@@ -279,7 +281,7 @@ public class AppServlet extends HttpServlet {
                     JSONObject j2 = new JSONObject();
                     j2.put("Name", badgeInfo[0]);
                     j2.put("Description", badgeInfo[1]);
-                    j2.put("IconURL", "images/"+k.toString()+".png");
+                    j2.put("IconURL", "images/thumbnails/"+k.toString()+"TH.png");
                     if (newBadges.contains(k.toString())) {
                         j2.put("New", true);
                     } else {
@@ -293,7 +295,7 @@ public class AppServlet extends HttpServlet {
                     JSONObject j3 = new JSONObject();
                     j3.put("Name", badgeInfo[0]);
                     j3.put("Description", badgeInfo[1]);
-                    j3.put("IconURL", "images/unobtained.png");
+                    j3.put("IconURL", "images/thumbnails/unobtainedTH.png");
                     j3.put("New", false);
                     j.put(back.toString(), j3);
                     back--;
