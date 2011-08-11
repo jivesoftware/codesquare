@@ -175,7 +175,7 @@ public class AppServlet extends HttpServlet {
                     System.out.println(e.getMessage());
                 }
             }
-            if(!bossEmail.equals("noBoss@nogmail.com") && name == null && id == null){
+            if(bossEmail.equals("noBoss@nogmail.com") && name == null && id == null && earnedOnly==false){
                 HbaseTools.resetNewBadges(table, email);
             }
             table.close();

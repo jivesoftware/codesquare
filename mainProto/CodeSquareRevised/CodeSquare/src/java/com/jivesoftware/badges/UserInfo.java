@@ -22,6 +22,8 @@ public class UserInfo {
     int numBugs;
     int numCommits;
     String email;
+    String id;
+    String name;
     
     private ArrayList<String> badges = new ArrayList<String>();
     
@@ -29,15 +31,17 @@ public class UserInfo {
     
     UserInfo(String email, Result data, Calendar newDate) {
         int[] fieldValues = HbaseTools.getFields(data, new String[] {"numBugs", "numCommits", "consecCommits" });
-        numBugs = fieldValues[0];
-        numCommits = fieldValues[1];
-        consecCommits = fieldValues[2];
-        lastCommit = HbaseTools.getLastCommit(data, newDate);
+        this.numBugs = fieldValues[0];
+        this.numCommits = fieldValues[1];
+        this.consecCommits = fieldValues[2];
+        this.lastCommit = HbaseTools.getLastCommit(data, newDate);
         String[] temp = lastCommit.split(" ");
-        lastCommitTime = Long.parseLong(temp[0]); 
-        lastCommitZone = temp[1];
-        date = new JiveDate(temp[0], lastCommitZone);
+        this.lastCommitTime = Long.parseLong(temp[0]); 
+        this.lastCommitZone = temp[1];
+        this.date = new JiveDate(temp[0], lastCommitZone);
         this.email = email;
+        this.id = HbaseTools.getUserId(data);
+        this.name = HbaseTools.getName(data);
     }
     
             /**
@@ -109,7 +113,20 @@ public class UserInfo {
     public int getNumBugs() {
     	return numBugs;
     }
-    
+    /**
+     * 
+     * @return id
+     */
+    public String getId() {
+        return id;
+    }
+    /**
+     * 
+     * @return name
+     */
+    public String getName(){
+        return name;
+    }
     /**
      * 
      * @return numCommits

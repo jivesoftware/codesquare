@@ -1,19 +1,15 @@
 package com.jivesoftware.toolbox;
 
-import com.jivesoftware.backendServlet.JiveDate;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.NavigableSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
-import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
@@ -212,18 +208,47 @@ public class HbaseTools {
 	 */
 	public static String getLastCommit(Result data, Calendar newDate) {
                 
-		String lastCommit = "";
-		try { 
-			lastCommit = new String(data.getValue(Bytes.toBytes("Info"),
-					Bytes.toBytes("lastCommit")));
-		} catch (java.lang.NullPointerException e) {
-                        return String.valueOf((newDate.getTime().getTime())/1000)+" "+newDate.getTimeZone().getID();
-		}
-                if(lastCommit.isEmpty()){
-                    return String.valueOf(newDate.getTime().getTime()/1000)+" "+newDate.getTimeZone().getID();
-                }
-		return lastCommit;
+            String lastCommit = "";
+            try { 
+                    lastCommit = new String(data.getValue(Bytes.toBytes("Info"),
+                                    Bytes.toBytes("lastCommit")));
+            } catch (java.lang.NullPointerException e) {
+                    return String.valueOf((newDate.getTime().getTime())/1000)+" "+newDate.getTimeZone().getID();
+            }
+            if(lastCommit.isEmpty()){
+                return String.valueOf(newDate.getTime().getTime()/1000)+" "+newDate.getTimeZone().getID();
+            }
+            return lastCommit;
 	}
+        
+        public static String getUserId(Result data){
+            String id = "";
+            try { 
+                    id = new String(data.getValue(Bytes.toBytes("Info"),
+                                    Bytes.toBytes("id")));
+            } catch (java.lang.NullPointerException e) {
+                    return "";
+            }
+            if(id.isEmpty()){
+                return "";
+            }
+            return id;
+
+        }
+        public static String getName(Result data){
+            String name = "";
+            try { 
+                    name = new String(data.getValue(Bytes.toBytes("Info"),
+                                    Bytes.toBytes("name")));
+            } catch (java.lang.NullPointerException e) {
+                    return "";
+            }
+            if(name.isEmpty()){
+                return "";
+            }
+            return name;
+
+        }
 
 	/***
 	 * This method retrieves the specified integer fields from the HBase.

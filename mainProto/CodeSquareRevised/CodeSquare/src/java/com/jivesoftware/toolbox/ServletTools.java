@@ -11,6 +11,8 @@ import org.json.JSONObject;
 import com.jivesoftware.backendServlet.Commit;
 import com.jivesoftware.backendServlet.JiveDate;
 import javax.servlet.http.HttpServletRequest;
+import org.json.JSONArray;
+import java.util.List;
 
 /**
  * This class includes methods that amy be useful to any servlet
@@ -76,4 +78,51 @@ public class ServletTools {
             return commit;
 	}
         
+    /**
+     * This method takes the list of badges that a person recently obtained
+     * and converts the badge data into a nice json object to be posted to
+     * the activity stream
+     * @param badgesList A string list filled with the data of the recently obtained badges
+     * @param name The name of the person who just received the badges
+     * @return a String in JSON format that will be posted to the activity stream
+     **/
+    public static String makeJSONPost(List<Badge> badgesList, String name) throws Exception {
+	String jsonString;
+	JSONObject jsonObj = new JSONObject();
+	JSONArray postAry = new JSONArray();
+	
+	JSONObject actorObj = new JSONObject();
+	actorObj.put("title", name);
+	
+	for (Badge b : badgesList) {
+	    JSONObject curPost = new JSONObject();
+	    JSONObject curObject = new JSONObject();
+	    JSONObject mediaObject = new JSONObject();
+	 
+	    String badgeTitle = b.getTitle();
+	    
+	    curPost.put("verb", "post");
+	    //curPost.put("title", "__MSG_feed.title.format__");
+	    curPost.put("title", name +" received " + badgeTitle + " badge!");
+	    //curPost.put("body", "__MSG_feed.body.format__");
+	    curPost.put("body", "Congratulations! You got a new badge!");
+	    
+	    curPost.put("actor", actorObj);
+
+	    curObject.put("title", badgeTitle);
+	    curObject.put("summary", b.getDesc());
+                    
+            mediaObject.put("url", b.getImgLink());        
+	    curObject.put("mediaLink", mediaObject);
+	    
+	    curPost.put("object", curObject);
+	    
+	    postAry.put(curPost);
+	}
+	    
+	jsonObj.put("items", postAry);
+	jsonString = jsonObj.toString();
+	return jsonString;
+    }
+
 }
