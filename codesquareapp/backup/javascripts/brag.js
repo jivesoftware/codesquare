@@ -151,3 +151,31 @@ function fillUpImageDiv(imageArray){
 		console.log("Value in badgeSelect form input: " + $("#badgeSelect").val());
 	});
 }
+
+function bragBasics() {
+	nicEditors.allTextAreas();
+	
+	osapi.people.getViewer().execute(function(viewerBasicData) {
+	if (!viewerBasicData.error) {
+    	    var request = osapi.jive.core.users.get({id: viewerBasicData.id});
+    	    request.execute(function(viewer) {
+    		if (!viewer.error) {
+    		    var request2 = viewer.data.manager.get();
+    		    request2.execute(function(bossBasicData) {
+    			if (!bossBasicData.error) {
+    			    var request3 = osapi.jive.core.users.get({id: bossBasicData.data.id});
+    			    request3.execute(function(boss) {
+    				if (!boss.error) {
+    				    var user2 = boss.data
+    				    console.log("USEREMAIL: "+viewer.data.email);
+    				    console.log("BOSSEMAIL: "+boss.data.email);
+						makeBadgeSelectionGallery(viewer.data.email, boss.data.email);
+    				}
+    			    });
+    			}
+    		    });
+    		}
+   	    });
+    	}
+    });
+}

@@ -1,3 +1,4 @@
+var glObj = {};
 // Does what you think it does...
 function makeBadgeTable(userEmail, bossEmail, self, fName) {
     var url = 'http://10.45.111.143:9090/CodeSquare/AppServlet?email=' + userEmail  + '&bossEmail=' + bossEmail;
@@ -47,16 +48,18 @@ function makeBadgeTable(userEmail, bossEmail, self, fName) {
 
 	    var badgeCountHTML = "";
 	    
-	    if (self==true) {
+	    if (self==false) {
+	    	badgeCountHTML+=fName+" has "+totalBadges+" badges.";
+	    }
+	    else {
 	    	if (newBadges > 0) {
 			badgeCountHTML += "You earned "+newBadges+" new badges! ";
 	    	} else {
 			badgeCountHTML+="You currently have "+totalBadges+" badges.";
 	    	}
 	    }
-	    else {
-	    	badgeCountHTML+=fName+" has "+totalBadges+" badges.";
-	    }
+	    
+	   
 	    document.getElementById('numberOfBadges').innerHTML = badgeCountHTML;
 	}
     });    
@@ -108,10 +111,9 @@ function init() {
     				    var user2 = boss.data
     				    console.log("USEREMAIL: "+viewer.data.email);
     				    console.log("BOSSEMAIL: "+boss.data.email);
-				    glObj.email = viewer.data.email;
-				    glObj.bossEmail = boss.data.email;
-				    
-    				    makeBadgeTable(viewer.data.email, boss.data.email, true);
+    				    glObj.email = viewer.data.email;
+				    	glObj.bossEmail = boss.data.email;
+    				    makeBadgeTable(viewer.data.email, boss.data.email);
 						
 				    $("form.badges")
 					.live('submit', function(e) {

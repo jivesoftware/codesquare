@@ -1,46 +1,5 @@
-var glObj = {};
-glObj.timer_is_on = 0;
-glObj.refreshTime = 3000;
-
-//continually request data from server
-function startBadges() {
-    if (!glObj.timer_is_on) {
-	glObj.timer_is_on = 1;
-	alert("timer on: " + glObj.timer_is_on); //test
-	getBadges();
-	document.getElementById('button').innerHTML = "Stop requesting";
-    } 
-    else {
-	glObj.timer_is_on = 0;
-	alert("timer off: " + glObj.timer_is_on); //test
-	clearTimeout(glObj.t);
-	document.getElementById('button').innerHTML = "Continue requesting";
-    }
-}
-// Gets json object from our Frontend servlet
-// not going to use this
-/*
-  function getBadgeList(userEmail, bossEmail) {
-  var url = 'http://10.45.111.143:9090/CodeSquare/AppServlet?email=' + userEmail  + '&bossEmail=' + bossEmail;
-  var params = {'href' : url, 'format' : 'json', 'authz' : 'none', 'nocache' : 'true' };
-  var resp;
-  
-  osapi.http.get(params).execute(function(response) {
-  console.log(response);
-  resp = response;
-  });
-
-  if (resp.error) {
-  alert("Error: " + resp.error.message + "\nbetter debug it..."); // Deal with this..
-  }
-  else {
-  return resp.content;
-  }
-  }
-*/
-
 // Does what you think it does...
-function makeBadgeTable(userEmail, bossEmail) {
+function makeBadgeTable(userEmail, bossEmail, self, fName) {
     var url = 'http://10.45.111.143:9090/CodeSquare/AppServlet?email=' + userEmail  + '&bossEmail=' + bossEmail;
     var params = {'href' : url, 'format' : 'json', 'authz' : 'none', 'nocache' : 'true' };
     
@@ -87,12 +46,17 @@ function makeBadgeTable(userEmail, bossEmail) {
 	    document.getElementById('badgeTable').innerHTML = tableHTML;
 
 	    var badgeCountHTML = "";
-	    if (newBadges > 0) {
-		badgeCountHTML += "You earned "+newBadges+" new badges! ";
-	    } else {
-		badgeCountHTML+="You currently have "+totalBadges+" badges.";
+	    
+	    if (self==true) {
+	    	if (newBadges > 0) {
+			badgeCountHTML += "You earned "+newBadges+" new badges! ";
+	    	} else {
+			badgeCountHTML+="You currently have "+totalBadges+" badges.";
+	    	}
 	    }
-
+	    else {
+	    	badgeCountHTML+=fName+" has "+totalBadges+" badges.";
+	    }
 	    document.getElementById('numberOfBadges').innerHTML = badgeCountHTML;
 	}
     });    
@@ -144,10 +108,8 @@ function init() {
     				    var user2 = boss.data
     				    console.log("USEREMAIL: "+viewer.data.email);
     				    console.log("BOSSEMAIL: "+boss.data.email);
-				    glObj.email = viewer.data.email;
-				    glObj.bossEmail = boss.data.email;
 				    
-    				    makeBadgeTable(viewer.data.email, boss.data.email);
+    				    makeBadgeTable(viewer.data.email, boss.data.email, true);
 						
 				    $("form.badges")
 					.live('submit', function(e) {
