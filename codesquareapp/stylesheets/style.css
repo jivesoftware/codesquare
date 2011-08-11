@@ -12,6 +12,10 @@ body {
     height: 600px;
 }
 
+#homeLogo{
+	width: 150px;
+}
+
 body * {
 }
 
