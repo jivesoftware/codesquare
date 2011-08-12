@@ -38,7 +38,7 @@ function sendActivityPost(friendName, message){
 			    var myidString = "urn:jiveObject:user/" + viewerID;
 			    var badgePicURL = $("#badgeSelect").val();
 			    console.log("badgePicURL: " + badgePicURL);
-			    var activity = {"activity":{"title": msg2,"body": message, "verb": "post", 
+			    var activity = {"activity":{"title": msg2, "verb": "post", 
 							"object" : {
 							    "objectType":"article",
 							    "summary": message,
@@ -138,14 +138,18 @@ function fillUpImageDiv(imageArray){
 	if(i % 5 == 0){
 	    fullImageHTML += '<br />'
 	}
-	var imageHTML = "<img class=\"picBadge\" width=\"100\" height=\"100\" src=\"" + imageArray[i] + "\" \/>";
+	var imageHTML = "<img class=\"picBadge\" id=\"" + i + "pic\"" + "width=\"100\" height=\"100\" src=\"" + imageArray[i] + "\" \/>";
 	fullImageHTML += imageHTML;
     }
     console.log("HTML being appended: " + fullImageHTML);
     $("#picBadgeSelect").html(fullImageHTML);
-    $(".picBadge").click(function(){
+    
+	$(".picBadge").click(function(){
+	$(".picBadge").show();
 	console.log("Info of this clicked pic: " + this.src);
 	var selImgURL = this.src;
+	var pictureid = "#" + this.id;
+	$(pictureid).hide();
 	var selHTML = '<br /><img width="100" height="100" src="' + selImgURL + '" />';
 	$("#selectedBadge").html(selHTML);
 	gadgets.window.adjustHeight();
@@ -181,4 +185,5 @@ function bragBasics() {
    	    });
     	}
     });
+	
 }
