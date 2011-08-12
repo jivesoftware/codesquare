@@ -27,22 +27,32 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public class ActivityPoster
-{
+/***
+ * Code taken from this
+ * https://developers.jivesoftware.com/community/docs/DOC-1119
+ * @author jive tutorial
+ */
+public class ActivityPoster {
     private static final String DEFAULT_GATEWAY_URL = "http://gateway.jivesoftware.com";
-    private static final Pattern MATCH_URL = Pattern.compile("^https?://\\w+([_.-]\\w+)(:[1-9][0-9]{0,4})?");
-    private static final Pattern MATCH_USER_ID = Pattern.compile("^-?[1-9][0-9]{0,17}$");
+    private static final Pattern MATCH_URL = Pattern
+            .compile("^https?://\\w+([_.-]\\w+)(:[1-9][0-9]{0,4})?");
+    private static final Pattern MATCH_USER_ID = Pattern
+            .compile("^-?[1-9][0-9]{0,17}$");
 
     private String jive_id, app_id, user_id, key, secret, activity;
-    private String gateway_url,deliver_to_user_id;
+    private String gateway_url, deliver_to_user_id;
 
-    public ActivityPoster(final String jive_id, final String app_id, final String user_id,
-                          final String key, final String secret, final String activity) {
-        this(DEFAULT_GATEWAY_URL, jive_id, app_id, user_id, null, key, secret, activity);
+    public ActivityPoster(final String jive_id, final String app_id,
+            final String user_id, final String key, final String secret,
+            final String activity) {
+        this(DEFAULT_GATEWAY_URL, jive_id, app_id, user_id, null, key, secret,
+                activity);
     }
 
-    private ActivityPoster(final String gateway_url, final String jive_id, final String app_id, final String user_id,
-                           final String deliver_to_user_id, final String key, final String secret, final String activity) {
+    private ActivityPoster(final String gateway_url, final String jive_id,
+            final String app_id, final String user_id,
+            final String deliver_to_user_id, final String key,
+            final String secret, final String activity) {
         this.gateway_url = gateway_url.replaceAll("/+$", "");
         this.jive_id = jive_id;
         this.app_id = app_id;
@@ -52,29 +62,25 @@ public class ActivityPoster
         this.secret = secret;
         this.activity = activity;
     }
-    
-    public String post()
-    {
-        String requestURI = gateway_url + "/gateway/api/activity/v1/update/" + jive_id + '/' + app_id + '/' + user_id;
-        // String requestURI = "http://jaf.jiveland.com:8585/gateway/api/activity/v1/update/" + jive_id + '/' + app_id + '/' + user_id;
 
-        // String body = "{ \"items\": [{ \"title\": \"Rental ripoff\", \"body\" : \"I am confused.\" }] }";
+    public String post() {
+        String requestURI = gateway_url + "/gateway/api/activity/v1/update/"
+                + jive_id + '/' + app_id + '/' + user_id;
         if (deliver_to_user_id != null) {
             requestURI += "?deliverTo=" + deliver_to_user_id;
         }
         String body = activity;
         OAuthMessage message = sign(requestURI, body);
         String result = "";
-        try
-        {
+        try {
             System.out.println("Posting " + message.URL);
-            System.out.println("Authorization: " + message.getAuthorizationHeader(null));
-            
+            System.out.println("Authorization: "
+                    + message.getAuthorizationHeader(null));
+
             StatusLine statusLine = fetch(message);
-            result = statusLine.getStatusCode() + " " + statusLine.getReasonPhrase();
-        }
-        catch(IOException e)
-        {
+            result = statusLine.getStatusCode() + " "
+                    + statusLine.getReasonPhrase();
+        } catch (IOException e) {
             e.printStackTrace();
             result = e.getMessage();
         }
@@ -82,39 +88,38 @@ public class ActivityPoster
         return result;
     }
 
-    protected OAuthMessage sign(String requestURI, String body)
-    {
+    protected OAuthMessage sign(String requestURI, String body) {
         Collection<? extends Map.Entry> parameters = null;
 
         OAuthConsumer oauthConsumer = new OAuthConsumer(null, key, secret, null);
         OAuthAccessor accessor = new OAuthAccessor(oauthConsumer);
         OAuthMessage oauthMessage = null;
         try {
-            ByteArrayInputStream bais = new ByteArrayInputStream(body.getBytes());
-            oauthMessage = accessor.newRequestMessage("POST", requestURI, parameters, bais);
-        }
-        catch (OAuthException e) {
+            ByteArrayInputStream bais = new ByteArrayInputStream(
+                    body.getBytes());
+            oauthMessage = accessor.newRequestMessage("POST", requestURI,
+                    parameters, bais);
+        } catch (OAuthException e) {
             e.printStackTrace();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
-        }
-        catch (URISyntaxException e) {
+        } catch (URISyntaxException e) {
             e.printStackTrace();
         }
 
         return oauthMessage;
     }
 
-    protected StatusLine fetch(OAuthMessage message) throws IOException
-    {
+    protected StatusLine fetch(OAuthMessage message) throws IOException {
         HttpRequestBase httpMethod;
         String methodType = message.method;
         if ("POST".equals(methodType) || "PUT".equals(methodType)) {
-             HttpEntityEnclosingRequestBase enclosingMethod = ("POST".equals(methodType))
-                    ? new HttpPost(message.URL) : new HttpPut(message.URL);
+            HttpEntityEnclosingRequestBase enclosingMethod = ("POST"
+                    .equals(methodType)) ? new HttpPost(message.URL)
+                    : new HttpPut(message.URL);
 
-            StringEntity bodyStreamEntity = new StringEntity(message.readBodyAsString(), "application/json", "utf-8");
+            StringEntity bodyStreamEntity = new StringEntity(
+                    message.readBodyAsString(), "application/json", "utf-8");
             enclosingMethod.setEntity(bodyStreamEntity);
             httpMethod = enclosingMethod;
         } else if ("DELETE".equals(methodType)) {
@@ -125,16 +130,18 @@ public class ActivityPoster
             httpMethod = new HttpGet(message.URL);
         }
 
-        httpMethod.setHeader("Authorization", message.getAuthorizationHeader(null));
+        httpMethod.setHeader("Authorization",
+                message.getAuthorizationHeader(null));
         httpMethod.setHeader("X-Jive-App-Id", app_id);
         HttpClient client = null;
-        try
-        {
+        try {
             HttpParams httpParams = new BasicHttpParams();
-            HttpConnectionParams.setConnectionTimeout(httpParams, (int)1500);
-            HttpConnectionParams.setSoTimeout(httpParams, (int)5000);
-            httpParams.setBooleanParameter(ClientPNames.HANDLE_REDIRECTS, false);
-            httpParams.setBooleanParameter(CoreProtocolPNames.USE_EXPECT_CONTINUE, false);
+            HttpConnectionParams.setConnectionTimeout(httpParams, (int) 1500);
+            HttpConnectionParams.setSoTimeout(httpParams, (int) 5000);
+            httpParams
+                    .setBooleanParameter(ClientPNames.HANDLE_REDIRECTS, false);
+            httpParams.setBooleanParameter(
+                    CoreProtocolPNames.USE_EXPECT_CONTINUE, false);
             httpMethod.setParams(httpParams);
             client = new DefaultHttpClient();
             HttpResponse httpResponse = client.execute(httpMethod);
@@ -142,33 +149,37 @@ public class ActivityPoster
             System.out.println("Activity post response: " + statusCode);
             printResponse(httpResponse);
             return httpResponse.getStatusLine();
-        }
-        catch(IOException e)
-        {
+        } catch (IOException e) {
             System.err.println("Exception when trying to fetch " + message.URL);
             e.printStackTrace();
             throw e;
-        }
-        finally
-        {
-            if(client != null) client.getConnectionManager().shutdown();
+        } finally {
+            if (client != null)
+                client.getConnectionManager().shutdown();
         }
     }
 
-    private void printResponse(HttpResponse httpResponse) throws IOException
-    {
-        System.out.println(httpResponse.getStatusLine().getStatusCode() + " " + httpResponse.getStatusLine().getReasonPhrase());
+    private void printResponse(HttpResponse httpResponse) throws IOException {
+        System.out.println(httpResponse.getStatusLine().getStatusCode() + " "
+                + httpResponse.getStatusLine().getReasonPhrase());
 
-        for(Header header : httpResponse.getAllHeaders())
-        {
-            System.out.println(String.format("%s: %s", header.getName(), header.getValue()));
+        for (Header header : httpResponse.getAllHeaders()) {
+            System.out.println(String.format("%s: %s", header.getName(),
+                    header.getValue()));
         }
 
         HttpEntity entity = httpResponse.getEntity();
-        if(entity.getContentLength() > 0) entity.writeTo(System.out);
+        if (entity.getContentLength() > 0)
+            entity.writeTo(System.out);
     }
-
-    public static void postToActivity(String user_id, String deliver_to_user_id, String jsonActivity) {
+    /***
+     * Only method that was changed, hardcoded jiveid, appid, key, secret
+     * @param user_id
+     * @param deliver_to_user_id
+     * @param jsonActivity 
+     */
+    public static void postToActivity(String user_id,
+            String deliver_to_user_id, String jsonActivity) {
         try {
             int idx = 0;
             String gateway_url = DEFAULT_GATEWAY_URL;
@@ -177,11 +188,12 @@ public class ActivityPoster
             String key = "2862464afa1c439ca8ab2686a8b6315c";
             String secret = "g9GMyn0m+mMKhxaaN0EfzELQtlw=";
 
-            ActivityPoster poster = new ActivityPoster(gateway_url, jive_id, app_id, user_id, deliver_to_user_id, key, secret, jsonActivity);
+            ActivityPoster poster = new ActivityPoster(gateway_url, jive_id,
+                    app_id, user_id, deliver_to_user_id, key, secret,
+                    jsonActivity);
             String result = poster.post();
             System.out.println("\nPost response " + result);
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
