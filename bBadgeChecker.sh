@@ -2,6 +2,10 @@
 
 #{ "cID": "607280d89776dcde41f953d3c7b7f4ac4f022565", "cMes": "test-IP-stacking-commits", "date": "Fri Jul 8 10:17:58 2011 -0700", "name": "Eric Ren", "email": "eric.ren@jivesoftware.com", "stats": "[ 1 0 sample ]" }
 
+# This is important to make sure string manipulation is handled
+# byte-by-byte.
+export LANG=C
+
 function genRanStr
 {
     str=""
@@ -54,7 +58,7 @@ timeZone=`date +%z`
 touch testCommitLog.txt
 echo BEGIN >> testCommitLog.txt
 echo $jCommit >> testCommitLog.txt
-echo END >> testCommitLog.txt
+echo END
 
 `curl -v --data-urlencode "timeZone=$timeZone" --data-urlencode "unixTime=$unixTime" --data-urlencode "json=$jCommit" http://10.45.111.143:9090/CodeSquare/BackEndServlet`
 
