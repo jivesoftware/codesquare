@@ -261,38 +261,5 @@ public final class BasicBadges {
 		} else if (commitDate.getLocalDay()==1 || commitDate.getLocalDay()==7) {
                     user.addBadge("29");
 		}
-	}
-        
-	
+	}	
 }
-
-
-//		// bug stuff is not currently implemented, but is being checked for here
-//		if (totNumBugs > 100) {
-//			badges.add("35");
-//		} else if (totNumBugs > 50) {
-//			badges.add("34");
-//		} else if (totNumBugs > 25) {
-//			badges.add("33");
-//		} else if (totNumBugs > 10) {
-//			badges.add("32");
-//		} else if (totNumBugs > 1) {
-//			badges.add("31");
-//		}
-
-
-//		Object[] badgeList = HbaseTools.getBadges(data);
-//		@SuppressWarnings("unchecked")
-//		ArrayList<String> aquiredBadges = (ArrayList<String>) badgeList[0];
-//		for (int i = 0; i < badges.size(); i++) {
-//			if (aquiredBadges.contains(badges.get(i))) {
-//				badges.remove(i--);
-//			}
-//		}
-//		// checks to see if there are more than 7 new badges in the week
-//		// ???
-//		if ((badges.size() + fieldValues[0]) > 7) {
-//			if(!aquiredBadges.contains("16")){
-//				badges.add("16");
-//			} CURRENTLY NOT IMPLEMENTED!!!
-//		}
