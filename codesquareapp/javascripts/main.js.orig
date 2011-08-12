@@ -49,37 +49,41 @@ function makeBadgeTable(userEmail, bossEmail) {
 	    alert("Error: " + resp.error.message + "\nbetter debug it..."); // Deal with this..
 	}
 	else {
-
-
 	    var jsonObj = response.content;
 	    console.log(jsonObj);
 	    var totalBadges = 0;
 	    var newBadges = 0;
 	    var tableHTML = "";
-	    for (var key = 1; key <= Object.size(jsonObj); key++) {
-		var value = jsonObj[key];
+	    var stateClass = "shadow";
+	    var key, value, imgURL, popupURl;
+	    
+	    for (key = 1; key <= Object.size(jsonObj); key++) {
+		value = jsonObj[key];
 		if (key % 5 == 1) {
 		    tableHTML += "<tr>";
 		}
-		var imgURL = fullURL(value.IconURL);
-		var popupURL = fullURL("badgePopup.html");
+		imgURL = fullURL(value.IconURL);
+		popupURL = fullURL("badgePopup.html");
 		tableHTML += "<td><form class='badges' action='" + popupURL + "' method='GET'>" +
 		    "<input type='hidden' name='imgURL' value='" + imgURL + "'/>" +
 		    "<input type='hidden' name='name' value='" + value.Name + "'/>" +
 		    "<input type='hidden' name='desc' value='" + value.Description + "'/>";
-		if (value.IconURL !== "images/unobtained.png") {totalBadges = totalBadges + 1;}
-		if (value.new == "true") {
-		    tableHTML+= "<input class=\"highlight\" type='image' src='" + imgURL + "' value='Popup!' alt='Show badge info'/></form>";
+		if (value.IconURL !== "images/unobtained.png") {
+		    totalBadges = totalBadges + 1;
+		}
+		console.log('value.New is ' + value.New);
+		if (value.New == "true") {
+		    stateClass = "highlight";
 		    newBadges = newBadges + 1;
+		    console.log(stateClass);
 		}
-		else {
-		    tableHTML+= "<input class=\"shadow\" type='image' src='" + imgURL + "' value='Popup!' alt='Show badge info'/></form></td>";
-		}
-		
+		console.log('stateClass is ' + stateClass);
+		tableHTML+= "<input class='" + stateClass + "' type='image' src='" + imgURL + "' value='Popup!' alt='Show badge info'/></form></td>";
 		if (key % 5 == 0) {
 		    tableHTML += "</tr>";
 		}
 	    }
+
 	    document.getElementById('badgeTable').innerHTML = tableHTML;
 
 	    var badgeCountHTML = "";
@@ -144,6 +148,7 @@ function init() {
 				    glObj.bossEmail = boss.data.email;
 				    
     				    makeBadgeTable(viewer.data.email, boss.data.email);
+						makeBadgeSelectionGallery(viewer.data.email, boss.data.email);
 				    $("form.badges")
 					.live('submit', function(e) {
 					    //console.log(e.type);
@@ -170,62 +175,15 @@ function init() {
    	    });
     	}
     });
+
+
+
 }
 
 gadgets.util.registerOnLoadHandler(init);
 gadgets.window.adjustHeight();
 //Begin Diiv code
 
-<<<<<<< HEAD
-=======
-//generates the array of the names of the Viewer's friends and creates an autocomplete text box using the names in nameArray
-function autoCompleteText(){
-    var nameArray = []; //Initializes a new empty array
-    var personArray = osapi.people.getViewerFriends(); // An array of Person JSON objects
-    var arrayLen = personArray.length;
-    
-    //Iterate through person objects and object the name of each person and add it to nameArray
-    for(var i = 0;i < arrayLen; i++){ 
-	var friendName = personArray[i].name; //obtain name string field from Person JSON object
-	nameArray[i] = friendName; //add name string to nameArray
-    }
-    
-    //Used in testing
-    var availableTags = [
-	"ActionScript",
-	"AppleScript",
-	"Asp",
-	"BASIC",
-	"C",
-	"C++",
-	"Clojure",
-	"COBOL",
-	"ColdFusion",
-	"Erlang",
-	"Fortran",
-	"Groovy",
-	"Haskell",
-	"Java",
-	"JavaScript",
-	"Lisp",
-	"Perl",
-	"PHP",
-	"Python",
-	"Ruby",
-	"Scala",
-	"Scheme"
-    ];
-    //End used in testing
-    
-    $( "#friendName" ).autocomplete({
-	//source: availableTags //used in testing
-	source: availableTags
-    });
-    //alert(nameArray.length);
-}
-
-
->>>>>>> 3e75abbe338b4579dedca1830ec9b62e61c5f5a8
 $(document).ready(function(){
     //var testdata = ["c++", "java", "php", "coldfusion", "javascript", "asp", "ruby"];
     
@@ -234,169 +192,53 @@ $(document).ready(function(){
     
     osapi.people.getViewerFriends().execute(function(viewerFriends) {
     	if(!viewerFriends.error){
-<<<<<<< HEAD
-    		var friendArray = viewerFriends.list;
-    		
-    		for(var i = 0; i < friendArray.length;i++){
-    			nameArray[i] = friendArray[i].displayName;
-    			console.log("Content in array: " + nameArray[i]);
-    		}
-    		
-    		
-    		$("#update-entry1").autocomplete(nameArray);
-			
-			var oldName = $("#update-entry1").val();
-			
-			
-			$("#update-entry1").blur(function() {
-					var newName = $("#update-entry1").val();
-					
-					if(oldName != newName){
-						console.log("Entered update-entry2 anonymous function");
-					
-						var index = nameArray.indexOf($("#update-entry1").val());
-					
-					   
-						if(index != -1){
-
-							console.log("Name: " + $("#update-entry1").val());
-
-							index = nameArray.indexOf($("#update-entry1").val());
-							console.log("Index: " + index);
-							
-							var imageURL = friendArray[index].thumbnailUrl;
-							console.log("Image URL: " + imageURL);
-							var imageCallString = "<img src='" + imageURL + "' />";
-							var callString = "<style='padding:5px;'>" + imageCallString + "</style>"; 
-							$('#pictureDisplay').html(callString);
-							
-						}
-						
-					}
-			});
-					
-					
-		
-			
-=======
     	    var friendArray = viewerFriends.list;
     	    
     	    for(var i = 0; i < friendArray.length;i++){
     		nameArray[i] = friendArray[i].displayName;
-		
     		console.log("Content in array: " + nameArray[i]);
     	    }
     	    
     	    
     	    $("#update-entry1").autocomplete(nameArray);
 	    
+	    var oldName = $("#update-entry1").val();
 	    
-	    $("#update-entry1").change(function() {
-		var index = nameArray.indexOf($("#update-entry1").val());
+	    
+	    $("#update-entry1").blur(function() {
+		var newName = $("#update-entry1").val();
 		
-		if(index != -1){
+		if(oldName != newName){
+		    console.log("Entered update-entry2 anonymous function");
 		    
-		    var imageURL = nameArray[index].thumbnailUrl;
-		    var imageCallString = "<img src=" + imageURL + " />" 
-		    $('#pictureDisplay').prepend(imageCallString);
+		    var index = nameArray.indexOf($("#update-entry1").val());
+		    
+		    
+		    if(index != -1){
+
+			console.log("Name: " + $("#update-entry1").val());
+
+			index = nameArray.indexOf($("#update-entry1").val());
+			console.log("Index: " + index);
+			
+			var imageURL = friendArray[index].thumbnailUrl;
+			console.log("Image URL: " + imageURL);
+			var imageCallString = "<img src='" + imageURL + "' />";
+			var callString = "<style='padding:5px;'>" + imageCallString + "</style>"; 
+			$('#pictureDisplay').html(callString);
+			
+		    }
+		    
 		}
 	    });
 	    
 	    
->>>>>>> 3e75abbe338b4579dedca1830ec9b62e61c5f5a8
+	    
+	    
     	}
     })
-
-    
     
 });
-
-<<<<<<< HEAD
-function handleForm(){
-		console.log("Entering handleForm");
-		  var friendName = $('#update-entry1').val();
-		  var message = $('#update-entry2').val();
-		  console.log("Message: " + message);
-		  
-	      sendActivityPost(friendName, message);
-};
-
-function sendActivityPost(friendName, message){
-	console.log("Entering sendActivityPost");
-	osapi.people.getViewerFriends().execute(function(viewerFriends){
-												if(!viewerFriends.error){
-													var friendArray = viewerFriends.list;
-													
-													for(var i = 0;i < friendArray.length;i++){
-														if(friendArray[i].displayName == friendName){
-															var frid = friendArray[i].id;
-															osapi.people.getViewer().execute(function (viewerData){
-																										if(!viewerData.error){
-																											var viewerName = viewerData.displayName;
-																											console.log("FriendName: " + friendName);
-																											console.log("Message: " + message);
-																											console.log("FriendID: " + frid);
-																											console.log("ViewerName: " + viewerName);
-																											var msg2 = "Hi " +  friendName + "! You've got a CodeSquare Badge Post from " + viewerName + "!";
-																											
-																											var activity = {"body": message,
-																															"object" : {
-																																			"objectType":"article",
-																																			"summary":message,
-																																			"mediaLink": { 
-																																			            "mediaType": "photo", 
-																																			            "url" : "http://i0006.photobucket.com/albums/0006/findstuff22/Best%20Images/Photography/photographybubbles1.jpg" 
-																																			            // A link to attached media, thumbnails are automatically generated. 
-																																			              }
-																																		}
-																															 "target": {
-																																		"id":frid,
-																																		"displayName":friendName
-																															            }
-																															
-																															}
-																											
-																											var params = {"activity": {"title": "Go to your What Matters: Activities to check it out!",
-																											                         "body": msg2
-																											                        },
-																														  "deliverTo": frid
-																											             };
-																											var msg3 = "Hi " + viewerName + ", you sent this message to " + friendName;
-																											var params2 = {"activity": {"title": message,
-																														              "body": msg3
-																														             },
-																														   "deliverTo": "@viewer"
-																														  };
-																												osapi.activities.create(activity).execute(diivCallback(message));
-																												osapi.activities.create(params).execute(streamPostCallback(message));
-																												osapi.activities.create(params2).execute(diivCallback(message));
-																										}
-																									});
-													      console.log("Done posting, exiting sendActivityPost");	
-													      break;
-														}
-												    }
-												}
-											});
-};
-
-function streamPostCallback(message){
-	console.log("Entering formCallback");
-	alert("You posted to their Activity Stream! They will receive a notification of this.");
-};
-
-function diivCallback(message){
-	console.log("Sent user a notification that he/she sent a message");  
-};	
-=======
-function stringArrayContains(strArray, str){
-    for(var j = 0;j < strArray.length;j++){
-	if(strArray[j] == str){
-	    return true;
-	}
-    }
-    return false;
-}
 
 function handleForm(){
     console.log("Entering handleForm");
@@ -419,24 +261,47 @@ function sendActivityPost(friendName, message){
 		    osapi.people.getViewer().execute(function (viewerData){
 			if(!viewerData.error){
 			    var viewerName = viewerData.displayName;
+			    var viewerID = viewerData.id;
 			    console.log("FriendName: " + friendName);
 			    console.log("Message: " + message);
 			    console.log("FriendID: " + frid);
 			    console.log("ViewerName: " + viewerName);
-			    var msg2 = "Hi " +  friendName + "! You've got Badge Mail from " + viewerName + "!";
-			    var params = {activity: {title: message,
-						     body: msg2
-						    },
-					  deliverTo: frid
+			    console.log("ViewerID:" + viewerID);
+			    var msg2 = "Hi " +  friendName + "! You've got a CodeSquare Badge Post from " + viewerName + "!";
+			    var idString = "urn:jiveObject:user/" + frid;
+			    var myidString = "urn:jiveObject:user/" + viewerID;
+			    var activity = {"activity":{"body": message, "verb": "post", 
+							"object" : {
+							    "objectType":"article",
+							    "summary": message,
+							    "mediaLink": { 
+								"mediaType": "photo", 
+								"url" : "http://i0006.photobucket.com/albums/0006/findstuff22/Best%20Images/Photography/photographybubbles1.jpg"
+							    }
+							},
+							
+						       },
+					    "target": {
+						"id": myidString,
+						"displayName":friendName
+					    }
+					   }
+			    
+			    var params = {"activity": {"title": "Go to your What Matters: Activities to check it out!",
+						       "body": msg2
+						      },
+					  "deliverTo": frid
 					 };
 			    var msg3 = "Hi " + viewerName + ", you sent this message to " + friendName;
-			    var params2 = {activity: {title: message,
-						      body: msg3
-						     },
-					   deliverTo: '@viewer'
+			    var params2 = {"activity": {"title": message,
+							"body": msg3
+						       },
+					   "deliverTo": viewerID
 					  };
-			    osapi.activities.create(params).execute(formCallback(message));
-			    osapi.activities.create(params2).execute(diivCallback(message));
+			    console.log("At User: " + "@user");
+			    osapi.activities.create(activity).execute(streamPostCallback(message));
+			    osapi.activities.create(params).execute(notificationPostCallback(message));
+			    osapi.activities.create(params2).execute(userCallback(message));
 			}
 		    });
 		    console.log("Done posting, exiting sendActivityPost");	
@@ -447,45 +312,112 @@ function sendActivityPost(friendName, message){
     });
 };
 
-function formCallback(message){
-    console.log("Entering formCallback");
+function streamPostCallback(message){
+    console.log("Entering streamPostCallback");
     alert("You posted to their Activity Stream!");
-}
-
-function diivCallback(message){
-    console.log("Sent user a notification that he/she sent a message");  
-};	
-
-function getid(frName, message, viewerName){
-    console.log("Entering getid");
-    osapi.people.getViewerFriends().execute(function(viewerFriends){
-	if(!viewerFriends.error){
-	    var friendArray = viewerFriends.list;
-	    
-	    for(var i = 0;i < friendArray.length;i++){
-		if(friendArray[i].displayName == frName){
-		    var frid = friendArray[i].id;
-		    console.log(frid);
-		    sendActivityPost(frName, message, frid, viewerName);
-		    break;
-		}
-	    }
-	    return -1;
-	}
-    });
 };
 
-function getViewerName(friendName, message){
-    console.log("Entering getViewerName");
-    var viewerName = ""; 
-    osapi.people.getViewer().execute(function(friendName, viewerData){
-	if(!viewerData.error){
-	    viewerName = viewerData.displayName;
-	    getid(friendName, message, viewerName);
-	}
-    });
+function notificationPostCallback(message){
+    console.log("Entering notificationPostCallback");
+    alert("They will receive a notification of this.");
+};
+
+function userCallback(message){
+    console.log("Entering userCallback");  
+};	
+
+function makeBadgeSelectionGallery(userEmail,bossEmail){
+	console.log("Inside u MBSG: " + userEmail);
+	console.log("Inside b MBSG: " + bossEmail);
+	
+	var url = 'http://10.45.111.143:9090/CodeSquare/AppServlet?email=' + userEmail  + '&bossEmail=' + bossEmail;
+    var params = {'href' : url, 'format' : 'json', 'authz' : 'none', 'nocache' : 'true' };
+
+	osapi.http.get(params).execute(function (response){
+		if(response.error){
+			alert("Invalid response: Unable to load badges");
+		}else{
+			var bjson = response.content; //bjson = json of badges
+			var imageArray = [];
+			var i = 0;
+			for (var key = 1; key <= Object.size(bjson); key++){
+				var badge = bjson[key];
+				var badgePic = fullURL(badge.IconURL);
+				
+				if(badge.IconURL !== "images/unobtained.png"){
+					imageArray[i++] = badgePic;
+				}
+				
+				
+			} 
+			console.log("Images in imageArray: " + imageArray);
+			if(imageArray.length > 0){
+				fillUpImageDiv(imageArray);
+			}else{
+				$("#picBadgeSelect").html("<p>You have no Badges! But you can still send a badgeless message!</p>");
+			}
+			
+		}
+	});
 }
->>>>>>> 3e75abbe338b4579dedca1830ec9b62e61c5f5a8
+
+function fillUpImageDiv(imageArray){
+	console.log("Entered fillUpImageDiv");
+	console.log("Contents in image array: " + imageArray);
+	var fullImageHTML = "";
+	for(var i = 0; i < imageArray.length; i++){
+		//var imageHTMLWrap = "<div class=\"wrapper\" href=\"" + imageArray[i] + "\">";
+		var imageHTML = "<img class=\"picBadge\" width=\"100\" height=\"100\" src=\"" + imageArray[i] + "\" \/>";
+		fullImageHTML += imageHTML;
+		console.log("HTML being appended: " + fullImageHTML);
+	}
+	$("#picBadgeSelect").html(fullImageHTML);
+	$(".picBadge").click(function(){
+<<<<<<< HEAD
+		console.log("Info of this clicked pic: " + this.src);
+		var selImgURL = this.src;
+		var selHTML = '<br /><img width="100" height="100" src="' + selImgURL + '" />';
+		$("#selectedBadge").html(selHTML);
+		document.getElementById("#badgeSelect").value= selImgURL;
+		Console.log("Value in badgeSelect form input: " + $("#badgeSelect".val()));
+=======
+		alert("hey, stop touching me!");
+		console.log("Info of this clicked pic: " + this);
+>>>>>>> did not actually fix the bug, doing some more debugging
+	});
+}
+
+
+/*
+//Badge Selection
+
+osapi.jive.core.users.get({id: viewerID}).execute(function (viewerJiveData){
+												  	if (!viewerJiveData.error){
+												  		console.log("Entered viewerJiveData");
+												  		var viewerEmail = viewerJiveData.data.email;
+												  		viewerJiveData.data.manager.get().execute(function (viewerBossData){
+												  													if(!viewerBossData.error){
+												  													    console.log("Entered viewerBossData");
+												  														var viewerBossID = viewerBossData.data.id;
+												  														osapi.jive.core.users.get({id: viewerBossID}).execute(function (viewerBossJiveData){
+												  																										 		if(!viewerBossJiveData.error){
+												  																										 			console.log("Entered viewerBossJiveData");
+												  																										 			var viewerBossEmail = viewerBossJiveData.data.email;
+												  																										 			console.log("ViewerEmail: " + viewerEmail);
+												  																										 			console.log("ViewerBossEmail: " + viewerBossEmail);
+												  																										 			makeBadgeSelectionGallery(viewerEmail, viewerBossEmail);
+												  																										 		}
+												  																										 	 });
+												  													}
+												  												 });
+												  													
+												  													
+												  													
+												  	}
+												  });
+
+//End Badge Selection
+*/
 
 //End Diivcode
 

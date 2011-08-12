@@ -1,6 +1,6 @@
 $('#browse a').click(function(e) {
     changePage('subpages/browse.html');
-    makeBadgeTable(glObj.email,glObj.bossEmail,true,"");
+    makeBadgeTable(GLOBJ.email);
     document.getElementById('lsidebar-wrapper').innerHTML="";
     tab = $('#browse');
     tab.addClass('current-cat');
@@ -23,5 +23,5 @@ $('#brag a').click(function(e) {
     tab = $('#brag');
     tab.addClass('current-cat');
     tab.siblings().removeClass('current-cat');
-	bragBasics(); // enableAutoComplete() in here
+    bragBasics(); // enableAutoComplete() in here
 });

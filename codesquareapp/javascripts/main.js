@@ -1,7 +1,17 @@
-var glObj = {};
-// Does what you think it does...
-function makeBadgeTable(userEmail, bossEmail, self, fName) {
-    var url = 'http://10.45.111.143:9090/CodeSquare/AppServlet?email=' + userEmail  + '&bossEmail=' + bossEmail;
+var GLOBJ = {};
+
+
+// this function is used to load the badge tables in the 'Browse Badges' tab and the 'Compare' tab
+function makeBadgeTable(userEmail) {
+    
+    var args = arguments;
+    var url = 'http://10.45.111.143:9090/CodeSquare/AppServlet?email=' + userEmail;
+    
+    // if we're passing in 2 arguments, then we're making requests from the compare tab 
+    if (args.length === 2) {
+	url = url + "&compare=true";
+    }
+
     var params = {'href' : url, 'format' : 'json', 'authz' : 'none', 'nocache' : 'true' };
     
     osapi.http.get(params).execute(function(response) {
@@ -10,19 +20,22 @@ function makeBadgeTable(userEmail, bossEmail, self, fName) {
 	}
 	else {
 	    var jsonObj = response.content;
-	    console.log(jsonObj);
+	    //console.log(jsonObj);
 	    var totalBadges = 0;
 	    var newBadges = 0;
 	    var tableHTML = "";
 	    var stateClass = "shadow";
-	    var key, value, imgURL, popupURl;
+	    var key, value, imgURL, thumbnailUrl, popupURl;
 	    
 	    for (key = 1; key <= Object.size(jsonObj); key++) {
 		value = jsonObj[key];
-		if (key % 5 == 1) {
+		if (key % 5 === 1) {
 		    tableHTML += "<tr>";
 		}
 		imgURL = fullURL(value.IconURL);
+		thumbnailUrl = fullURL(value.thumbnail);
+		//console.log(value.thumbnail);
+		//console.log(thumbnailUrl);
 		popupURL = fullURL("badgePopup.html");
 		tableHTML += "<td><form class='badges' action='" + popupURL + "' method='GET'>" +
 		    "<input type='hidden' name='imgURL' value='" + imgURL + "'/>" +
@@ -31,15 +44,15 @@ function makeBadgeTable(userEmail, bossEmail, self, fName) {
 		if (value.IconURL !== "images/unobtained.png") {
 		    totalBadges = totalBadges + 1;
 		}
-		console.log('value.New is ' + value.New);
+		//console.log('value.New is ' + value.New);
 		if (value.New == "true") {
 		    stateClass = "highlight";
 		    newBadges = newBadges + 1;
-		    console.log(stateClass);
+		//    console.log(stateClass);
 		}
-		console.log('stateClass is ' + stateClass);
-		tableHTML+= "<input class='" + stateClass + "' type='image' src='" + imgURL + "' value='Popup!' alt='Show badge info'/></form></td>";
-		if (key % 5 == 0) {
+		//console.log('stateClass is ' + stateClass);
+		tableHTML+= "<input class='" + stateClass + "' type='image' src='" + thumbnailUrl + "' value='Popup!' alt='Show badge info'/></form></td>";
+		if (key % 5 === 0) {
 		    tableHTML += "</tr>";
 		}
 	    }
@@ -48,108 +61,23 @@ function makeBadgeTable(userEmail, bossEmail, self, fName) {
 
 	    var badgeCountHTML = "";
 	    
-	    if (self==false) {
-	    	badgeCountHTML+=fName+" has "+totalBadges+" badges.";
-	    }
-	    else {
+	    // this snippet of code is used for loading friend's name in compare tab
+	    if (args.length === 2) {
+		console.log('here is the arguments object');
+		console.log(args);
+		// assume that arguments[1] contains the name of the friend
+	    	badgeCountHTML+=args[1]+" has "+totalBadges+" badges.";
+	    } else {
 	    	if (newBadges > 0) {
-			badgeCountHTML += "You earned "+newBadges+" new badges! ";
-	    	} else {
-			badgeCountHTML+="You currently have "+totalBadges+" badges.";
-	    	}
+		    badgeCountHTML += "You earned "+newBadges+" new badges! ";
+	    	} 
+		badgeCountHTML += "You currently have "+totalBadges+" badges.";
 	    }
-	    
-	   
 	    document.getElementById('numberOfBadges').innerHTML = badgeCountHTML;
+	    gadgets.window.adjustHeight();
 	}
     });    
 }
-
-// this function is not needed since we're not using gadget tabs
-function callback(tabId) {
-    var p = document.createElement("p");
-    // Get selected tab
-    var selectedTab = tabs.getSelectedTab();
-    p.innerHTML = "This is dynamic content generated in callback for tab " + selectedTab.getName();
-    document.getElementById(tabId).appendChild(p);
-    makeBadgeTable();
-}
-
-// this function is not being used right now
-function loadFancy() {
-    $("form").submit(function() {
-	$form = $(this);
-	$.fancybox({
-	    'href': $form.attr("action") + "?" + $form.serialize(),
-	    'transitionIn' : 'elastic',
-	    'transitionOut' : 'elastic',
-	    'autoScale' : false,
-	    'width': '40%',
-	    'height': '100%',
-	    'type': 'iframe',
-	});
-	console.dir($('form').data('events'));
-
-	return false;
-    });
-}
-
-
-
-function init() {
-    osapi.people.getViewer().execute(function(viewerBasicData) {
-	if (!viewerBasicData.error) {
-    	    var request = osapi.jive.core.users.get({id: viewerBasicData.id});
-    	    request.execute(function(viewer) {
-    		if (!viewer.error) {
-    		    var request2 = viewer.data.manager.get();
-    		    request2.execute(function(bossBasicData) {
-    			if (!bossBasicData.error) {
-    			    var request3 = osapi.jive.core.users.get({id: bossBasicData.data.id});
-    			    request3.execute(function(boss) {
-    				if (!boss.error) {
-    				    var user2 = boss.data
-    				    console.log("USEREMAIL: "+viewer.data.email);
-    				    console.log("BOSSEMAIL: "+boss.data.email);
-    				    glObj.email = viewer.data.email;
-				    	glObj.bossEmail = boss.data.email;
-    				    makeBadgeTable(viewer.data.email, boss.data.email);
-						
-				    $("form.badges")
-					.live('submit', function(e) {
-					    //console.log(e.type);
-					    $form = $(this);
-					    $.fancybox({
-						'href': $form.attr("action") + "?" + $form.serialize(),
-						'transitionIn' : 'elastic',
-						'transitionOut' : 'elastic',
-						'autoScale' : false,
-						'width': '40%',
-						'height': '80%',
-						'type': 'iframe',
-					    });
-					    e.preventDefault();
-					    console.log('form was submitted');
-					    return false;
-					});
-
-    				}
-    			    });
-    			}
-    		    });
-    		}
-   	    });
-    	}
-    });
-
-
-
-}
-
-gadgets.util.registerOnLoadHandler(init);
-gadgets.window.adjustHeight();
-
-
 
 function viewShare() {
     
@@ -167,8 +95,81 @@ function viewShare() {
         
         document.getElementById('vertTabs').innerHTML = tableHTML;
     });
-    
 }
+
+function init() {
+    try {
+	osapi.jive.core.users.get({id: '@viewer'}).execute(function(userResponse) {
+    	    if (!userResponse.error) {
+		var user = userResponse.data;
+		//console.log(user);
+		var basicBossRequest = user.manager.get();
+    		basicBossRequest.execute(function(basicBossResponse) {
+    		    if (!basicBossResponse.error) {
+			var basicBoss = basicBossResponse.data;
+			//console.log(basicBoss);
+    			osapi.jive.core.users.get({id: basicBoss.id}).execute(function(bossResponse) {
+    			    if (!bossResponse.error) {
+    				var boss = bossResponse.data
+				//console.log(boss);
+    				//console.log("USEREMAIL: "+user.email);
+    				//console.log("BOSSEMAIL: "+boss.email);
+			    	
+				// setting up some global vars, this should be the only place to set these evil variables
+				GLOBJ.name = user.name;
+				GLOBJ.email = user.email;
+				GLOBJ.bossEmail = boss.email;
+				GLOBJ.id = user.id;
+				/*console.log(GLOBJ.name);
+				  console.log(GLOBJ.email);
+				  console.log(GLOBJ.bossEmail);
+				  console.log(GLOBJ.id);
+				*/
+    				makeBadgeTable(user.email);
+				
+				// JQuery event binding for badge popups
+				$("form.badges")
+				    .live('submit', function(e) {
+					//console.log(e.type);
+					$form = $(this);
+					$.fancybox({
+					    'href': $form.attr("action") + "?" + $form.serialize(),
+					    'transitionIn' : 'elastic',
+					    'transitionOut' : 'elastic',
+					    'autoScale' : false,
+					    'width': '40%',
+					    'height': '60%',
+					    'type': 'iframe',
+					});
+					//$.fancybox.resize();
+					e.preventDefault();
+					console.log('form was submitted');
+					return false;
+				    });
+				
+    			    } else {
+				throw {name : 'boss response error', message :  bossResponse.error.message};
+    			    }
+			});
+    		    } else {
+			throw {name : 'basic boss response error', message :  bossBasicData.error.message};
+    		    }
+		});
+    	    } else {
+		throw {name : 'user response error', message : userResponse.error.message};
+	    }
+	});
+    } catch (e) {
+	console.log(e.name);
+	console.log(e.message);
+    }
+}
+
+gadgets.util.registerOnLoadHandler(init);
+gadgets.window.adjustHeight();
+
+
+
 
 
 
