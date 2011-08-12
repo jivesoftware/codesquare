@@ -1,64 +1,30 @@
-/*
-  $(document).ready(function() {
-  alert("hi");
-  // moved the function below from here to init() in main.js for local testing
-  //	makeBadgeTable();
-  $(function() {
-  
-  $("form").submit(function() {
-
-  $form = $(this);
-  $.fancybox({
-  'href': $form.attr("action") + "?" + $form.serialize(),
-  'transitionIn' : 'elastic',
-  'transitionOut' : 'elastic',
-  'autoScale' : false,
-  'width': '40%',
-  'height': '100%',
-  'type': 'iframe',
-  
-  });
-
-  return false;
-
-  });
-
-  });
-
-  });
-*/
-/*
-//implementation for lightbox_me
-$('.badgeLink').click(function(e) {
-$('.popup').lightbox_me({
-centered: true, 
-});
-e.preventDefault();
-});  
-*/
-
 $('#browse a').click(function(e) {
     changePage('subpages/browse.html');
-    makeBadgeTable(glObj.email,glObj.bossEmail);
+    makeBadgeTable(glObj.email,glObj.bossEmail,true,"");
+    document.getElementById('lsidebar-wrapper').innerHTML="";
     tab = $('#browse');
     tab.addClass('current-cat');
     tab.siblings().removeClass('current-cat');
 });
 
-$('#share a').click(function(e) {
-    changePage('subpages/share.html');
-    tab = $('#share');
+$('#compare a').click(function(e) {
+    changePage('subpages/compare.html');
+    getFollowersToCompare();
+    tab = $('#compare');
     tab.addClass('current-cat');
     tab.siblings().removeClass('current-cat');
 });
 
 $('#brag a').click(function(e) {
-    changePage('subpages/brag.html');
+    changePage('subpages/brag2.html');
+    document.getElementById('lsidebar-wrapper').innerHTML="";
     tab = $('#brag');
     tab.addClass('current-cat');
     tab.siblings().removeClass('current-cat');
 
 //Start Diiv Code
+	nicEditors.allTextAreas();
+	
 	osapi.people.getViewer().execute(function(viewerBasicData) {
 	if (!viewerBasicData.error) {
     	    var request = osapi.jive.core.users.get({id: viewerBasicData.id});
@@ -149,11 +115,45 @@ $('#brag a').click(function(e) {
 
 	    	}
 	    });
-
-	
-	
-	
-	
 	//End Diiv code
 
 });
+
+/*
+  $(document).ready(function() {
+  alert("hi");
+  // moved the function below from here to init() in main.js for local testing
+  //	f();
+  $(function() {
+  
+  $("form").submit(function() {
+
+  $form = $(this);
+  $.fancybox({
+  'href': $form.attr("action") + "?" + $form.serialize(),
+  'transitionIn' : 'elastic',
+  'transitionOut' : 'elastic',
+  'autoScale' : false,
+  'width': '40%',
+  'height': '100%',
+  'type': 'iframe',
+  
+  });
+
+  return false;
+
+  });
+
+  });
+
+  });
+*/
+/*
+//implementation for lightbox_me
+$('.badgeLink').click(function(e) {
+$('.popup').lightbox_me({
+centered: true, 
+});
+e.preventDefault();
+});  
+*/

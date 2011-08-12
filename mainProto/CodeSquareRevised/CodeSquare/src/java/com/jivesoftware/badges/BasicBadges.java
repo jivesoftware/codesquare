@@ -16,15 +16,20 @@ import org.json.JSONObject;
 import com.jivesoftware.toolbox.HDFSTools;
 import com.jivesoftware.toolbox.HbaseTools;
 import com.jivesoftware.toolbox.ServletTools;
+import com.jivesoftware.toolbox.Badge;
+import com.jivesoftware.activityStream.ActivityPoster;
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.Calendar;
 import java.util.Collections;
+
 
 public final class BasicBadges {
     
     public BasicBadges() {};
     
     public BasicBadges(JSONArray jArrCommits, FileSystem hdfs, HTable table, 
-                        String unixTime) throws JSONException, IOException {
+                        String unixTime) throws JSONException, IOException, Exception {
     // iterate through and process/store info locally
         UserInfo user = null;
         Result data = null;
@@ -77,7 +82,6 @@ public final class BasicBadges {
             newBadgesString += s + " ";
         }
 
-        //newBadgesString = newBadgesString.trim();
 
 
         HbaseTools.addRow(table,
@@ -88,7 +92,19 @@ public final class BasicBadges {
             user.getConsecCommits(),
             (newBadgesString + badgeList[1]).trim(),
             newBadges.toArray(new String[newBadges.size()]),
-            unixTime);    
+            unixTime);
+        
+        
+        String[][] badgesList = ServletTools.getBadgeInfo();
+        ArrayList<Badge> badges = new ArrayList<Badge>();
+        for(String s : newBadges){
+            Badge badge = new Badge(badgesList[Integer.parseInt(s)-1][0], badgesList[Integer.parseInt(s)-1][1], s+".png");
+            badges.add(badge);
+        }
+        
+        String jsonActivity = ServletTools.makeJSONPost(badges, user.getName());
+        System.out.println("JSON:   " +jsonActivity);
+        ActivityPoster.postToActivity(user.getId(), null, jsonActivity);
     }
 
 	
@@ -131,8 +147,12 @@ public final class BasicBadges {
 
         // 26
         public void checkMessageBadges(UserInfo user, String message){
-            if (message.toLowerCase().contains("jive")) {
-			user.addBadge("26");
+            if (message.toLowerCase().contains("jive") && !message.toLowerCase().contains("Merge branch")) {
+		user.addBadge("26");
+            }
+            String[] words = message.split(" ");
+            if (words.length > 20){
+                user.addBadge("31");
             }
         }
         
@@ -241,37 +261,5 @@ public final class BasicBadges {
 		} else if (commitDate.getLocalDay()==1 || commitDate.getLocalDay()==7) {
                     user.addBadge("29");
 		}
-	}
-	
+	}	
 }
-
-
-//		// bug stuff is not currently implemented, but is being checked for here
-//		if (totNumBugs > 100) {
-//			badges.add("35");
-//		} else if (totNumBugs > 50) {
-//			badges.add("34");
-//		} else if (totNumBugs > 25) {
-//			badges.add("33");
-//		} else if (totNumBugs > 10) {
-//			badges.add("32");
-//		} else if (totNumBugs > 1) {
-//			badges.add("31");
-//		}
-
-
-//		Object[] badgeList = HbaseTools.getBadges(data);
-//		@SuppressWarnings("unchecked")
-//		ArrayList<String> aquiredBadges = (ArrayList<String>) badgeList[0];
-//		for (int i = 0; i < badges.size(); i++) {
-//			if (aquiredBadges.contains(badges.get(i))) {
-//				badges.remove(i--);
-//			}
-//		}
-//		// checks to see if there are more than 7 new badges in the week
-//		// ???
-//		if ((badges.size() + fieldValues[0]) > 7) {
-//			if(!aquiredBadges.contains("16")){
-//				badges.add("16");
-//			} CURRENTLY NOT IMPLEMENTED!!!
-//		}
