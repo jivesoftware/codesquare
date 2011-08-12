@@ -82,7 +82,6 @@ public final class BasicBadges {
             newBadgesString += s + " ";
         }
 
-        //newBadgesString = newBadgesString.trim();
 
 
         HbaseTools.addRow(table,
@@ -94,42 +93,9 @@ public final class BasicBadges {
             (newBadgesString + badgeList[1]).trim(),
             newBadges.toArray(new String[newBadges.size()]),
             unixTime);
-        //String jsonActivity = "{\"items\":[{\"title\": \"Bessie the cow was fed\",\"body\" : \"Fred Flintstone fed Bessie the Cow\"}]}";
         
         
-        String[][] badgesList = {
-            {"First Commit", "User committed 1 time."},
-            {"Fifty Commits", "User committed 50 times."},
-            {"Five Hundred Commits", "User committed 500 times,"},
-            {"One Thousand Commits", "User committed 1000 times."},
-            {"Five Thousand Commits", "User committed 5000 times."},
-            {"Trick or Treat Badge", "User committed on Halloween."},
-            {"Leprechaun Badge", "User committed on St. Patrick's Day."},
-            {"Leap Year Badge", "User committed on Leap Year Day."},
-            {"Love Badge", "User committed on Valentine's Day."},
-            {"Pi Day", "User committed on 3.14"},
-            {"Humming Bird", "User committed twice within a minute."},
-            {"Night Owl", "User committed after 10pm."},
-            {"Early Bird", "User committed before 6am."},
-            {"Team Player", "User and 2 or more people made changes to the same directory in the same hour."},
-            {"United We Stand", "User and 9 or more people made changes to the same directory in the same hour."},
-            {"Grape Squasher", "User gained 8 or more badges in 1 week"},
-            {"Numa Numa", "User had the least lines of code per file in a given week."},
-            {"Manic Monday", "User committed on Monday before 8am."},
-            {"Rebecca Black Friday", "User committed on Friday after 4pm."},
-            {"Charlotte Takes Tumble", "User committed a negative amount of lines code in a day."},
-            {"Boss is Better", "User committed more lines of code than all of his employees."},
-            {"Good Employee", "User committed more lines of code than his boss."},
-            {"Best Employee", "User committed more lines of code than each of his peers."},
-            {"Best day", "User committed those most lines of code in a single day."},
-            {"Soul mate(s)", "User and one or more people commit within a 10 second time span in same directory."},
-            {"Jiver", "User's commit message included the word Jive."},
-            {"Dos Commits", "User committed twice in the same day."},
-            {"Slacker", "User had 5 or more days in between commits."},
-            {"Weekend Warrior", "User committed on the weekend."},
-            {"Committed Person", "User committed every day of a give week."},
-            {"Author", "Users commit message was greater than 20 words."}
-        };
+        String[][] badgesList = ServletTools.getBadgeInfo();
         ArrayList<Badge> badges = new ArrayList<Badge>();
         for(String s : newBadges){
             Badge badge = new Badge(badgesList[Integer.parseInt(s)-1][0], badgesList[Integer.parseInt(s)-1][1], s+".png");
@@ -138,8 +104,6 @@ public final class BasicBadges {
         
         String jsonActivity = ServletTools.makeJSONPost(badges, user.getName());
         System.out.println("JSON:   " +jsonActivity);
-        //jsonActivity = "{\"items\":[{\"title\": \"Bessie the cow was fed\",\"body\" : \"Fred Flintstone fed Bessie the Cow\"}]}";
-        //System.out.println("TEST JSON:   " +jsonActivity);
         ActivityPoster.postToActivity(user.getId(), null, jsonActivity);
     }
 
@@ -183,8 +147,12 @@ public final class BasicBadges {
 
         // 26
         public void checkMessageBadges(UserInfo user, String message){
-            if (message.toLowerCase().contains("jive")) {
-			user.addBadge("26");
+            if (message.toLowerCase().contains("jive") && !message.toLowerCase().contains("Merge branch")) {
+		user.addBadge("26");
+            }
+            String[] words = message.split(" ");
+            if (words.length > 20){
+                user.addBadge("31");
             }
         }
         
@@ -294,6 +262,7 @@ public final class BasicBadges {
                     user.addBadge("29");
 		}
 	}
+        
 	
 }
 

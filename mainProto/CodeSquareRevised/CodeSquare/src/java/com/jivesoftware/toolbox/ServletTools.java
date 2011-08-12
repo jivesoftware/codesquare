@@ -10,6 +10,8 @@ import org.json.JSONObject;
 
 import com.jivesoftware.backendServlet.Commit;
 import com.jivesoftware.backendServlet.JiveDate;
+import java.io.File;
+import java.io.FileInputStream;
 import javax.servlet.http.HttpServletRequest;
 import org.json.JSONArray;
 import java.util.List;
@@ -123,6 +125,34 @@ public class ServletTools {
 	jsonObj.put("items", postAry);
 	jsonString = jsonObj.toString();
 	return jsonString;
+    }
+    
+    public static String[][] getBadgeInfo() throws IOException, JSONException{
+	String activityFileName = "/home/interns/badgedescriptions";
+	File activityFile = new File(activityFileName);
+        FileInputStream fis = new FileInputStream(activityFile);
+        byte[] activityBytes = new byte[(int)activityFile.length()];
+        fis.read(activityBytes, 0, activityBytes.length);
+        fis.close();
+        
+        String json = new String(activityBytes);
+        JSONArray j1 = new JSONArray(json);
+
+        System.out.println("size: "+j1.length() + "size1: " + j1.getJSONObject(0).length());
+        String[][] badgeList = new String[j1.length()][j1.getJSONObject(0).length()];
+
+        for(int i = 0; i < j1.length(); i++){
+            badgeList[i][0] = (String) j1.getJSONObject(i).getString("name");
+            badgeList[i][1] = (String) j1.getJSONObject(i).getString("description");
+        }
+        
+        for (int r=0; r<badgeList.length; r++) {
+            for (int c=0; c<badgeList[r].length; c++) {
+                System.out.print("--" +badgeList[r][c]);
+            }
+            System.out.println("");
+        }
+        return badgeList;
     }
 
 }

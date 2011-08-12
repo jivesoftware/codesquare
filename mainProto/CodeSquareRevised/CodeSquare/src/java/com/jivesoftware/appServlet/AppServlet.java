@@ -20,6 +20,7 @@ import org.apache.hadoop.hbase.client.HTable;
 import org.json.*;
 
 import com.jivesoftware.toolbox.HbaseTools;
+import com.jivesoftware.toolbox.ServletTools;
 import java.util.ArrayList;
 import java.util.Iterator;
 import org.apache.hadoop.hbase.client.Result;
@@ -204,39 +205,7 @@ public class AppServlet extends HttpServlet {
             throws JSONException, IOException {
         JSONObject j = new JSONObject();
         
-        String[][] badgesList = {
-            {"First Commit", "User committed 1 time."},
-            {"Fifty Commits", "User committed 50 times."},
-            {"Five Hundred Commits", "User committed 500 times,"},
-            {"One Thousand Commits", "User committed 1000 times."},
-            {"Five Thousand Commits", "User committed 5000 times."},
-            {"Trick or Treat Badge", "User committed on Halloween."},
-            {"Leprechaun Badge", "User committed on St. Patrick's Day."},
-            {"Leap Year Badge", "User committed on Leap Year Day."},
-            {"Love Badge", "User committed on Valentine's Day."},
-            {"Pi Day", "User committed on 3.14"},
-            {"Humming Bird", "User committed twice within a minute."},
-            {"Night Owl", "User committed after 10pm."},
-            {"Early Bird", "User committed before 6am."},
-            {"Team Player", "User and 2 or more people made changes to the same directory in the same hour."},
-            {"United We Stand", "User and 9 or more people made changes to the same directory in the same hour."},
-            {"Grape Squasher", "User gained 8 or more badges in 1 week"},
-            {"Numa Numa", "User had the least lines of code per file in a given week."},
-            {"Manic Monday", "User committed on Monday before 8am."},
-            {"Rebecca Black Friday", "User committed on Friday after 4pm."},
-            {"Charlotte Takes Tumble", "User committed a negative amount of lines code in a day."},
-            {"Boss is Better", "User committed more lines of code than all of his employees."},
-            {"Good Employee", "User committed more lines of code than his boss."},
-            {"Best Employee", "User committed more lines of code than each of his peers."},
-            {"Best day", "User committed those most lines of code in a single day."},
-            {"Soul mate(s)", "User and one or more people commit within a 10 second time span in same directory."},
-            {"Jiver", "User's commit message included the word Jive."},
-            {"Dos Commits", "User committed twice in the same day."},
-            {"Slacker", "User had 5 or more days in between commits."},
-            {"Weekend Warrior", "User committed on the weekend."},
-            {"Committed Person", "User committed every day of a give week."},
-            {"Author", "Users commit message was greater than 20 words."}
-        };
+        String[][] badgesList = ServletTools.getBadgeInfo();
         if(!earnedOnly){
             for (Integer i = 0; i < badges.size(); i++) {
                 System.out.println("Processing Badge No: " + badges.get(i));
@@ -302,81 +271,7 @@ public class AppServlet extends HttpServlet {
                 }
             }
         }
-
-        
         return j;
-        
-        
-        
-        
-        
-        /*ResultScanner s = badgeTable.getScanner(Bytes.toBytes("Info"));
-        Iterator<Result> badgeList = s.iterator();
-        while(badgeList.hasNext()){
-                Result r = badgeList.next();
-                if(badges.contains(new String(r.getRow()))){
-                    JSONObject j2 = new JSONObject();
-                    j2.put("Name", new String(r.getValue(Bytes.toBytes("Info"), Bytes.toBytes("name"))));
-                    j2.put("Description", new String(r.getValue(Bytes.toBytes("Info"), Bytes.toBytes("description"))));
-                    j2.put("IconURL", new String(r.getValue(Bytes.toBytes("Info"), Bytes.toBytes("iconURL"))));
-                    if (newBadges.contains(new String(r.getRow()))) {
-                        j2.put("New", true);
-                    } else {
-                        j2.put("New", false);
-                    }
-                    System.out.println(j2.toString());
-                    j.put(new String(r.getRow()), j2);
-                }
-                else if(earnedOnly == false){
-                    JSONObject j3 = new JSONObject();
-                    j3.put("Name", new String(r.getValue(Bytes.toBytes("Info"), Bytes.toBytes("name"))));
-                    j3.put("Description", new String(r.getValue(Bytes.toBytes("Info"), Bytes.toBytes("description"))));
-                    j3.put("IconURL", "images/unobtained.png");
-                    j3.put("New", false);
-                    j.put(new String(r.getRow()), j3);
-                }
-        }
-        return j;*/
-
-        
-        /*
-        
-        for (Integer i = 0; i < badges.size(); i++) {
-            System.out.println("Processing Badge No: " + badges.get(i));
-            String[] badgeInfo = HbaseTools.getBadgeInfo(badgeTable, badges.get(i));
-
-            JSONObject j2 = new JSONObject();
-            j2.put("Name", badgeInfo[1]);
-            j2.put("Description", badgeInfo[2]);
-            j2.put("IconURL", badgeInfo[3]);
-            if (newBadges.contains(badges.get(i))) {
-                j2.put("New", true);
-            } else {
-                j2.put("New", false);
-            }
-            System.out.println(j2.toString());
-            j.put(badges.get(i), j2);
-
-        }
-
-
-        for (Integer k = new Integer(1); k <= 30; k++) {
-
-            if (!j.has(k.toString())) {
-                JSONObject j3 = new JSONObject();
-                String[] badgeInfo = HbaseTools.getBadgeInfo(badgeTable, k.toString());
-                j3.put("Name", badgeInfo[1]);
-                j3.put("Description", badgeInfo[2]);
-                j3.put("IconURL", "images/unobtained.png");
-                j3.put("New", false);
-                j.put(k.toString(), j3);
-            }
-        }
-
-
-
-        return j;
-    }*/
     }
 
 }
