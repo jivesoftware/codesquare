@@ -30,7 +30,7 @@ import codesquare.Toolbox;
  * accepts a directory - searches for all files recursively
  * 
  * @author deanna.surma
- * 
+ * @author diivanand.ramalingam (editor)
  */
 public class Pass3 {
     // gets empId LOC BossId
@@ -45,9 +45,9 @@ public class Pass3 {
     	job.setOutputValueClass(Text.class);
     	job.setMapperClass(Map.class);
     	job.setReducerClass(Reduce.class);
+    	job.setNumReduceTasks(1);
     	job.setInputFormatClass(TextInputFormat.class);
     	job.setOutputFormatClass(NullOutputFormat.class);
-    	job.setNumReduceTasks(1);
     	Toolbox.addDirectory(job, hdfs, new Path(input));
     	job.waitForCompletion(true);
     }
@@ -127,35 +127,55 @@ public class Pass3 {
     }
     
 	public void cleanup(Context context) {
-		System.out.println("CLEAN");
-		// iterate through maxEmp array
-		System.out.println(bossLOC);
-		System.out.println(maxEmp);
-		System.out.println(allEmps);
-		for (Entry<String, Employee> entry : maxEmp.entrySet()) {
-			String key = entry.getKey();
-		    Employee value = entry.getValue();
-		    
-		    // give badge 22 to all val ppl
-		    Toolbox.addBadges(value.getId(), "22", table);
-			System.out.println("PASS3 RED"+value.getId()+" "+"22");
-			
-			// give badge 23 boss has more LOC than that person
-			if (value.getLOC() < bossLOC.get(key)) {
-				Toolbox.addBadges(key.toString(), "23", table);
-				System.out.println("PASS3 RED"+key+" "+"23");
+		try{
+			System.out.println("CLEAN");
+			// iterate through maxEmp array
+			System.out.println("bossLoc: " + bossLOC);
+			System.out.println("maxEmp: " + maxEmp);
+			System.out.println("All Emps: " + allEmps);
+			for (Entry<String, Employee> entry : maxEmp.entrySet()) {
+				String key = entry.getKey();
+			    Employee value = entry.getValue();
+			    
+			    // give badge 22 to all val ppl
+			    Toolbox.addBadges(value.getId(), "23", table);
+				System.out.println("PASS3 RED"+value.getId()+" "+"23");
+				
+				// give badge 23 if boss has more LOC than that person
+				System.out.println("value.getLOC(): " + value.getLOC());
+				if(!(bossLOC.get(key) == null)){
+					System.out.println("bossLOC.get(key): " + bossLOC.get(key));
+					if (value.getLOC() < bossLOC.get(key)) {
+						Toolbox.addBadges(key.toString(), "21", table);
+						System.out.println("PASS3 RED"+key+" "+"21");
+					}
+				}
+				
 			}
+			
+			// iterate through allEmps and if their LOC > boss', give badge 21
+			for (Entry<String, ArrayList<Employee>> entry : allEmps.entrySet()) {
+				String key = entry.getKey();
+			    ArrayList<Employee> value = entry.getValue();
+			    System.out.println("IN LAST FOR: value: " + value);
+				
+				
+				if(!(bossLOC.get(key) == null)){
+					System.out.println("IN LAST FOR: bossLOC.get(key): " + bossLOC.get(key));
+					for(Employee e : value){
+						System.out.println("IN LAST FOR Emp Array: " + e);
+						if(e.getLOC() > bossLOC.get(key)){
+							System.out.println(e.getId());
+							Toolbox.addBadges(e.getId(), "22", table);
+							System.out.println("PASS3 RED"+e.getId()+" "+"22");
+						}
+					}
+				}
+			}
+		}catch(Exception e){
+			e.printStackTrace();
 		}
 		
-		// iterate through allEmps and if their LOC > boss', give badge 21
-		for (Entry<String, Employee> entry : maxEmp.entrySet()) {
-			String key = entry.getKey();
-		    Employee value = entry.getValue();
-		    if (value.getLOC() > bossLOC.get(key)) {
-		    	Toolbox.addBadges(value.getId(), "21", table);
-				System.out.println("PASS3 RED"+value.getId()+" "+"21");
-		    }
-		}
 	}
 	
     }

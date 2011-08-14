@@ -40,6 +40,7 @@ public class Pass2 {
 		job.setOutputValueClass(Text.class);
 		job.setMapperClass(Map.class);
 		job.setReducerClass(Reduce.class);
+		job.setNumReduceTasks(1);
 		job.setInputFormatClass(TextInputFormat.class);
 		job.setOutputFormatClass(NullOutputFormat.class);
 		Toolbox.addDirectory(job, hdfs, new Path(input));

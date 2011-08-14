@@ -38,6 +38,7 @@ public class LOC {
 		job.setOutputValueClass(IntWritable.class);
 		job.setMapperClass(Map.class);
 		job.setReducerClass(Reduce.class);
+		job.setNumReduceTasks(1);
 		job.setInputFormatClass(TextInputFormat.class);
 		job.setOutputFormatClass(TextOutputFormat.class);
 		Toolbox.addDirectory(job, hdfs, new Path(input));
