@@ -22,10 +22,6 @@ import org.json.*;
 import com.jivesoftware.toolbox.HbaseTools;
 import com.jivesoftware.toolbox.ServletTools;
 import java.util.ArrayList;
-import java.util.Iterator;
-import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.client.ResultScanner;
-import org.apache.hadoop.hbase.util.Bytes;
 
 /**
  * Retrieves email information from the Jive App and uses it to query
@@ -135,20 +131,13 @@ public class AppServlet extends HttpServlet {
  
             //Create a table
             HTable table = new HTable(conf, "EmpBadges"); //Employee table
-            HTable badgeTable = new HTable(conf, "Badges"); //Badges table
             if(!bossEmail.equals("noBoss@nomail.com") && name != null && id != null){
                 HbaseTools.addUserOrUpdateBoss(table, email, bossEmail, name, id);
             }
             
             Object[] badgeInfo = HbaseTools.getBadges(table, email);
 
-            ArrayList<String> badgesWithDescription = (ArrayList<String>) badgeInfo[0]; // Elements
-            // in
-            // array
-            // have
-            // this
-            // invariant:
-            // {BadgeNumber1,Badge1Description,BadgeNumber2,Badge2Description,etc.}
+            ArrayList<String> badgesWithDescription = (ArrayList<String>) badgeInfo[0];
             String newBadges = (String) badgeInfo[1];
 
             if (badgesWithDescription == null) {
@@ -156,7 +145,7 @@ public class AppServlet extends HttpServlet {
             } else {
                 try {
                     if (email.length() != 0) {
-                        JSONObject j = convertOutputToJSON(badgesWithDescription, badgeTable, newBadges, earnedOnly);
+                        JSONObject j = convertOutputToJSON(badgesWithDescription, newBadges, earnedOnly);
                         // Output Area
                         
                         
@@ -183,7 +172,6 @@ public class AppServlet extends HttpServlet {
             //free resources and close connections
             HConnectionManager.deleteConnection(conf, true);
             table.close();
-            badgeTable.close();
 
         } else {
             System.out.println("Invalid email address");
@@ -201,7 +189,7 @@ public class AppServlet extends HttpServlet {
      * @throws JSONException
      * @throws IOException 
      */
-    private static JSONObject convertOutputToJSON(ArrayList<String> badges, HTable badgeTable, String newBadges, boolean earnedOnly)
+    private static JSONObject convertOutputToJSON(ArrayList<String> badges, String newBadges, boolean earnedOnly)
             throws JSONException, IOException {
         JSONObject j = new JSONObject();
         
