@@ -45,6 +45,32 @@ public class LOC {
 		FileOutputFormat.setOutputPath(job, new Path(output));
 		job.waitForCompletion(true);
 	}
+	
+	public LOC(String input1,String input2,String input3,String input4,String input5,String input6,String input7, String output, Configuration config,FileSystem hdfs) throws Exception {
+		
+		Job job = new Job(config);
+
+		job.setJarByClass(codesquare.badges.sharedpasses.LOC.class);
+		job.setJobName("LOC");
+		job.setOutputKeyClass(Text.class);
+		job.setOutputValueClass(IntWritable.class);
+		job.setMapperClass(Map.class);
+		job.setReducerClass(Reduce.class);
+		job.setNumReduceTasks(1);
+		job.setInputFormatClass(TextInputFormat.class);
+		job.setOutputFormatClass(TextOutputFormat.class);
+		Toolbox.addDirectory(job, hdfs, new Path(input1));
+		Toolbox.addDirectory(job, hdfs, new Path(input2));
+		Toolbox.addDirectory(job, hdfs, new Path(input3));
+		Toolbox.addDirectory(job, hdfs, new Path(input4));
+		Toolbox.addDirectory(job, hdfs, new Path(input5));
+		Toolbox.addDirectory(job, hdfs, new Path(input6));
+		Toolbox.addDirectory(job, hdfs, new Path(input7));
+		FileOutputFormat.setOutputPath(job, new Path(output));
+		job.waitForCompletion(true);
+	}
+	
+	
 
 	/**
 	 * 

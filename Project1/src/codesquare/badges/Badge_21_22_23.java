@@ -32,7 +32,7 @@ public class Badge_21_22_23 {
 		FileSystem hdfs = Toolbox.getHDFS(config);
 		String output1 = Toolbox.generateString();
 		String output2 = Toolbox.generateString();
-		new LOC(args[0], output1, config, hdfs);
+		new LOC(args[0], args[1],args[2],args[3],args[4],args[5],args[6],output1, config, hdfs);
 		System.out.println("LOC1 FINISHED!!!");
 		
 		Path src = new Path("/user/interns/Extras/bossList.txt");
