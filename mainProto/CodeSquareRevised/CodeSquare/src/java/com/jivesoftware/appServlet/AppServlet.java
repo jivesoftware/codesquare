@@ -99,10 +99,10 @@ public class AppServlet extends HttpServlet {
 
         String email = request.getParameter("email");
         String bossEmail = request.getParameter("bossEmail");
-        String earned = request.getParameter("earned");
+        String compare = request.getParameter("compare");
         String id = request.getParameter("id");
         String name = request.getParameter("name");
-        boolean earnedOnly = false;
+        boolean compareOnly = false;
 
         if (email == null || email.length() <= 0) {
             return;
@@ -111,8 +111,8 @@ public class AppServlet extends HttpServlet {
             bossEmail = "noBoss@nomail.com";
         }
 
-        if (earned != null) {
-            earnedOnly = Boolean.parseBoolean(earned);
+        if (compare != null) {
+            compareOnly = Boolean.parseBoolean(compare);
         }
 
         Pattern p = Pattern.compile(".+@.+\\.[a-z]+");
@@ -137,15 +137,22 @@ public class AppServlet extends HttpServlet {
             
             Object[] badgeInfo = HbaseTools.getBadges(table, email);
 
-            ArrayList<String> badgesWithDescription = (ArrayList<String>) badgeInfo[0];
+            ArrayList<String> badges = (ArrayList<String>) badgeInfo[0];
             String newBadges = (String) badgeInfo[1];
 
-            if (badgesWithDescription == null) {
+            if (badges == null) {
                 return;
             } else {
                 try {
                     if (email.length() != 0) {
-                        JSONObject j = convertOutputToJSON(badgesWithDescription, newBadges, earnedOnly);
+                        JSONObject j = null;
+                        if(!bossEmail.equals("noBoss@nomail.com") && name != null && id != null){
+                            j = convertOutputToJSON(badges, newBadges, true);
+                        }
+                        else{
+                            j = convertOutputToJSON(badges, newBadges, false);
+                        }
+                            
                         // Output Area
                         
                         
@@ -165,7 +172,7 @@ public class AppServlet extends HttpServlet {
                     System.out.println(e.getMessage());
                 }
             }
-            if(bossEmail.equals("noBoss@nogmail.com") && name == null && id == null && earnedOnly==false){
+            if(bossEmail.equals("noBoss@nogmail.com") && name == null && id == null && compareOnly==false){
                 HbaseTools.resetNewBadges(table, email);
             }
             table.close();

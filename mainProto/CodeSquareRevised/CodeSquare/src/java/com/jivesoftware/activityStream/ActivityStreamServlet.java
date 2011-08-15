@@ -52,6 +52,11 @@ public class ActivityStreamServlet extends HttpServlet {
             String name = HbaseTools.getName(data);
             String id = HbaseTools.getUserId(data);
             
+            if(name.isEmpty() || id.isEmpty()){
+                System.out.println("user email: " +email+" is not installed, cannot post to activity stream.");
+                return;
+            }
+            
             String [] newBadgesList = newBadges.split(" ");
 
             String[][] badgesList = ServletTools.getBadgeInfo();
