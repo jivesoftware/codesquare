@@ -33,12 +33,13 @@ function sendActivityPost(friendName, message){
 			    console.log("FriendID: " + frid);
 			    console.log("ViewerName: " + viewerName);
 			    console.log("ViewerID:" + viewerID);
+				var iconLogoURL = fullURL("images/codesquareicon.png");
 			    var msg2 = "Hi " +  friendName + "! You've got a CodeSquare Badge Post from " + viewerName + "!";
 			    var idString = "urn:jiveObject:user/" + frid;
 			    var myidString = "urn:jiveObject:user/" + viewerID;
 			    var badgePicURL = $("#badgeSelect").val();
 			    console.log("badgePicURL: " + badgePicURL);
-			    var activity = {"activity":{"title": msg2, "verb": "post", 
+			    var activity = {"activity":{"title": msg2, "icon": iconLogoURL,"verb": "post", 
 							"object" : {
 							    "objectType":"article",
 							    "summary": message,
