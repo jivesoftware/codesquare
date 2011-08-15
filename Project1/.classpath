@@ -18,5 +18,11 @@
 	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Documents/githubclone/codesquare/Project1/lib/slf4j-api-1.4.3.jar"/>
 	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Documents/githubclone/codesquare/Project1/lib/slf4j-log4j12-1.4.3.jar"/>
 	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Documents/githubclone/codesquare/Project1/lib/zookeeper-3.3.1.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Documents/githubclone/codesquare/Project1/lib/httpclient-4.1.2.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Documents/githubclone/codesquare/Project1/lib/httpclient-cache-4.1.2.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Documents/githubclone/codesquare/Project1/lib/httpcore-4.1.2.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Documents/githubclone/codesquare/Project1/lib/httpcore-4.1.3.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Documents/githubclone/codesquare/Project1/lib/httpcore-nio-4.1.3.jar"/>
+	<classpathentry kind="lib" path="/Users/diivanand.ramalingam/Documents/githubclone/codesquare/Project1/lib/httpmime-4.1.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

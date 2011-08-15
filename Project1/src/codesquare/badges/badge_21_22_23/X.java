@@ -43,7 +43,12 @@ public class X {
 		job.setOutputFormatClass(TextOutputFormat.class);
 		FileInputFormat.addInputPath(job, new Path("/user/interns/Extras/bossList.txt"));
 		FileOutputFormat.setOutputPath(job, new Path(output));
-		job.waitForCompletion(true);
+		try{
+			job.waitForCompletion(true);
+		}catch(IOException e){
+			System.out.println("No Input Paths to run this MapReduce on!");
+		}
+		
 	}
 
 	public static class Map extends Mapper<LongWritable, Text, Text, Text> {

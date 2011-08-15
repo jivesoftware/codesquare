@@ -43,7 +43,11 @@ public class LOC {
 		job.setOutputFormatClass(TextOutputFormat.class);
 		Toolbox.addDirectory(job, hdfs, new Path(input));
 		FileOutputFormat.setOutputPath(job, new Path(output));
-		job.waitForCompletion(true);
+		try{
+			job.waitForCompletion(true);
+		}catch(IOException e){
+			System.out.println("No Input Paths to run this MapReduce on!");
+		}
 	}
 	
 	public LOC(String input1,String input2,String input3,String input4,String input5,String input6,String input7, String output, Configuration config,FileSystem hdfs) throws Exception {
