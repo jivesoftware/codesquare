@@ -60,7 +60,11 @@ public class Pass1 {
 		Toolbox.addDirectory(job, hdfs, new Path(input1));
 		Toolbox.addDirectory(job, hdfs, new Path(input2));
 		// FileOutputFormat.setOutputPath(job, new Path(output));
-		job.waitForCompletion(true);
+		try{
+			job.waitForCompletion(true);
+		}catch(IOException e){
+			System.out.println("No Input Paths to run this MapReduce on!");
+		}
 	}
 
 	/**
