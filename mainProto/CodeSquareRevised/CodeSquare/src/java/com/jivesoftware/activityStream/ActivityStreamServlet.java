@@ -4,21 +4,22 @@
  */
 package com.jivesoftware.activityStream;
 
+import com.jivesoftware.toolbox.Badge;
+import com.jivesoftware.toolbox.HbaseTools;
+import com.jivesoftware.toolbox.ServletTools;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.HTable;
-import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.util.Bytes;
+
 
 /**
  *
@@ -35,22 +36,36 @@ public class ActivityStreamServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        PrintWriter out = response.getWriter();
-        try {
-            /* TODO output your page here
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet ActivityStreamServlet</title>");  
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet ActivityStreamServlet at " + request.getContextPath () + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-             */
-        } finally {            
-            out.close();
+            throws ServletException, IOException, Exception {
+
+
+        String[] params = {"email", "newBadges"};
+
+        if (ServletTools.hasParams(request, params)) {
+            String email = request.getParameter(params[0]);
+            String newBadges = request.getParameter(params[1]);
+            
+            Configuration conf = HbaseTools.getHBaseConfiguration();
+            HTable table = HbaseTools.getTable(conf);
+            Result data = HbaseTools.getRowData(table, email);
+            
+            String name = HbaseTools.getName(data);
+            String id = HbaseTools.getUserId(data);
+            
+            String [] newBadgesList = newBadges.split(" ");
+
+            String[][] badgesList = ServletTools.getBadgeInfo();
+            ArrayList<Badge> badges = new ArrayList<Badge>();
+            for(String s : newBadgesList){
+                Badge badge = new Badge(badgesList[Integer.parseInt(s)-1][0], badgesList[Integer.parseInt(s)-1][1], s+".png");
+                badges.add(badge);
+            }
+
+            String jsonActivity = ServletTools.makeJSONPost(badges, name);
+            System.out.println("JSON:   " +jsonActivity);
+            ActivityPoster.postToActivity(id, null, jsonActivity);
         }
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -64,7 +79,11 @@ public class ActivityStreamServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(ActivityStreamServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /** 
@@ -77,11 +96,15 @@ public class ActivityStreamServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(ActivityStreamServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
-
-
     
+
+  /*  
     public static Configuration getHBaseConfiguration() {
 		Configuration config = HBaseConfiguration.create();
 		config.set("hbase.cluster.distributed", "true");
@@ -155,6 +178,6 @@ public class ActivityStreamServlet extends HttpServlet {
 				Bytes.toBytes("jiveId")));
 
 		return result;
-	}
+	}*/
 
 }
