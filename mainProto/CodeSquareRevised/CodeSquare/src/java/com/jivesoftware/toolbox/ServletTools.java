@@ -138,7 +138,6 @@ public class ServletTools {
         String json = new String(activityBytes);
         JSONArray j1 = new JSONArray(json);
 
-        System.out.println("size: "+j1.length() + "size1: " + j1.getJSONObject(0).length());
         String[][] badgeList = new String[j1.length()][j1.getJSONObject(0).length()];
 
         for(int i = 0; i < j1.length(); i++){
@@ -146,12 +145,6 @@ public class ServletTools {
             badgeList[i][1] = (String) j1.getJSONObject(i).getString("description");
         }
         
-        for (int r=0; r<badgeList.length; r++) {
-            for (int c=0; c<badgeList[r].length; c++) {
-                System.out.print("--" +badgeList[r][c]);
-            }
-            System.out.println("");
-        }
         return badgeList;
     }
 
