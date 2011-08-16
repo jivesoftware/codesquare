@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.NavigableSet;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
@@ -77,14 +78,8 @@ public class HbaseTools {
      */
     public static Configuration getHBaseConfiguration() {
         Configuration config = HBaseConfiguration.create();
-        config.set("hbase.cluster.distributed", "true");
-        config.set("hbase.rootdir",
-                "hdfs://hadoopdev008.eng.jiveland.com:54310/hbase");
-        config.set(
-                "hbase.zookeeper.quorum",
-                "hadoopdev008.eng.jiveland.com,hadoopdev002.eng.jiveland.com,hadoopdev001.eng.jiveland.com");
-        config.set("hbase.zookeeper.property.clientPort", "2181");
-        config.set("hbase.hregion.max.filesize", "1073741824");
+        Path file = new Path("conf/hbase_conf.xml");
+        config.addResource(file);
         return config;
     }
 
