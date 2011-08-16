@@ -17,7 +17,10 @@ public class HDFSTools {
 	 */
 	public static Configuration getConfiguration() {
 		Configuration config = new Configuration();
-		config.set("fs.default.name", "hdfs://hadoopdev001.eng.jiveland.com:54310");
+                config.addResource("conf/testing.properties");
+                System.out.println("config testing: "+ config.get("secret")); 
+		/*
+                config.set("fs.default.name", "hdfs://hadoopdev001.eng.jiveland.com:54310");
 		config.set("hadoop.log.dir", "/hadoop001/data/hadoop/logs");
 		config.set("hadoop.tmp.dir", "/hadoop001/tmp");
 		config.set("io.file.buffer.size", "131072");
@@ -29,7 +32,7 @@ public class HDFSTools {
 		config.set("dfs.umaskmode", "007");
 		config.set("dfs.datanode.du.reserved", "107374182400");
 		config.set("dfs.datanode.du.pct", "0.85f");
-		config.set("dfs.permissions", "false");
+		config.set("dfs.permissions", "false");*/
 		return config;
 	}
 	
