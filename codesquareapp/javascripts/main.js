@@ -1,4 +1,4 @@
-var GLOBJ = {};
+var GLOBAL = {};
 
 
 // this function is used to load the badge tables in the 'Browse Badges' tab and the 'Compare' tab
@@ -116,14 +116,14 @@ function init() {
     				//console.log("BOSSEMAIL: "+boss.email);
 			    	
 				// setting up some global vars, this should be the only place to set these evil variables
-				GLOBJ.name = user.name;
-				GLOBJ.email = user.email;
-				GLOBJ.bossEmail = boss.email;
-				GLOBJ.id = user.id;
-				/*console.log(GLOBJ.name);
-				  console.log(GLOBJ.email);
-				  console.log(GLOBJ.bossEmail);
-				  console.log(GLOBJ.id);
+				GLOBAL.name = user.name;
+				GLOBAL.email = user.email;
+				GLOBAL.bossEmail = boss.email;
+				GLOBAL.id = user.id;
+				/*console.log(GLOBAL.name);
+				  console.log(GLOBAL.email);
+				  console.log(GLOBAL.bossEmail);
+				  console.log(GLOBAL.id);
 				*/
     				makeBadgeTable(user.email);
 				

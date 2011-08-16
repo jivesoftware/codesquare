@@ -1,6 +1,6 @@
 $('#browse a').click(function(e) {
     changePage('subpages/browse.html');
-    makeBadgeTable(GLOBJ.email);
+    makeBadgeTable(GLOBAL.email);
     document.getElementById('lsidebar-wrapper').innerHTML="";
     tab = $('#browse');
     tab.addClass('current-cat');
