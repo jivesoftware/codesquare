@@ -39,7 +39,7 @@ public class HDFSTools {
             Path src = new Path("/user/interns/Commits");
             String[] extensions = 
         	{((Integer) date.get(Calendar.YEAR)).toString(),
-                ((Integer) date.get(Calendar.MONTH)).toString(),
+                ((Integer) (date.get(Calendar.MONTH) + 1)).toString(),
                 ((Integer) date.get(Calendar.DAY_OF_MONTH)).toString(),
                 ((Integer) date.get(Calendar.HOUR)).toString(),
                 ((Integer) date.get(Calendar.MINUTE)).toString()};
