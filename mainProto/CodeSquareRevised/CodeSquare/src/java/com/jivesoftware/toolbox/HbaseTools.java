@@ -354,7 +354,6 @@ public class HbaseTools {
                 "consecCommits" };
         int[] results = getFields(data, fields);
         System.out.println("1numbugs=\t" + results[1]);
-        // System.out.println("1lastCommit=\t" + getLastCommit(data));
         System.out.println("1numCommits=\t" + results[2]);
         System.out.println("1consecCommits=\t" + results[3]);
         System.out

@@ -216,7 +216,6 @@ public class AppServlet extends HttpServlet {
                 } else {
                     j2.put("New", false);
                 }
-                System.out.println(j2.toString());
                 j.put(badges.get(i), j2);
 
             }
@@ -251,7 +250,6 @@ public class AppServlet extends HttpServlet {
                     } else {
                         j2.put("New", false);
                     }
-                    System.out.println(j2.toString());
                     j.put(forward.toString(), j2);
                     forward++;
                 }
