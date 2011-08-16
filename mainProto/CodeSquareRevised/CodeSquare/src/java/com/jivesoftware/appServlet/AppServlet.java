@@ -21,6 +21,7 @@ import org.json.*;
 
 import com.jivesoftware.toolbox.HbaseTools;
 import com.jivesoftware.toolbox.ServletTools;
+import com.jivesoftware.toolbox.Config;
 import java.util.ArrayList;
 
 /**
@@ -121,8 +122,8 @@ public class AppServlet extends HttpServlet {
         boolean matchFound = m.matches();
         boolean match2Found = m2.matches();
 
-        System.out.println("Email Parameter Passed: " + email);
-        System.out.println("Boss Parameter Passed: " + bossEmail);
+        System.out.println("AppServlet Email Parameter Passed: " + email);
+        System.out.println("AppServlet Boss Parameter Passed: " + bossEmail);
 
         if (matchFound && match2Found) {
 
@@ -184,7 +185,7 @@ public class AppServlet extends HttpServlet {
             System.out.println("Invalid email address");
             return;
         }
-
+        Config.test();
     }
 
     /**
@@ -203,7 +204,6 @@ public class AppServlet extends HttpServlet {
         String[][] badgesList = ServletTools.getBadgeInfo();
         if(!earnedOnly){
             for (Integer i = 0; i < badges.size(); i++) {
-                System.out.println("Processing Badge No: " + badges.get(i));
                 String[] badgeInfo = badgesList[Integer.parseInt(badges.get(i))-1];
 
                 JSONObject j2 = new JSONObject();

@@ -62,6 +62,7 @@ public class ActivityStreamServlet extends HttpServlet {
             String[][] badgesList = ServletTools.getBadgeInfo();
             ArrayList<Badge> badges = new ArrayList<Badge>();
             for(String s : newBadgesList){
+                System.out.println("Posting badge to the acitivity stream: " + s);
                 Badge badge = new Badge(badgesList[Integer.parseInt(s)-1][0], badgesList[Integer.parseInt(s)-1][1], s+".png");
                 badges.add(badge);
             }

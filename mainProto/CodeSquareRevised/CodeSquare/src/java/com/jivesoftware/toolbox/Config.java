@@ -13,12 +13,12 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
 public class Config {
-    public static void main(String[] args) throws  Exception{
+    public static void test(){
 
         // Using a properties file
         Configuration config = null;
         try {
-            config = new PropertiesConfiguration("testing.properties");
+            config = new PropertiesConfiguration("conf/testing.properties");
         } catch (ConfigurationException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
