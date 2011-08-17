@@ -1,5 +1,8 @@
 package codesquare;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Time;
@@ -73,8 +76,11 @@ public class Toolbox {
 	 */
 	public static Configuration getConfiguration() {
 		Configuration config = new Configuration();
-		Path file = new Path("conf/hdfs_conf.xml");
+		Path file = new Path("/etc/hadoop-0.20/conf.empty/hdfs-site.xml");
 		config.addResource(file);
+		file = new Path("/etc/hadoop-0.20/conf.empty/core-site.xml");
+		config.addResource(file);
+		System.out.println("HDFS Config: " + config.get("hadoop.log.dir"));
 		return config;
 	}
 	/*public static Configuration getConfiguration(){
@@ -105,8 +111,16 @@ public class Toolbox {
 	 */
 	public static Configuration getHBaseConfiguration() {
         Configuration config = HBaseConfiguration.create();
-        Path file = new Path("conf/hbase_conf.xml");
-        config.addResource(file);
+        //config.clear();
+        //Path file = new Path("hbase_conf.xml");
+        //config.addResource(file);
+        InputStream in = null;
+		try {
+			in = new FileInputStream(new File("/etc/hbase/conf/hbase-site.xml"));
+			config.addResource(in);
+		} catch (FileNotFoundException e) {
+			System.out.println("Could not find: HBase config file");
+		}
         return config;
     }	
 	/*public static Configuration getHBaseConfiguration(){
