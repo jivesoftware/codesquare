@@ -16,23 +16,9 @@ public class HDFSTools {
 	 * @return the Configuration to the HDFS that contains our folders that store out commits
 	 */
 	public static Configuration getConfiguration() {
-		Configuration config = new Configuration();
-                config.addResource("conf/testing.properties");
-                System.out.println("config testing: "+ config.get("secret")); 
-		/*
-                config.set("fs.default.name", "hdfs://hadoopdev001.eng.jiveland.com:54310");
-		config.set("hadoop.log.dir", "/hadoop001/data/hadoop/logs");
-		config.set("hadoop.tmp.dir", "/hadoop001/tmp");
-		config.set("io.file.buffer.size", "131072");
-		config.set("fs.inmemory.size.mb", "200");
-		config.set("fs.checkpoint.period", "900");
-		config.set("dfs.datanode.max.xceivers", "4096");
-		config.set("dfs.block.size", "134217728");
-		config.set("dfs.name.dir", "/hadoop001/data/datanode,/hadoop002/data/datanode,/hadoop003/data/datanode,/hadoop004/data/datanode,/hadoop005/data/datanode,/hadoop006/data/datanode,/hadoop007/data/datanode,/hadoop008/data/datanode,/hadoop009/data/datanode,/hadoop010/data/datanode,/hadoop011/data/datanode,/hadoop012/data/datanode");
-		config.set("dfs.umaskmode", "007");
-		config.set("dfs.datanode.du.reserved", "107374182400");
-		config.set("dfs.datanode.du.pct", "0.85f");
-		config.set("dfs.permissions", "false");*/
+            Configuration config = new Configuration();
+            Path file = new Path("conf/hdfs_conf.xml");
+            config.addResource(file);
 		return config;
 	}
 	

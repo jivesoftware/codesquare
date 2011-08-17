@@ -128,7 +128,7 @@ public class ServletTools {
     }
     
     public static String[][] getBadgeInfo() throws IOException, JSONException{
-	String activityFileName = "/home/interns/badgedescriptions";
+	String activityFileName = "../badgedescriptions";
 	File activityFile = new File(activityFileName);
         FileInputStream fis = new FileInputStream(activityFile);
         byte[] activityBytes = new byte[(int)activityFile.length()];

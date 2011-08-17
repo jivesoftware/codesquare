@@ -101,10 +101,11 @@ public final class BasicBadges {
             Badge badge = new Badge(badgesList[Integer.parseInt(s)-1][0], badgesList[Integer.parseInt(s)-1][1], s+".png");
             badges.add(badge);
         }
-        
-        String jsonActivity = ServletTools.makeJSONPost(badges, user.getName());
-        System.out.println("JSON:   " +jsonActivity);
-        ActivityPoster.postToActivity(user.getId(), null, jsonActivity);
+        if(!badges.isEmpty()){
+            String jsonActivity = ServletTools.makeJSONPost(badges, user.getName());
+            System.out.println("JSON:   " +jsonActivity);
+            ActivityPoster.postToActivity(user.getId(), null, jsonActivity);
+        }
     }
 
 	
