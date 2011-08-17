@@ -329,7 +329,7 @@ public class Toolbox {
 		Put row = new Put(Bytes.toBytes(email));
 
 		row.add(Bytes.toBytes("Badge"), Bytes.toBytes(badge),
-				Bytes.toBytes("1"));
+				Bytes.toBytes((int) (System.currentTimeMillis() / 1000L)));
 		row.add(Bytes.toBytes("Info"), Bytes.toBytes("newBadges"),
 				Bytes.toBytes(newBadges));
 
