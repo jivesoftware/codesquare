@@ -74,7 +74,13 @@ public class Pass1 {
 			String[] documents = components[5].substring(1,
 					(components[5].length() - 1)).split(",");
 			for (int i = 0; i < documents.length; i++) {
+				String[] paths = documents[i].split("/");
+				if(paths.length == 1){
+					System.out.println("Directory is root");
+					documents[i] = "/" + documents[i];
+				}
 				context.write(new Text(documents[i]), new Text(components[1]));
+				
 				System.out.println("Pass1 MAP KEY: "+(documents[i]));
 				System.out.println("Pass1 MAP VAL: "+components[1]);
 			}

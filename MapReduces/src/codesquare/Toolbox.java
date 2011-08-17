@@ -80,7 +80,6 @@ public class Toolbox {
 		config.addResource(file);
 		file = new Path("/etc/hadoop-0.20/conf.empty/core-site.xml");
 		config.addResource(file);
-		System.out.println("HDFS Config: " + config.get("hadoop.log.dir"));
 		return config;
 	}
 	/*public static Configuration getConfiguration(){
@@ -239,10 +238,7 @@ public class Toolbox {
 			return;
 		}
 		if (!aquiredBadges.contains(badge)) {
-			if(!newBadges.contains(badge)){
-				newBadges = newBadges + " " + badge;
-			}
-			updateBadges(table, email, badge, newBadges);
+			updateBadges(table, email, badge, newBadges + " " + badge);
 			System.out.println("Finished added badges to HBase, now going to post to notification servlet");
 			//Post to notification servlet
 			// Create a new HttpClient and Post Header
@@ -329,7 +325,7 @@ public class Toolbox {
 		Put row = new Put(Bytes.toBytes(email));
 
 		row.add(Bytes.toBytes("Badge"), Bytes.toBytes(badge),
-				Bytes.toBytes((int) (System.currentTimeMillis() / 1000L)));
+				Bytes.toBytes("1"));
 		row.add(Bytes.toBytes("Info"), Bytes.toBytes("newBadges"),
 				Bytes.toBytes(newBadges));
 
