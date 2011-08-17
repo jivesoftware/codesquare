@@ -79,12 +79,12 @@ public class Pass1 {
 			String[] components = line.split("\\s+", 9);
 			Calendar time = Calendar.getInstance();
 			time.setTime(new Date(Long.parseLong(components[2])));
-			if (time.get(Calendar.MINUTE)==prevMinute && time.get(Calendar.SECOND)<50){} // don't map it
+			if (time.get(Calendar.MINUTE)==prevMinute && time.get(Calendar.SECOND)<30){} // don't map it
 			else { // map it
 				String second = Integer.toString(time.get(Calendar.SECOND));
 				String minute = Integer.toString(time.get(Calendar.MINUTE));
 				String secondTimeFrame = Integer.toString(time.get(Calendar.SECOND)).substring(0,1)+"0";
-				time.add(Calendar.SECOND, -10);
+				time.add(Calendar.SECOND, -30);
 				String minute2 = Integer.toString(time.get(Calendar.MINUTE));
 				String secondTimeFrame2 = Integer.toString(time.get(Calendar.SECOND)).substring(0,1)+"0";
 				
@@ -94,7 +94,8 @@ public class Pass1 {
 					String[] filename = documents[i].split("/");
 					String directory = "";
 					if (!(new Integer(filename.length - 1)).equals(-1)) {
-						directory = filename[filename.length - 1];
+						System.out.println("Directory is root");
+						directory = "root";
 					}
 					context.write(
 						new Text(minute+"-"+secondTimeFrame+"-"+directory),
@@ -129,7 +130,7 @@ public class Pass1 {
 				String[] components = val.toString().split(" ");
 				for (int i = 0; i < acc.size(); i++) {
 					if (!acc.get(i)[2].equals(components[2])) {
-						if (Toolbox.subtractTime(acc.get(i), components) <= 10000) {
+						if (Toolbox.subtractTime(acc.get(i), components) <= 30000) {
 							if (!badge25.containsKey(acc.get(i)[2])) {
 								Toolbox.addBadges(acc.get(i)[2], "25", table);
 								context.write(new Text(acc.get(i)[2]),
