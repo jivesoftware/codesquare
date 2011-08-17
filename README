@@ -1,1 +1,41 @@
-This folder contains both the jive application code and the backend code. Used to test commits.
+This Repository contains both Front and Back-End code for the CodeSquare Jive
+Web Application. 
+
+------------------
+TABLE OF CONTENTS (use ctrl-f/command-f to get to that part of this README)
+------------------
+BUILD/MODIFACATION INFO [BMI]
+INFO AVAILABLE FOR DETERMINING BADGES [IADB]
+ADDING BADGES [AB]
+GIT COMMIT PROCESSING MECHANISMS [GCPM]
+BASIC BADGE PROCESSING MECHANISMS  [BBPM]
+MAPRDUCE COMPLEX BADGE PROCESSING MECHANISMS [MCBPM]
+FRONT-END MECHANISMS [FEM]
+
+-----------------------------
+BUILD/MODIFICATION INFO [OMI]
+-----------------------------
+The Front-End Code can be found in CodeSquareApp although if you plan on modifying 
+the code and want to see your changes, you should first ask a Jive Web Master to 
+give you access to the CodeSquare Repo on JiveApps and then you should clone the 
+repo in a seperate folder outside this git folder using the `jiveapps clone codesquare` 
+terminal command. It is also recommended that you read all the documentation found
+in developers.jivesoftware.com if you plan on making permanent changes to the app.
+
+The Back-End Code can be found in the CodeSquareJava folder, although a config 
+folder has been omitted from this repo in this repo to prevent the knowledge of
+private Jive URLs and other sensitive company-specific infrastructure data.
+
+Needless to say, MapReduce Code used in our app can be found in the MapReduce
+folder but I'm saying this just in case it wasn't clear.
+
+Both the CodeSquare Back-End Code and the MapReduces each have their own build.xml
+and two scripts exists in each folder to automatically build these two projects 
+those scripts are run autumatically when someone pushes to this Repository. The scripts
+also send the binary created from the build to their appropriate locations for deployment
+THEREFORE IT IS STRONGLY RECOMMENDED THAT YOUR CODE IS BATTLETESTED BEFORE PUSHING 
+TO THE REPO.
+
+------------------
+ADDING BADGES [AB]
+------------------
