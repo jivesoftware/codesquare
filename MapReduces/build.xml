@@ -95,6 +95,9 @@
 		        	<classpath refid="MapReduces.codesquare.badges.classpath"/>
 		        </java>
 		    </target>
+	<!-- Create the API documentation -->
+
+	
 	
 	
 	
