@@ -122,32 +122,6 @@ public class HbaseTools {
         }
     }
 
-    /***
-     * Adds Badges to the specified user
-     * 
-     * @param table
-     *            HTable to modify
-     * @param email
-     *            Row Identifier
-     * @param badges
-     *            Badges to Add
-     */
-    public static void updateBadges(HTable table, String email, String[] badges) {
-
-        Put row = new Put(Bytes.toBytes(email));
-
-        for (int i = 0; i < badges.length; i++) {
-            row.add(Bytes.toBytes("Badge"), Bytes.toBytes(badges[i]),
-                    Bytes.toBytes("1"));
-        }
-
-        try {
-            table.put(row);
-        } catch (Exception e) {
-            System.err.println();
-        }
-    }
-
     /**
      * Updates the user's boss's email if the user has a new boss
      * 
@@ -499,40 +473,5 @@ public class HbaseTools {
             return 0;
         }
         return value;
-    }
-
-    /**
-     * returns a badge's information found in the Badges table of the HBase
-     * 
-     * @param table
-     *            The Badges table in the HBase
-     * @param badgeNumber
-     *            the row key in the Badge's HBase table
-     * @return
-     */
-    public static String[] getBadgeInfo(HTable table, String badgeNumber) {
-        Get get = new Get(Bytes.toBytes(badgeNumber));
-        Result data = null;
-
-        try {
-            data = table.get(get);
-        } catch (Exception e) {
-            System.err.println();
-        }
-
-        if (data.isEmpty()) {
-            return null;
-        }
-
-        String[] result = new String[4];
-        result[0] = badgeNumber;
-        result[1] = new String(data.getValue(Bytes.toBytes("Info"),
-                Bytes.toBytes("name")));
-        result[2] = new String(data.getValue(Bytes.toBytes("Info"),
-                Bytes.toBytes("description")));
-        result[3] = new String(data.getValue(Bytes.toBytes("Info"),
-                Bytes.toBytes("iconURL")));
-
-        return result;
     }
 }
