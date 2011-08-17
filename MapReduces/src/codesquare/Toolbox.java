@@ -239,7 +239,10 @@ public class Toolbox {
 			return;
 		}
 		if (!aquiredBadges.contains(badge)) {
-			updateBadges(table, email, badge, newBadges + " " + badge);
+			if(!newBadges.contains(badge)){
+				newBadges = newBadges + " " + badge;
+			}
+			updateBadges(table, email, badge, newBadges);
 			System.out.println("Finished added badges to HBase, now going to post to notification servlet");
 			//Post to notification servlet
 			// Create a new HttpClient and Post Header
