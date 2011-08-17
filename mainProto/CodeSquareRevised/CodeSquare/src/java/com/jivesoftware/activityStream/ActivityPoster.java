@@ -19,13 +19,13 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.regex.Pattern;
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.PropertiesConfiguration;
 
 /***
  * Code taken from this
@@ -181,12 +181,14 @@ public class ActivityPoster {
     public static void postToActivity(String user_id,
             String deliver_to_user_id, String jsonActivity) {
         try {
-            int idx = 0;
+            Configuration config = null;
+            config = new PropertiesConfiguration("conf/posting.properties");
+
             String gateway_url = DEFAULT_GATEWAY_URL;
-            String jive_id = "99b3427b-202e-4891-a50e-1fb5e7b173be";
-            String app_id = "2862464a-fa1c-439c-a8ab-2686a8b6315c";
-            String key = "2862464afa1c439ca8ab2686a8b6315c";
-            String secret = "g9GMyn0m+mMKhxaaN0EfzELQtlw=";
+            String jive_id = config.getString("jive_id");
+            String app_id = config.getString("app_id");
+            String key = config.getString("key");
+            String secret = config.getString("secret");
 
             ActivityPoster poster = new ActivityPoster(gateway_url, jive_id,
                     app_id, user_id, deliver_to_user_id, key, secret,

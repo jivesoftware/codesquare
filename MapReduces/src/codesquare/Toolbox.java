@@ -71,7 +71,13 @@ public class Toolbox {
 	 * 
 	 * Retrieves a configuration object pertaining to the cluster our HDFS is located in 
 	 */
-	public static Configuration getConfiguration(){
+	public static Configuration getConfiguration() {
+		Configuration config = new Configuration();
+		Path file = new Path("conf/hdfs_conf.xml");
+		config.addResource(file);
+		return config;
+	}
+	/*public static Configuration getConfiguration(){
 		Configuration config = new Configuration();
 		config.set("fs.default.name",
 				"hdfs://hadoopdev001.eng.jiveland.com:54310");
@@ -90,14 +96,20 @@ public class Toolbox {
 		config.set("dfs.datanode.du.reserved", "107374182400");
 		config.set("dfs.datanode.du.pct", "0.85f");
 		return config;
-	}
+	}*/
 	
 	
 	/**
 	 * 
 	 * Retrieves a configuration object pertaining to the cluster our HBase is located in 
 	 */
-	public static Configuration getHBaseConfiguration(){
+	public static Configuration getHBaseConfiguration() {
+        Configuration config = HBaseConfiguration.create();
+        Path file = new Path("conf/hbase_conf.xml");
+        config.addResource(file);
+        return config;
+    }	
+	/*public static Configuration getHBaseConfiguration(){
 		Configuration config = HBaseConfiguration.create();
 		config.set("hbase.cluster.distributed", "true");
 		config.set("hbase.rootdir",
@@ -108,7 +120,7 @@ public class Toolbox {
 		config.set("hbase.zookeeper.property.clientPort", "2181");
 		config.set("hbase.hregion.max.filesize", "1073741824");
 		return config;
-	}
+	}*/
 
 	/**
 	 * 
