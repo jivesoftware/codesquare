@@ -207,27 +207,29 @@ public class Toolbox {
 		}
 		if (!aquiredBadges.contains(badge)) {
 			if(!newBadges.contains(badge){
-				updateBadges(table, email, badge, newBadges + " " + badge);
-				System.out.println("Finished added badges to HBase, now going to post to notification servlet");
-				//Post to notification servlet
-				// Create a new HttpClient and Post Header
-				HttpClient httpclient = new DefaultHttpClient();
-				HttpPost httppost = new HttpPost("http://10.45.111.143:9090/CodeSquare/ActivityStreamServlet");
-				try {
-					// Add your data
-					List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-					nameValuePairs.add(new BasicNameValuePair("email", email));
-					nameValuePairs.add(new BasicNameValuePair("newBadges", badge));
-					httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
-					// Execute HTTP Post Request
-					HttpResponse response = httpclient.execute(httppost);
-				} catch (ClientProtocolException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				newBadges = newBadges + " " + badge;
+				newBadges.trim();
 			}
+			updateBadges(table, email, badge, newBadges);
+			System.out.println("Finished added badges to HBase, now going to post to notification servlet");
+			//Post to notification servlet
+			// Create a new HttpClient and Post Header
+		    HttpClient httpclient = new DefaultHttpClient();
+		    HttpPost httppost = new HttpPost("http://10.45.111.143:9090/CodeSquare/ActivityStreamServlet");
+		    try {
+		        // Add your data
+		        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+		        nameValuePairs.add(new BasicNameValuePair("email", email));
+		        nameValuePairs.add(new BasicNameValuePair("newBadges", badge));
+		        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+		        // Execute HTTP Post Request
+		        HttpResponse response = httpclient.execute(httppost);
+		    } catch (ClientProtocolException e) {
+		        e.printStackTrace();
+		    } catch (IOException e) {
+		        e.printStackTrace();
+		    }
 	        
 		}
 	}
@@ -295,7 +297,7 @@ public class Toolbox {
 		Put row = new Put(Bytes.toBytes(email));
 
 		row.add(Bytes.toBytes("Badge"), Bytes.toBytes(badge),
-				Bytes.toBytes("1"));
+				Bytes.toBytes((int) (System.currentTimeMillis() / 1000L)));
 		row.add(Bytes.toBytes("Info"), Bytes.toBytes("newBadges"),
 				Bytes.toBytes(newBadges));
 
