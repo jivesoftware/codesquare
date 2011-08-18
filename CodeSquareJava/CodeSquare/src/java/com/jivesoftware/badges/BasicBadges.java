@@ -33,6 +33,7 @@ public final class BasicBadges {
     // iterate through and process/store info locally
         UserInfo user = null;
         Result data = null;
+        boolean installed=true;
         // get user
         
         for(int i = 0;i < jArrCommits.length();i++){
@@ -42,20 +43,21 @@ public final class BasicBadges {
             if(i==0){
                 data = HbaseTools.getRowData(table, c.getEmail());
                 if (data == null) {
-                    return;
+                    installed=false;
                 }
                 else if(data.isEmpty()){
-                    return;
+                    installed=false;
                 }
                 else {
                     user = new UserInfo(c.getEmail(), data, c.getCommitDate().getLocal());
                 }
             }
-            if(!HDFSTools.writeCommitToHDFS(hdfs, c)){
-                continue;
+            if(HDFSTools.writeCommitToHDFS(hdfs, c)){
+                if(installed){
+                    user.incrementCommits();
+                    awardBasicBadges(user, c);
+                }
             }
-            user.incrementCommits();
-            awardBasicBadges(user, c);
         }
         
         // iterate through users and add to hbase
