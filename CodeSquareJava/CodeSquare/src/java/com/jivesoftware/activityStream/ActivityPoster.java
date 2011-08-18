@@ -30,6 +30,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 /***
  * Code taken from this
  * https://developers.jivesoftware.com/community/docs/DOC-1119
+ * 
  * @author jive tutorial
  */
 public class ActivityPoster {
@@ -172,11 +173,13 @@ public class ActivityPoster {
         if (entity.getContentLength() > 0)
             entity.writeTo(System.out);
     }
+
     /***
      * Only method that was changed, hardcoded jiveid, appid, key, secret
+     * 
      * @param user_id
      * @param deliver_to_user_id
-     * @param jsonActivity 
+     * @param jsonActivity
      */
     public static void postToActivity(String user_id,
             String deliver_to_user_id, String jsonActivity) {

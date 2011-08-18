@@ -12,293 +12,296 @@ import java.util.StringTokenizer;
  * 
  */
 public class Commit {
-	private String id;
-	private String msg;
-	private String email;
+    private String id;
+    private String msg;
+    private String email;
 
-	private JiveDate commitDate;
-        private JiveDate pushDate;
+    private JiveDate commitDate;
+    private JiveDate pushDate;
 
-	private int numFilesChanged;
-	private ArrayList<String> filesChanged;
-	private int insertions;
-	private int deletions;
+    private int numFilesChanged;
+    private ArrayList<String> filesChanged;
+    private int insertions;
+    private int deletions;
 
-	/**
-	 * Constructs an empty commit object
-	 * 
-	 */
-	public Commit() {
-            filesChanged = new ArrayList<String>();
-	}
+    /**
+     * Constructs an empty commit object
+     * 
+     */
+    public Commit() {
+        filesChanged = new ArrayList<String>();
+    }
 
-	/**
-	 * Constructs a commit object
-	 * 
-	 * @param id
-	 *            - commit it
-	 * @param msg
-	 *            - message
-	 * @param numFilesChanged
-	 *            @param filesChanged
-	 * @param insertions
-	 *            @param deletions
-	 * @param day
-	 *            @param date @param hour
-	 * @param minute
-	 *            @param second
-	 */
-	public Commit(String id, String email, String msg, int numFilesChanged,
-			ArrayList<String> filesChanged, int insertions, int deletions,
-			JiveDate commitDate, JiveDate pushDate) {
-		this.id = id;
-		this.msg = msg;
-		this.numFilesChanged = numFilesChanged;
-		this.email = email;
-		this.filesChanged = filesChanged;
-		this.insertions = insertions;
-		this.deletions = deletions;
-		this.commitDate = commitDate;
-		this.pushDate = pushDate;
-	}
-        
-	/**
-	 * 
-	 * @return commit date
-	 */
-	public JiveDate getCommitDate() {
-		return commitDate;
-	}
+    /**
+     * Constructs a commit object
+     * 
+     * @param id
+     *            - commit it
+     * @param msg
+     *            - message
+     * @param numFilesChanged
+     * @param filesChanged
+     * @param insertions
+     * @param deletions
+     * @param day
+     * @param date
+     *            @param hour
+     * @param minute
+     * @param second
+     */
+    public Commit(String id, String email, String msg, int numFilesChanged,
+            ArrayList<String> filesChanged, int insertions, int deletions,
+            JiveDate commitDate, JiveDate pushDate) {
+        this.id = id;
+        this.msg = msg;
+        this.numFilesChanged = numFilesChanged;
+        this.email = email;
+        this.filesChanged = filesChanged;
+        this.insertions = insertions;
+        this.deletions = deletions;
+        this.commitDate = commitDate;
+        this.pushDate = pushDate;
+    }
 
-	/**
-	 * 
-	 * set commit date
-	 */
-	public void setCommitDate(JiveDate commitDate) {
-		this.commitDate = commitDate;
-	}
+    /**
+     * 
+     * @return commit date
+     */
+    public JiveDate getCommitDate() {
+        return commitDate;
+    }
 
-	/**
-	 * 
-	 * @return push date
-	 */
-	public JiveDate getPushDate() {
-		return pushDate;
-	}
+    /**
+     * 
+     * set commit date
+     */
+    public void setCommitDate(JiveDate commitDate) {
+        this.commitDate = commitDate;
+    }
 
-	/**
-	 * 
-	 * set push date
-	 */
-	public void setPushDate(JiveDate pushDate) {
-		this.pushDate = pushDate;
-	}
+    /**
+     * 
+     * @return push date
+     */
+    public JiveDate getPushDate() {
+        return pushDate;
+    }
 
-	/**
-	 * 
-	 * @return commit id number
-	 */
-	public String getId() {
-		return id;
-	}
+    /**
+     * 
+     * set push date
+     */
+    public void setPushDate(JiveDate pushDate) {
+        this.pushDate = pushDate;
+    }
 
-	/**
-	 * 
-	 * set commit id number
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
+    /**
+     * 
+     * @return commit id number
+     */
+    public String getId() {
+        return id;
+    }
 
-	/**
-	 * 
-	 * @return the email of the employee who made this commit
-	 */
-	public String getEmail() {
-		return email;
-	}
+    /**
+     * 
+     * set commit id number
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	/**
-	 * 
-	 * set Email
-	 */
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    /**
+     * 
+     * @return the email of the employee who made this commit
+     */
+    public String getEmail() {
+        return email;
+    }
 
-	/**
-	 * 
-	 * @return number of files changed
-	 */
-	public int getNumFilesChanged() {
-		return numFilesChanged;
-	}
+    /**
+     * 
+     * set Email
+     */
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	/**
-	 * 
-	 * set number of files changed
-	 */
-	public void setNumFilesChanged(int numFilesChanged) {
-		this.numFilesChanged = numFilesChanged;
-	}
+    /**
+     * 
+     * @return number of files changed
+     */
+    public int getNumFilesChanged() {
+        return numFilesChanged;
+    }
 
-	/**
-	 * 
-	 * @return number of lines inserted
-	 */
-	public int getInsertions() {
-		return insertions;
-	}
+    /**
+     * 
+     * set number of files changed
+     */
+    public void setNumFilesChanged(int numFilesChanged) {
+        this.numFilesChanged = numFilesChanged;
+    }
 
-	/**
-	 * 
-	 * set number of lines inserted
-	 */
-	public void setInsertions(int insertions) {
-		this.insertions = insertions;
-	}
+    /**
+     * 
+     * @return number of lines inserted
+     */
+    public int getInsertions() {
+        return insertions;
+    }
 
-	/**
-	 * 
-	 * @return number of lines deleted
-	 */
-	public int getDeletions() {
-		return deletions;
-	}
+    /**
+     * 
+     * set number of lines inserted
+     */
+    public void setInsertions(int insertions) {
+        this.insertions = insertions;
+    }
 
-	/**
-	 * 
-	 * set number of lines deleted
-	 */
-	public void setDeletions(int deletions) {
-		this.deletions = deletions;
-	}
+    /**
+     * 
+     * @return number of lines deleted
+     */
+    public int getDeletions() {
+        return deletions;
+    }
 
-	/**
-	 * 
-	 * @return list of files changed
-	 */
-	public ArrayList<String> getFilesChanged() {
-		return filesChanged;
-	}
+    /**
+     * 
+     * set number of lines deleted
+     */
+    public void setDeletions(int deletions) {
+        this.deletions = deletions;
+    }
 
-	/**
-	 * 
-	 * set list of files changed
-	 */
-	public void setFilesChanged(ArrayList<String> filesChanged) {
-		this.filesChanged = filesChanged;
-	}
+    /**
+     * 
+     * @return list of files changed
+     */
+    public ArrayList<String> getFilesChanged() {
+        return filesChanged;
+    }
 
-	/**
-	 * 
-	 * increment num of files changed
-	 */
-	public void incrementNumFilesChanged() {
-		this.numFilesChanged = numFilesChanged + 1;
-	}
+    /**
+     * 
+     * set list of files changed
+     */
+    public void setFilesChanged(ArrayList<String> filesChanged) {
+        this.filesChanged = filesChanged;
+    }
 
-	/**
-	 * 
-	 * append file to list of files changed
-	 */
-	public void appendFilesChanged(String file) {
-		this.filesChanged.add(file);
-	}
+    /**
+     * 
+     * increment num of files changed
+     */
+    public void incrementNumFilesChanged() {
+        this.numFilesChanged = numFilesChanged + 1;
+    }
 
-	/**
-	 * 
-	 * clear the list of files changed
-	 */
-	public void clearFilesChanged(String file) {
-		this.filesChanged.clear();
-	}
+    /**
+     * 
+     * append file to list of files changed
+     */
+    public void appendFilesChanged(String file) {
+        this.filesChanged.add(file);
+    }
 
-	/**
-	 * 
-	 * @return the message associated with this commit
-	 */
-	public String getMessage() {
-		return msg;
-	}
+    /**
+     * 
+     * clear the list of files changed
+     */
+    public void clearFilesChanged(String file) {
+        this.filesChanged.clear();
+    }
 
-	/**
-	 * 
-	 * set commit message
-	 */
-	public void setMessage(String message) {
-		this.msg = message;
-	}
+    /**
+     * 
+     * @return the message associated with this commit
+     */
+    public String getMessage() {
+        return msg;
+    }
 
-	/**
-	 * add stats to Commit - includes insertions, deletions, numFileChanged, and
-	 * filesChanged
-	 * 
-	 * @param statString
-	 *            A String of statistical commit information to be parsed
-	 * @return an Object array of commit statistical info
-	 */
-	public void addStats(String stats) {
-            stats = stats.replace('[', ' ').replace(']', ' ').trim();
-            int totalInsertions, totalDeletions;
-            totalInsertions = totalDeletions = 0;
+    /**
+     * 
+     * set commit message
+     */
+    public void setMessage(String message) {
+        this.msg = message;
+    }
 
+    /**
+     * add stats to Commit - includes insertions, deletions, numFileChanged, and
+     * filesChanged
+     * 
+     * @param statString
+     *            A String of statistical commit information to be parsed
+     * @return an Object array of commit statistical info
+     */
+    public void addStats(String stats) {
+        stats = stats.replace('[', ' ').replace(']', ' ').trim();
+        int totalInsertions, totalDeletions;
+        totalInsertions = totalDeletions = 0;
 
-            StringTokenizer st = new StringTokenizer(stats, " ");
+        StringTokenizer st = new StringTokenizer(stats, " ");
 
+        int counter = 1;
 
-            int counter = 1;
-
-            while(st.hasMoreTokens()){
-                String token = st.nextToken();;
-                if(counter % 3 == 1){
-                    try{
-                        totalInsertions += Integer.parseInt(token);
-                    }catch(NumberFormatException e){
-                        totalInsertions = 0;
-                    }
-                }else if(counter % 3 == 2){
-                    try{
-                        totalDeletions += Integer.parseInt(token);
-                    }catch(NumberFormatException e){
-                        totalDeletions = 0;
-                    }
-                }else{//counter % 3 == 0
-                    incrementNumFilesChanged();
-                    appendFilesChanged(token);
+        while (st.hasMoreTokens()) {
+            String token = st.nextToken();
+            ;
+            if (counter % 3 == 1) {
+                try {
+                    totalInsertions += Integer.parseInt(token);
+                } catch (NumberFormatException e) {
+                    totalInsertions = 0;
                 }
-                counter++;
+            } else if (counter % 3 == 2) {
+                try {
+                    totalDeletions += Integer.parseInt(token);
+                } catch (NumberFormatException e) {
+                    totalDeletions = 0;
+                }
+            } else {// counter % 3 == 0
+                incrementNumFilesChanged();
+                appendFilesChanged(token);
             }
+            counter++;
+        }
 
+        insertions = totalInsertions;
+        deletions = totalDeletions;
+    }
 
-            insertions = totalInsertions;
-            deletions = totalDeletions;
-	}
-        /***
-         * 
-         * @return  String of files changed
-         */
-	public String filesToString() {
-		@SuppressWarnings("rawtypes")
-		Iterator iterator = filesChanged.iterator();
-                String str = "";
-                if(iterator.hasNext()){
-                    str = iterator.next().toString();
-                }
-		
-		while (iterator.hasNext()) {
-			str = str + "," + iterator.next().toString();
-		}
-		return str;
-	}
-        /***
-         * 
-         * @return String representation of the commit to write to the hdfs
-         */
-	public String toString() {
-		return id + " " + email + " " + (commitDate.getLocal().getTime().getTime()/1000) + " " + pushDate.getLocal().getTimeZone().getID() + " "
-				+ numFilesChanged + " [" + filesToString() + "] " + insertions
-				+ " " + deletions + " " + "\"" + msg + "\"";
-	}
+    /***
+     * 
+     * @return String of files changed
+     */
+    public String filesToString() {
+        @SuppressWarnings("rawtypes")
+        Iterator iterator = filesChanged.iterator();
+        String str = "";
+        if (iterator.hasNext()) {
+            str = iterator.next().toString();
+        }
+
+        while (iterator.hasNext()) {
+            str = str + "," + iterator.next().toString();
+        }
+        return str;
+    }
+
+    /***
+     * 
+     * @return String representation of the commit to write to the hdfs
+     */
+    public String toString() {
+        return id + " " + email + " "
+                + (commitDate.getLocal().getTime().getTime() / 1000) + " "
+                + pushDate.getLocal().getTimeZone().getID() + " "
+                + numFilesChanged + " [" + filesToString() + "] " + insertions
+                + " " + deletions + " " + "\"" + msg + "\"";
+    }
 
 }
