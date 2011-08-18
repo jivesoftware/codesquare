@@ -251,13 +251,13 @@ public class Commit {
 
             while(st.hasMoreTokens()){
                 String token = st.nextToken();;
-                if(counter % 3 == 2){
+                if(counter % 3 == 1){
                     try{
                         totalInsertions += Integer.parseInt(token);
                     }catch(NumberFormatException e){
                         totalInsertions = 0;
                     }
-                }else if(counter % 3 == 1){
+                }else if(counter % 3 == 2){
                     try{
                         totalDeletions += Integer.parseInt(token);
                     }catch(NumberFormatException e){
