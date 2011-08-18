@@ -28,7 +28,12 @@ public class UserInfo {
     private ArrayList<String> badges = new ArrayList<String>();
     
     JiveDate date;
-    
+    /***
+     * Constructor that uses data from the hbase as well as the new commit date
+     * @param email
+     * @param data
+     * @param newDate 
+     */
     UserInfo(String email, Result data, Calendar newDate) {
         int[] fieldValues = HbaseTools.getFields(data, new String[] {"numBugs", "numCommits", "consecCommits" });
         this.numBugs = fieldValues[0];
@@ -152,6 +157,9 @@ public class UserInfo {
     public void incrementConsecCommits() {
     	this.consecCommits = consecCommits+1;
     }
+    /**
+     * reset consecutive commits
+     */
     public void resetConsecCommits() {
         this.consecCommits = 1;
     }

@@ -17,7 +17,11 @@ import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.util.Bytes;
-
+/***
+ * Various static methods for writing to the hbase
+ * 
+ * @author justin.kikuchi
+ */
 public class HbaseTools {
 
     /***
@@ -73,7 +77,7 @@ public class HbaseTools {
     }
 
     /**
-     * 
+     * EXPECTS a hbase configuration file to be in tomcat home conf/
      * @return a configuration for the HBase our Jive App uses
      */
     public static Configuration getHBaseConfiguration() {
@@ -309,7 +313,7 @@ public class HbaseTools {
     }
 
     /***
-     * This method prints the specified row in the HBase
+     * This testing method prints the specified row in the HBase
      * 
      * @param data
      *            The data from the hbase
@@ -335,7 +339,7 @@ public class HbaseTools {
     }
 
     /**
-     * Gets Badges from the specified row in the hbase
+     * Gets Badges from the specified row in the hbase, used for the Appservlet
      * 
      * @param table
      *            The Employee table in the HBase
@@ -390,7 +394,7 @@ public class HbaseTools {
     }
 
     /***
-     * Returns the acquired and new badges
+     * Returns the acquired and new badges, used in the backend servlet
      * 
      * @param data
      *            The data from the hbase

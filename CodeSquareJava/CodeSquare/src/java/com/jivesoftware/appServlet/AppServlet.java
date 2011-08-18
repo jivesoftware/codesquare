@@ -21,7 +21,6 @@ import org.json.*;
 
 import com.jivesoftware.toolbox.HbaseTools;
 import com.jivesoftware.toolbox.ServletTools;
-import com.jivesoftware.toolbox.Config;
 import java.util.ArrayList;
 
 /**
@@ -185,7 +184,6 @@ public class AppServlet extends HttpServlet {
             System.out.println("Invalid email address");
             return;
         }
-        Config.test();
     }
 
     /**

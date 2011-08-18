@@ -7,12 +7,16 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
 import com.jivesoftware.backendServlet.Commit;import java.util.Calendar;
-;
 
+/***
+ * Tools used to write to the HDFS
+ * @author diivanand.ramalingam
+ * @author justin.kikuchi
+ */
 public class HDFSTools {
 
 	/**
-	 * 
+	 * EXPECTS a configuration file in the tomcat conf/ folder
 	 * @return the Configuration to the HDFS that contains our folders that store out commits
 	 */
 	public static Configuration getConfiguration() {
@@ -22,8 +26,14 @@ public class HDFSTools {
 		return config;
 	}
 	
-	// HDFS methods
-	
+        
+	/***
+         * Makes the path in the HDFS for the commit file to be written to
+         * @param dfs
+         * @param date
+         * @return Path the path to where the file is to be written
+         * @throws IOException 
+         */
         public static Path makePath(FileSystem dfs, Calendar date) throws IOException{
             Path src = new Path("/user/interns/Commits");
             String[] extensions = 
