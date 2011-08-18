@@ -105,7 +105,7 @@ public class Pass1 {
 			for (Text val : values) {
 				acc.put(val.toString(), "1");
 			}
-			if (acc.size() >= 2) {
+			if (acc.size() >= 3) {
 				Iterator it = acc.keySet().iterator();
 				while (it.hasNext()) {
 				    String x = (String) it.next();
@@ -118,7 +118,7 @@ public class Pass1 {
 						badge14.put(x, 1);
 					}
 				}
-				if (acc.size() >= 9) {
+				if (acc.size() >= 10) {
 					Iterator it2 = acc.keySet().iterator();
 					while (it2.hasNext()) {
 						String x2 = (String) it2.next();
