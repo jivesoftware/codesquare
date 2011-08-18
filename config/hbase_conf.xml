@@ -1,0 +1,47 @@
+<configuration>
+<property>
+  <name>hbase.cluster.distributed</name>
+  <value>true</value>
+</property> 
+<property>
+  <name>hbase.rootdir</name>
+  <value>hdfs://hadoopdev008.eng.jiveland.com:54310/hbase</value>
+</property>
+<property>
+  <name>hbase.zookeeper.quorum</name>
+  <value>hadoopdev008.eng.jiveland.com,hadoopdev002.eng.jiveland.com,hadoopdev001.eng.jiveland.com</value>
+</property>
+<property>
+  <name>hbase.zookeeper.property.clientPort</name>
+  <value>2181</value>
+</property>
+  <property>
+    <name>hbase.hregion.max.filesize</name>
+    <value>1073741824</value>
+    <description>
+    Maximum HStoreFile size. If any one of a column families' HStoreFiles has
+    grown to exceed this value, the hosting HRegion is split in two.
+    Default: 256M.
+    JSME Setting: 1G
+    </description>
+  </property>
+  <property>
+    <name>hbase.regionserver.handler.count</name>
+    <value>30</value>
+    <description>Count of RPC Server instances spun up on RegionServers
+    Same property is used by the Master for count of master handlers.
+    Default is 10.
+
+    From apache hbase book:
+    hbase.regionserver.handler.count -- bump this up from 10 for small write payloads
+    This setting defines the number of threads that are kept open to answer
+    incoming requests to user tables. The default of 10 is rather low in order to
+    prevent users from killing their region servers when using large write buffers
+    with a high number of concurrent clients. The rule of thumb is to keep this
+    number low when the payload per request approaches the MB (big puts, scans
+    using a large cache) and high when the payload is small (gets, small puts,
+    ICVs, deletes).
+    </description>
+  </property>
+
+</configuration>

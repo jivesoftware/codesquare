@@ -20,92 +20,112 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
 
-
 /**
- *  A servlet that posts to the specified user's activity stream.
+ * A servlet that posts to the specified user's activity stream.
  * 
  * @author justin.kikuchi
  */
-@WebServlet(name = "ActivityStreamServlet", urlPatterns = {"/ActivityStreamServlet"})
+@WebServlet(name = "ActivityStreamServlet", urlPatterns = { "/ActivityStreamServlet" })
 public class ActivityStreamServlet extends HttpServlet {
 
-    /** 
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods. Uses ActivityPoster to post newBadges to the activity stream.
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+    /**
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods. Uses ActivityPoster to post newBadges to the activity stream.
+     * 
+     * @param request
+     *            servlet request
+     * @param response
+     *            servlet response
+     * @throws ServletException
+     *             if a servlet-specific error occurs
+     * @throws IOException
+     *             if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, Exception {
+    protected void processRequest(HttpServletRequest request,
+            HttpServletResponse response) throws ServletException, IOException,
+            Exception {
 
-
-        String[] params = {"email", "newBadges"};
+        String[] params = { "email", "newBadges" };
 
         if (ServletTools.hasParams(request, params)) {
             String email = request.getParameter(params[0]);
             String newBadges = request.getParameter(params[1]);
-            
+
             Configuration conf = HbaseTools.getHBaseConfiguration();
             HTable table = HbaseTools.getTable(conf);
             Result data = HbaseTools.getRowData(table, email);
-            
+
             String name = HbaseTools.getName(data);
             String id = HbaseTools.getUserId(data);
-            
-            if(name.isEmpty() || id.isEmpty()){
-                System.out.println("user email: " +email+" is not installed, cannot post to activity stream.");
+
+            if (name.isEmpty() || id.isEmpty()) {
+                System.out.println("user email: " + email
+                        + " is not installed, cannot post to activity stream.");
                 return;
             }
-            
-            String [] newBadgesList = newBadges.split(" ");
+
+            String[] newBadgesList = newBadges.split(" ");
 
             String[][] badgesList = ServletTools.getBadgeInfo();
             ArrayList<Badge> badges = new ArrayList<Badge>();
-            for(String s : newBadgesList){
-                System.out.println("Posting badge to the acitivity stream: " + s);
-                Badge badge = new Badge(badgesList[Integer.parseInt(s)-1][0], badgesList[Integer.parseInt(s)-1][1], s+".png");
+            for (String s : newBadgesList) {
+                System.out.println("Posting badge to the acitivity stream: "
+                        + s);
+                Badge badge = new Badge(badgesList[Integer.parseInt(s) - 1][0],
+                        badgesList[Integer.parseInt(s) - 1][1], s + ".png");
                 badges.add(badge);
             }
 
             String jsonActivity = ServletTools.makeJSONPost(badges, name);
-            System.out.println("JSON:   " +jsonActivity);
+            System.out.println("JSON:   " + jsonActivity);
             ActivityPoster.postToActivity(id, null, jsonActivity);
         }
-        
+
     }
 
-    /** 
+    /**
      * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * 
+     * @param request
+     *            servlet request
+     * @param response
+     *            servlet response
+     * @throws ServletException
+     *             if a servlet-specific error occurs
+     * @throws IOException
+     *             if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request,
+            HttpServletResponse response) throws ServletException, IOException {
         try {
             processRequest(request, response);
         } catch (Exception ex) {
-            Logger.getLogger(ActivityStreamServlet.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ActivityStreamServlet.class.getName()).log(
+                    Level.SEVERE, null, ex);
         }
     }
 
-    /** 
+    /**
      * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * 
+     * @param request
+     *            servlet request
+     * @param response
+     *            servlet response
+     * @throws ServletException
+     *             if a servlet-specific error occurs
+     * @throws IOException
+     *             if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request,
+            HttpServletResponse response) throws ServletException, IOException {
         try {
             processRequest(request, response);
         } catch (Exception ex) {
-            Logger.getLogger(ActivityStreamServlet.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ActivityStreamServlet.class.getName()).log(
+                    Level.SEVERE, null, ex);
         }
     }
 }

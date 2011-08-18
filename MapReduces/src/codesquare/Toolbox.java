@@ -82,26 +82,6 @@ public class Toolbox {
 		config.addResource(file);
 		return config;
 	}
-	/*public static Configuration getConfiguration(){
-		Configuration config = new Configuration();
-		config.set("fs.default.name",
-				"hdfs://hadoopdev001.eng.jiveland.com:54310");
-		config.set("hadoop.log.dir", "/hadoop001/data/hadoop/logs");
-		config.set("hadoop.tmp.dir", "/hadoop001/tmp");
-		config.set("io.file.buffer.size", "131072");
-		config.set("fs.inmemory.size.mb", "200");
-		config.set("fs.checkpoint.period", "900");
-
-		config.set("dfs.datanode.max.xceivers", "4096");
-		config.set("dfs.block.size", "134217728");
-		config.set(
-				"dfs.name.dir",
-				"/hadoop001/data/datanode,/hadoop002/data/datanode,/hadoop003/data/datanode,/hadoop004/data/datanode,/hadoop005/data/datanode,/hadoop006/data/datanode,/hadoop007/data/datanode,/hadoop008/data/datanode,/hadoop009/data/datanode,/hadoop010/data/datanode,/hadoop011/data/datanode,/hadoop012/data/datanode");
-		config.set("dfs.umaskmode", "007");
-		config.set("dfs.datanode.du.reserved", "107374182400");
-		config.set("dfs.datanode.du.pct", "0.85f");
-		return config;
-	}*/
 	
 	
 	/**
@@ -121,19 +101,7 @@ public class Toolbox {
 			System.out.println("Could not find: HBase config file");
 		}
         return config;
-    }	
-	/*public static Configuration getHBaseConfiguration(){
-		Configuration config = HBaseConfiguration.create();
-		config.set("hbase.cluster.distributed", "true");
-		config.set("hbase.rootdir",
-				"hdfs://hadoopdev008.eng.jiveland.com:54310/hbase");
-		config.set(
-				"hbase.zookeeper.quorum",
-				"hadoopdev008.eng.jiveland.com,hadoopdev002.eng.jiveland.com,hadoopdev001.eng.jiveland.com");
-		config.set("hbase.zookeeper.property.clientPort", "2181");
-		config.set("hbase.hregion.max.filesize", "1073741824");
-		return config;
-	}*/
+    }
 
 	/**
 	 * 
@@ -238,7 +206,11 @@ public class Toolbox {
 			return;
 		}
 		if (!aquiredBadges.contains(badge)) {
-			updateBadges(table, email, badge, newBadges + " " + badge);
+			if(!newBadges.contains(badge){
+				newBadges = newBadges + " " + badge;
+				newBadges.trim();
+			}
+			updateBadges(table, email, badge, newBadges);
 			System.out.println("Finished added badges to HBase, now going to post to notification servlet");
 			//Post to notification servlet
 			// Create a new HttpClient and Post Header
@@ -325,7 +297,7 @@ public class Toolbox {
 		Put row = new Put(Bytes.toBytes(email));
 
 		row.add(Bytes.toBytes("Badge"), Bytes.toBytes(badge),
-				Bytes.toBytes("1"));
+				Bytes.toBytes((int) (System.currentTimeMillis() / 1000L)));
 		row.add(Bytes.toBytes("Info"), Bytes.toBytes("newBadges"),
 				Bytes.toBytes(newBadges));
 

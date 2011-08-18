@@ -67,10 +67,10 @@ public class BackEndServlet extends HttpServlet {
     }
 
     /**
-     * Handles a request sends commits stored in a
-     * JSONarray has JSON Objects & parses the commits, checks for simple
-     * badges, and writes the output to HDFS The other request sends the date of
-     * the most recent commit made by that user
+     * Handles a request sends commits stored in a JSONarray has JSON Objects &
+     * parses the commits, checks for simple badges, and writes the output to
+     * HDFS The other request sends the date of the most recent commit made by
+     * that user
      * 
      * @param request
      * @param response
@@ -93,15 +93,14 @@ public class BackEndServlet extends HttpServlet {
                 Configuration config = HDFSTools.getConfiguration();
                 FileSystem hdfs = FileSystem.get(config);
 
-                BasicBadges checkBadges = new BasicBadges(jArrCommits, hdfs, table,
-                        unixTime);
+                BasicBadges checkBadges = new BasicBadges(jArrCommits, hdfs,
+                        table, unixTime);
                 checkBadges.processBadges();
                 hdfs.close();
             } else {
                 System.out.println("LENGTH FAIL");
             }
-        }
-        else {
+        } else {
             System.err.println("BAD PARAMS: " + "EX");
         }
         // testing printouts

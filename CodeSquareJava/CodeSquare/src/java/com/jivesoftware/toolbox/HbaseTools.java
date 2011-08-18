@@ -17,6 +17,7 @@ import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.util.Bytes;
+
 /***
  * Various static methods for writing to the hbase
  * 
@@ -78,6 +79,7 @@ public class HbaseTools {
 
     /**
      * EXPECTS a hbase configuration file to be in tomcat home conf/
+     * 
      * @return a configuration for the HBase our Jive App uses
      */
     public static Configuration getHBaseConfiguration() {

@@ -1,0 +1,82 @@
+<configuration>
+  <property>
+  <name>dfs.datanode.max.xcievers</name>
+   <value>4096</value>
+  </property>
+  <property>
+    <name>dfs.block.size</name>
+    <value>134217728</value>
+  </property>
+  <property>
+    <name>dfs.replication</name>
+    <value>3</value>
+  </property>
+  <property>
+    <name>dfs.name.dir</name>
+    <value>/hadoop003/data/namenode</value>
+  </property>
+  <property>
+    <name>dfs.data.dir</name>
+    <value>/hadoop001/data/datanode,/hadoop002/data/datanode,/hadoop003/data/datanode,/hadoop004/data/datanode,/hadoop005/data/datanode,/hadoop006/data/datanode,/hadoop007/data/datanode,/hadoop008/data/datanode,/hadoop009/data/datanode,/hadoop010/data/datanode,/hadoop011/data/datanode,/hadoop012/data/datanode</value>
+  </property>
+
+  <property>
+    <name>dfs.umaskmode</name>
+    <value>007</value>
+  </property>
+
+
+  <property>
+    <name>dfs.datanode.du.reserved</name>
+    <!-- cluster variant -->
+    <value>107374182400</value>
+    <description>Reserved space in bytes per volume. Always leave this much space free for non dfs use.
+  </description>
+  </property>
+
+  <property>
+    <name>dfs.datanode.du.pct</name>
+    <value>0.85f</value>
+    <description>When calculating remaining space, only use this percentage of the real available space
+  </description>
+  </property>
+ <property>
+  <name>fs.default.name</name>
+  <value>hdfs://hadoopdev001.eng.jiveland.com:54310</value>
+  </property>
+
+  <property>
+    <name>hadoop.log.dir</name>
+    <value>/hadoop001/data/hadoop/logs</value>
+  </property>
+
+<property>
+  <name>hadoop.tmp.dir</name>
+  <value>/hadoop001/tmp</value>
+  <description>A base for other temporary directories.</description>
+</property>
+
+  <property>
+    <name>io.file.buffer.size</name>
+    <value>131072</value>
+    <description>The size of buffer for use in sequence files.
+    The size of this buffer should probably be a multiple of hardware
+    page size (4096 on Intel x86), and it determines how much data is
+    buffered during read and write operations.</description>
+  </property>
+
+  <property>
+    <name>fs.inmemory.size.mb</name>
+    <value>200</value>
+    <description>Larger amount of memory allocated for the in-memory
+    file-system used to merge map-outputs at the reduces.</description>
+  </property>
+
+<property>
+  <name>fs.checkpoint.period</name>
+  <value>900</value>
+  <description>The number of seconds between two periodic checkpoints.  Default is 3600.
+  </description>
+</property>
+
+</configuration>
