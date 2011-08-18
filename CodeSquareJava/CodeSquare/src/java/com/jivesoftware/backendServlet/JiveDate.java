@@ -46,11 +46,12 @@ public class JiveDate {
     	localDate.setTime(date);
     	localDate.setTimeZone(TimeZone.getTimeZone("GMT-7"));
     }
-    
-    // NOTE: decided to forgo setter methods because it should all be 
-    // handled in the constructor
-    
-    
+    /***
+     * Checks to see if the local date is equal to the month, day
+     * @param month
+     * @param date
+     * @return boolean of result
+     */
     public boolean equalsLocal(int month, int date) {
          if (localDate.get(Calendar.MONTH) == month 
                  && localDate.get(Calendar.DAY_OF_MONTH) == date)  {
@@ -58,7 +59,12 @@ public class JiveDate {
          }  
          return false;
         }
-
+    /***
+     * Checks to see if the global date is equal to the month, day
+     * @param month
+     * @param date
+     * @return boolean of result
+     */
     public boolean equalsGlobal(int month, int date) {
          if (globalDate.get(Calendar.MONTH) == month 
                  && globalDate.get(Calendar.DAY_OF_MONTH) == date)  {
@@ -204,12 +210,17 @@ public class JiveDate {
     }    
     
    
-    // toStrings
-    
+    /***
+     * 
+     * @return String of the local unix time stamp plus the time zone
+     */
     public String localToString() {
         return (localDate.getTime().getTime()/1000)+" "+localDate.getTimeZone();
     }
-    
+    /***
+     * 
+     * @return String of the local unix time stamp plus the time zone
+     */
     public String globalToString() {
         return (globalDate.getTime().getTime()/1000)+" "+globalDate.getTimeZone();
     }

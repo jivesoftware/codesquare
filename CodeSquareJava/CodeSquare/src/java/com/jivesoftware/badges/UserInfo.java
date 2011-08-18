@@ -44,14 +44,17 @@ public class UserInfo {
         this.name = HbaseTools.getName(data);
     }
     
-            /**
+    /**
      * 
      * @return email
      */
     public String getEmail() {
     	return email;
     }
-    
+    /**
+     * Adds badge to the user
+     * @param badgeNumber 
+     */
     public void addBadge(String badgeNumber){
         if(!badges.contains(badgeNumber))
             badges.add(badgeNumber);
@@ -134,7 +137,9 @@ public class UserInfo {
     public int getNumCommits() {
     	return numCommits;
     }
-    
+    /**
+     * increment number of commits
+     */
     public void incrementCommits(){
         this.numCommits++;
     }

@@ -274,7 +274,10 @@ public class Commit {
             insertions = totalInsertions;
             deletions = totalDeletions;
 	}
-
+        /***
+         * 
+         * @return  String of files changed
+         */
 	public String filesToString() {
 		@SuppressWarnings("rawtypes")
 		Iterator iterator = filesChanged.iterator();
@@ -288,7 +291,10 @@ public class Commit {
 		}
 		return str;
 	}
-
+        /***
+         * 
+         * @return String representation of the commit to write to the hdfs
+         */
 	public String toString() {
 		return id + " " + email + " " + (commitDate.getLocal().getTime().getTime()/1000) + " " + pushDate.getLocal().getTimeZone().getID() + " "
 				+ numFilesChanged + " [" + filesToString() + "] " + insertions

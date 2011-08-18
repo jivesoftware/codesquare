@@ -9,10 +9,15 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 /**
- *
+ * When called, this takes in a date and returns a string for jenkins to run
  * @author justin.kikuchi
  */
 public class ChooseMapReduce {
+    /**
+     * checks the number of arguments
+     * @param args
+     * @throws Exception 
+     */
 	public static void main(String[] args) throws Exception {
 		String output;
 		if (args.length == 1) {
