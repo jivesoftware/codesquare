@@ -27,7 +27,7 @@ import org.apache.hadoop.hbase.client.HTable;
  * accepts 2 directories - searches for all files recursively
  * 
  * @author deanna.surma
- * 
+ * @author diivanand.ramalingam (fixed bugs in this program)
  */
 public class Pass1 {
 	private static HTable table;
@@ -93,7 +93,7 @@ public class Pass1 {
 				for (int i = 0; i < documents.length; i++) {
 					String[] filename = documents[i].split("/");
 					String directory = "";
-					if (!(new Integer(filename.length - 1)).equals(-1)) {
+					if (!(new Integer(filename.length - 1)).equals(-1)) {//Before this didn't deal with files in the root directory since they wouldn't necessarily have a slash, so I fixed this bug
 						System.out.println("Directory is root");
 						directory = "root";
 					}

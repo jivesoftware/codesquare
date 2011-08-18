@@ -29,7 +29,7 @@ import codesquare.Toolbox;
  * accepts a directory - searches for all files recursively
  * 
  * @author deanna.surma
- * 
+ * @author diivanand.ramalingam (fixed bugs in this program)
  */
 public class Pass2 {
 	
@@ -77,7 +77,7 @@ public class Pass2 {
 		
 		// gets empId LOC AND empId BossId
 		// returns empId LOC BossId AND empId LOC
-		private int maxEmpLOC = 0;
+		private int maxEmpLOC = Integer.MIN_VALUE; //This was 0 before which was a bug since if everyone commits negative lines of code nobody gets the coder of the day badge
 		private String maxEmp = "";
 
 		public void setup(Context context) throws IOException, InterruptedException {
@@ -105,9 +105,12 @@ public class Pass2 {
         }
         
         public void cleanup(Context context) {
-    		Toolbox.addBadges(maxEmp, "24", table);
-    		System.out.println("BADGE24 KEY: "+(maxEmp));
-    		System.out.println("BADGE24 VAL: "+"24");
+        	if(maxEmp != null && maxEmp.length() > 0){ //This if statement didn't exist before which is another bug because the maxEmp would be an Empty String inserted into the HBase
+        		Toolbox.addBadges(maxEmp, "24", table);
+        		System.out.println("BADGE24 KEY: "+(maxEmp));
+        		System.out.println("BADGE24 VAL: "+"24");
+        	}
+    		
         }           
 	}
 }

@@ -31,7 +31,7 @@ import codesquare.Toolbox;
  * accepts a directory - searches for all files recursively
  * 
  * @author deanna.surma
- * @author diivanand.ramalingam (editor)
+ * @author diivanand.ramalingam (fixed bugs in this program)
  */
 public class Pass3 {
     // gets empId LOC BossId
@@ -159,7 +159,7 @@ public class Pass3 {
 			}
 			
 			// iterate through allEmps and if their LOC > boss', give badge 21
-			for (Entry<String, ArrayList<Employee>> entry : allEmps.entrySet()) {
+			for (Entry<String, ArrayList<Employee>> entry : allEmps.entrySet()) { //This loop before was identical to the one above and it shouldn't be since it's a different badge, so I fixed this bug
 				String key = entry.getKey();
 			    ArrayList<Employee> value = entry.getValue();
 			    System.out.println("IN LAST FOR: value: " + value);

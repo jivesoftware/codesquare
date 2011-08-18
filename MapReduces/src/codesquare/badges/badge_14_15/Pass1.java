@@ -27,6 +27,7 @@ import codesquare.Toolbox;
  * accepts a directory - searches for all files recursively
  * 
  * @author deanna.surma
+ * @author diivanand.ramalingam (fixed bugs in this program)
  */
 public class Pass1 {
 	// receives commits
@@ -73,7 +74,7 @@ public class Pass1 {
 			String[] components = line.split("\\s+", 9);
 			String[] documents = components[5].substring(1,
 					(components[5].length() - 1)).split(",");
-			for (int i = 0; i < documents.length; i++) {
+			for (int i = 0; i < documents.length; i++) { 
 				String[] paths = documents[i].split("/");
 				if(paths.length == 1){
 					System.out.println("Directory is root");
