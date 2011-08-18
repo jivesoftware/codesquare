@@ -139,40 +139,59 @@ public class Pass3 {
 			System.out.println("maxEmp: " + maxEmp);
 			System.out.println("All Emps: " + allEmps);
 			for (Entry<String, Employee> entry : maxEmp.entrySet()) {
+				System.out.println("Inside first for loop");
 				String key = entry.getKey();
 			    Employee value = entry.getValue();
+			    System.out.println("The entry is: " + entry);
+			    System.out.println("The key is: " + key);
+			    System.out.println("The value is: " + value);
 			    
 			    // give badge 22 to all val ppl
+			    System.out.println("This is going into the HBase method for Badge 23: " + value.getId() + " 23");
 			    Toolbox.addBadges(value.getId(), "23", table);
-				System.out.println("PASS3 RED"+value.getId()+" "+"23");
 				
-				// give badge 23 if boss has more LOC than that person
+				
+				// give badge 21 if boss has more LOC than that person
 				System.out.println("value.getLOC(): " + value.getLOC());
 				if(!(bossLOC.get(key) == null)){
+					System.out.println("Entered if statement in first for loop");
 					System.out.println("bossLOC.get(key): " + bossLOC.get(key));
 					if (value.getLOC() < bossLOC.get(key)) {
 						Toolbox.addBadges(key.toString(), "21", table);
-						System.out.println("PASS3 RED"+key+" "+"21");
+						System.out.println("PASS3 RED IN IF val < bossLOC"+key+" "+"21");
 					}
 				}
 				
 			}
 			
-			// iterate through allEmps and if their LOC > boss', give badge 21
+			// iterate through allEmps and if their LOC > boss', give badge 22
 			for (Entry<String, ArrayList<Employee>> entry : allEmps.entrySet()) { //This loop before was identical to the one above and it shouldn't be since it's a different badge, so I fixed this bug
+				System.out.println("Inside second for loop");
 				String key = entry.getKey();
 			    ArrayList<Employee> value = entry.getValue();
+			    System.out.println("The entry is: " + entry);
+			    System.out.println("The key is: " + key);
+			    System.out.println("The value is: " + value);
 			    System.out.println("IN LAST FOR: value: " + value);
+				System.out.println("bossLOC2:" + bossLOC);
 				
 				
 				if(!(bossLOC.get(key) == null)){
-					System.out.println("IN LAST FOR: bossLOC.get(key): " + bossLOC.get(key));
+					System.out.println("Entered if statement in second for loop: bossLOC.get(key): " + bossLOC.get(key));
 					for(Employee e : value){
 						System.out.println("IN LAST FOR Emp Array: " + e);
 						if(e.getLOC() > bossLOC.get(key)){
-							System.out.println(e.getId());
+							System.out.println("This is going into the HBase method: " + e.getId() + " 22");
 							Toolbox.addBadges(e.getId(), "22", table);
-							System.out.println("PASS3 RED"+e.getId()+" "+"22");
+						}
+					}
+				}else{
+					System.out.println("Entered else statement in second for loop: bossLOC.get(key): " + bossLOC.get(key));
+					for(Employee e : value){
+						System.out.println("IN LAST FOR Emp Array: " + e);
+						if(e.getLOC() > 0){
+							System.out.println("This is going into the HBase method: " + e.getId() + " 22");
+							Toolbox.addBadges(e.getId(), "22", table);
 						}
 					}
 				}
