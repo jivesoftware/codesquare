@@ -74,7 +74,13 @@ public class Pass1 {
 			String[] documents = components[5].substring(1,
 					(components[5].length() - 1)).split(",");
 			for (int i = 0; i < documents.length; i++) {
+				String[] paths = documents[i].split("/");
+				if(paths.length == 1){
+					System.out.println("Directory is root");
+					documents[i] = "/" + documents[i];
+				}
 				context.write(new Text(documents[i]), new Text(components[1]));
+				
 				System.out.println("Pass1 MAP KEY: "+(documents[i]));
 				System.out.println("Pass1 MAP VAL: "+components[1]);
 			}
@@ -99,7 +105,7 @@ public class Pass1 {
 			for (Text val : values) {
 				acc.put(val.toString(), "1");
 			}
-			if (acc.size() >= 2) {
+			if (acc.size() >= 3) {
 				Iterator it = acc.keySet().iterator();
 				while (it.hasNext()) {
 				    String x = (String) it.next();
@@ -112,7 +118,7 @@ public class Pass1 {
 						badge14.put(x, 1);
 					}
 				}
-				if (acc.size() >= 9) {
+				if (acc.size() >= 10) {
 					Iterator it2 = acc.keySet().iterator();
 					while (it2.hasNext()) {
 						String x2 = (String) it2.next();
