@@ -139,7 +139,7 @@ public class ServletTools {
      * @throws JSONException
      */
     public static String[][] getBadgeInfo() throws IOException, JSONException {
-        String activityFileName = "../badgedescriptions";
+        String activityFileName = "/home/interns/badgedescriptions";
         File activityFile = new File(activityFileName);
         FileInputStream fis = new FileInputStream(activityFile);
         byte[] activityBytes = new byte[(int) activityFile.length()];
