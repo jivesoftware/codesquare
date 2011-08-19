@@ -94,7 +94,7 @@ public class HbaseTools {
             File f = new File(".");
             System.out.println("I am located here: " + f.getAbsolutePath());
             System.out.println("My Cannon path: " + f.getCanonicalPath());
-            Path file = new Path("conf/hbase_conf.xml");
+            Path file = new Path("hbase_conf.xml");
             config.addResource(file);
             return config;
         } catch (IOException ex) {
