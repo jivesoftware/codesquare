@@ -102,7 +102,14 @@
         <delete dir="build/classes"/>
     </target>
     <target depends="clean" name="cleanall"/>
-    <target depends="build-subprojects,build-project" name="build"/>
+    <target depends="build-subprojects,build-project" name="build">
+    	<war destfile="./CodeSquare.war" webxml="./WebContent/WEB-INF/web.xml">
+  		<fileset dir="./src"/>
+  		<lib dir="./WebContent/WEB-INF/lib">
+  		</lib>
+  		<classes dir="./build"/>
+	</war>
+    </target>
     <target name="build-subprojects"/>
     <target depends="init" name="build-project">
         <echo message="${ant.project.name}: ${ant.file}"/>
@@ -125,10 +132,4 @@
         <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
         <antcall target="build"/>
     </target>
-    <war destfile="./CodeSquare.war" webxml="./WebContent/WEB-INF/web.xml">
-  		<fileset dir="./src"/>
-  		<lib dir="./WebContent/WEB-INF/lib">
-  		</lib>
-  		<classes dir="./build"/>
-	</war>
 </project>
