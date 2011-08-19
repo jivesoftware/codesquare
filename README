@@ -4,6 +4,7 @@ Web Application.
 ------------------
 TABLE OF CONTENTS (use ctrl-f/command-f to get to that part of this README)
 ------------------
+CODE DEPENDENCIES [CD]
 BUILD/MODIFACATION INFO [BMI]
 INFO AVAILABLE FOR DETERMINING BADGES [IADB]
 ADDING BADGES [AB]
@@ -11,6 +12,13 @@ GIT COMMIT PROCESSING MECHANISMS [GCPM]
 BASIC BADGE PROCESSING MECHANISMS  [BBPM]
 MAPRDUCE COMPLEX BADGE PROCESSING MECHANISMS [MCBPM]
 FRONT-END MECHANISMS [FEM]
+
+
+----------------------
+CODE DEPENDENCIES [CD]
+----------------------
+
+This code requires a few dependencies to be put into place.  There must be two configuration files in the bin folder of the Tomcat 7 folder that is running the application servlets.  There must be a configuration file for HBase configurations, and one for the HDFS configurations.   You must also confirm the location of the configuration files for the map reduces in the toolbox.java class.  There is also a url that needs to be edited in the map reduce's toolbox.java that uses a servlet to post the users activity stream.   The configurations were extracted from the main code base to conceal sensitive information that is needed for CodeSquare to run.  You will see that the update hook (update.secondary) is not complete because that also has sensitive information.
 
 -----------------------------
 BUILD/MODIFICATION INFO [OMI]

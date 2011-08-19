@@ -215,6 +215,11 @@ public class Toolbox {
 			//Post to notification servlet
 			// Create a new HttpClient and Post Header
 		    HttpClient httpclient = new DefaultHttpClient();
+			/***
+			 *
+			 *		Compelete the URL below to point to the ActivityStreamSevlet
+			 *
+			 */
 		    HttpPost httppost = new HttpPost("http://10.45.111.143:9090/CodeSquare/ActivityStreamServlet");
 		    try {
 		        // Add your data
