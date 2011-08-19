@@ -25,7 +25,7 @@ public class HDFSTools {
      */
     public static Configuration getConfiguration() {
         Configuration config = new Configuration();
-        Path file = new Path("conf/hdfs_conf.xml");
+        Path file = new Path("/home/interns/apache-tomcat-7.0.19/conf/hdfs_conf.xml");
         config.addResource(file);
         return config;
     }

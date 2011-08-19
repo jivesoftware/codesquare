@@ -84,7 +84,7 @@ public class HbaseTools {
      */
     public static Configuration getHBaseConfiguration() {
         Configuration config = HBaseConfiguration.create();
-        Path file = new Path("conf/hbase_conf.xml");
+        Path file = new Path("/home/interns/apache-tomcat-7.0.19/conf/hbase_conf.xml");
         config.addResource(file);
         return config;
     }
