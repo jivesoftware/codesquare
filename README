@@ -29,7 +29,7 @@ The Back-End Code can be found in the CodeSquareJava folder, although a config  
 
 Needless to say, MapReduce Code used in our app can be found in the MapReduce folder but I'm saying this just in case it wasn't clear.
 
-Both the CodeSquare Back-End Code and the MapReduces each have their own build.xml and two scripts exists in each folder to automatically build these two projects those scripts are run automatically when someone pushes to this Repository. The scripts also send the binary created from the build to their appropriate locations for deployment THEREFORE IT IS STRONGLY RECOMMENDED THAT YOUR CODE IS BATTLE-TESTED BEFORE PUSHING TO THE REPO.
+Both the CodeSquare Back-End Code and the MapReduces each have their own build.xml and two scripts exists in each folder to automatically build these two projects those scripts are run automatically when someone pushes to this Repository. IT IS STRONGLY RECOMMENDED THAT YOUR CODE IS BATTLE-TESTED BEFORE PUSHING TO THE REPO AND ALSO THAT YOU KEEP A COPY OF THE PREVOIUSLY WORKING WAR FILE ON THE TOMCAT & BEFORE REPLACING IT WITH THE NEWLY MADE ONE
 
 --------------------------------------------
 INFO AVAILABLE FOR DETERMINING BADGES [IADB]
