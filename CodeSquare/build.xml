@@ -1,51 +1,128 @@
-<project name="MyWebApplication" basedir="." default="archive">
-
-    <property name="WEB-INF" value="${basedir}/WebContent/WEB-INF" />
-    <property name="OUT" value="${basedir}/out" />
-    <property name="WAR_FILE_NAME" value="CodeSquare.war" />
-    <property name="TEMP" value="${basedir}/temp" />
-
-    <target name="help">
-        <echo>
-            --------------------------------------------------
-            compile - Compile
-            archive - Generate WAR file
-            --------------------------------------------------
-        </echo>
-    </target>
-
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. -->
+<project basedir="." default="build" name="CodeSquare">
+    <property environment="env"/>
+    <property name="ECLIPSE_HOME" value="../../Downloads/SoftwareDownloads/eclipse"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.6"/>
+    <property name="source" value="1.6"/>
+    <path id="Apache Tomcat v7.0 [Apache Tomcat v7.0].libraryclasspath">
+        <pathelement location="../../Downloads/Servers/apache-tomcat-7.0.19/lib/tomcat-util.jar"/>
+        <pathelement location="../../Downloads/Servers/apache-tomcat-7.0.19/lib/jasper.jar"/>
+        <pathelement location="../../Downloads/Servers/apache-tomcat-7.0.19/lib/tomcat-api.jar"/>
+        <pathelement location="../../Downloads/Servers/apache-tomcat-7.0.19/lib/el-api.jar"/>
+        <pathelement location="../../Downloads/Servers/apache-tomcat-7.0.19/lib/tomcat-i18n-es.jar"/>
+        <pathelement location="../../Downloads/Servers/apache-tomcat-7.0.19/lib/annotations-api.jar"/>
+        <pathelement location="../../Downloads/Servers/apache-tomcat-7.0.19/lib/catalina.jar"/>
+        <pathelement location="../../Downloads/Servers/apache-tomcat-7.0.19/lib/ecj-3.7.jar"/>
+        <pathelement location="../../Downloads/Servers/apache-tomcat-7.0.19/lib/tomcat-i18n-ja.jar"/>
+        <pathelement location="../../Downloads/Servers/apache-tomcat-7.0.19/lib/tomcat-jdbc.jar"/>
+        <pathelement location="../../Downloads/Servers/apache-tomcat-7.0.19/lib/tomcat-coyote.jar"/>
+        <pathelement location="../../Downloads/Servers/apache-tomcat-7.0.19/lib/jsp-api.jar"/>
+        <pathelement location="../../Downloads/Servers/apache-tomcat-7.0.19/lib/catalina-tribes.jar"/>
+        <pathelement location="../../Downloads/Servers/apache-tomcat-7.0.19/lib/catalina-ant.jar"/>
+        <pathelement location="../../Downloads/Servers/apache-tomcat-7.0.19/lib/tomcat-i18n-fr.jar"/>
+        <pathelement location="../../Downloads/Servers/apache-tomcat-7.0.19/lib/catalina-ha.jar"/>
+        <pathelement location="../../Downloads/Servers/apache-tomcat-7.0.19/lib/servlet-api.jar"/>
+        <pathelement location="../../Downloads/Servers/apache-tomcat-7.0.19/lib/tomcat-dbcp.jar"/>
+        <pathelement location="../../Downloads/Servers/apache-tomcat-7.0.19/lib/jasper-el.jar"/>
+    </path>
+    <path id="Web App Libraries.libraryclasspath">
+        <pathelement location="WebContent/WEB-INF/lib/commons-cli-1.2.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/commons-codec-1.4.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/commons-collections-3.2.1.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/commons-configuration-1.6.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/commons-daemon-1.0.1.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/commons-el-1.0.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/commons-httpclient-3.0.1.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/commons-lang-2.6.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/commons-logging-1.0.4.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/commons-logging-1.1.1.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/commons-logging-api-1.0.4.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/commons-net-1.4.1.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/hadoop-core.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/hbase-0.90.1-cdh3u0.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/httpclient-4.1.2.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/httpclient-cache-4.1.2.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/httpcore-4.1.3.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/httpmime-4.1.2.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/json.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/log4j-1.2.15.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/mysql.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/oauth-20090825.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/slf4j-api-1.4.3.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/slf4j-log4j12-1.4.3.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/zookeeper-3.3.1.jar"/>
+    </path>
+    <path id="EAR Libraries.libraryclasspath"/>
+    <path id="CodeSquare.classpath">
+        <pathelement location="build/classes"/>
+        <path refid="Apache Tomcat v7.0 [Apache Tomcat v7.0].libraryclasspath"/>
+        <path refid="Web App Libraries.libraryclasspath"/>
+        <path refid="EAR Libraries.libraryclasspath"/>
+        <pathelement location="WebContent/WEB-INF/lib/zookeeper-3.3.1.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/slf4j-log4j12-1.4.3.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/slf4j-api-1.4.3.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/oauth-20090825.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/mysql.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/log4j-1.2.15.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/json.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/httpmime-4.1.2.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/httpcore-4.1.3.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/httpclient-cache-4.1.2.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/httpclient-4.1.2.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/hbase-0.90.1-cdh3u0.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/hadoop-core.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/commons-net-1.4.1.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/commons-logging-api-1.0.4.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/commons-logging-1.1.1.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/commons-logging-1.0.4.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/commons-lang-2.6.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/commons-httpclient-3.0.1.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/commons-el-1.0.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/commons-daemon-1.0.1.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/commons-configuration-1.6.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/commons-collections-3.2.1.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/commons-codec-1.4.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/commons-cli-1.2.jar"/>
+    </path>
     <target name="init">
-        <delete dir="${WEB-INF}/classes" />
-        <mkdir dir="${WEB-INF}/classes" />
-    </target>
-
-    <target name="compile" depends="init">
-        <javac srcdir="${basedir}/src"
-                    destdir="${WEB-INF}/classes"
-                    classpathref="libs">
-        </javac>
-    </target>
-
-    <target name="archive" depends="compile">
-        <delete dir="${OUT}" />
-        <mkdir dir="${OUT}" />
-        <delete dir="${TEMP}" />
-        <mkdir dir="${TEMP}" />
-        <copy todir="${TEMP}" >
-            <fileset dir="${basedir}/WebContent">
+        <mkdir dir="build/classes"/>
+        <copy includeemptydirs="false" todir="build/classes">
+            <fileset dir="src">
+                <exclude name="**/*.java"/>
             </fileset>
         </copy>
-        <move file="${TEMP}/log4j.properties"
-                        todir="${TEMP}/WEB-INF/classes" />
-        <war destfile="${OUT}/${WAR_FILE_NAME}"
-                        basedir="${TEMP}"
-                        compress="true"
-                        webxml="${TEMP}/WEB-INF/web.xml" />
-        <delete dir="${TEMP}" />
     </target>
-
-    <path id="libs">
-        <fileset includes="*.jar" dir="${WEB-INF}/lib" />
-    </path>
-
+    <target name="clean">
+        <delete dir="build/classes"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="build/classes" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="CodeSquare.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target>
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
 </project>
