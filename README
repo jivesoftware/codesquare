@@ -67,6 +67,10 @@ The basic badge processing is done in the back end servlet.  The git update hook
 MAPRDUCE COMPLEX BADGE PROCESSING MECHANISMS [MCBPM]
 ----------------------------------------------------
 
+A Jenkins server current found on BigDataDev1 sshes into the HadoopDev007 cluster, where MapRedHaoop.jar is located and runs the appropriate MapReduce command depending on whether a minute, hourly, daily, or weekly MapReduce is to be run. MapRedHaoop.jar is also found in the MapReduces folder in our repo and it can be re-created by simplying doing 'ant hadoopjar' in a terminal assuming you are in the MapReduces folder. This builds all the class files using the source files in the src folder and also imports the binaries it requires from the lib folder and then creates the hadoop jar containing all these binaries.
+
+Toolbox.java contains an array of static methods used by the MapReduces such as getting an HBase or HDFS configuration object to use when connecting and manipuate the Hbase or hdfs. The badge_*.java class names each represent the main runnign class for the badge specified. (Ex. badge_14_15 is the main MapReduce running the passes that handle the processing for Badge 14 and Badge 15). The Passes that pertain to a certain badge are categorized in folders and the shared passes folder contains intermediate passes used by more than one MapReduce. Badges 14 and 15 are hourly MapReduces taking in the location to an hour folder. Badges 20, 24 are daily MapReduces taking in the location to a day folder. Badges 21,22,23 take in 7 locations of day folders which represent a week to run it's processing on. Badge 25 takes in two minute folders since it's a sliding window badge (since two people committing within 30 seconds can happen in two different minute folders). The Descriptions of the badges can be found in the Jive Intern Summer Class of 2011 brewspace place.
+
 --------------------------
 FRONT-END MECHANISMS [FEM]
 --------------------------
