@@ -37,7 +37,7 @@ public class HDFSTools {
             File f = new File(".");
             System.out.println("I am located here: " + f.getAbsolutePath());
             System.out.println("My canon path: " + f.getCanonicalPath());
-            Path file = new Path("hdfs_conf.xml");
+            Path file = new Path("/home/interns/apache-tomcat-7.0.19/conf/hdfs_conf.xml");
             config.addResource(file);
             return config;
         } catch (IOException ex) {
