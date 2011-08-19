@@ -125,4 +125,10 @@
         <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
         <antcall target="build"/>
     </target>
+    <war destfile="./CodeSquare.war" webxml="./WebContent/WEB-INF/web.xml">
+  		<fileset dir="./src"/>
+  		<lib dir="./WebContent/WEB-INF/lib">
+  		</lib>
+  		<classes dir="./build"/>
+	</war>
 </project>
