@@ -1,5 +1,6 @@
 package com.jivesoftware.toolbox;
 
+import java.io.File;
 import java.io.IOException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;
@@ -25,7 +26,7 @@ public class HDFSTools {
      */
     public static Configuration getConfiguration() {
         Configuration config = new Configuration();
-        Path file = new Path("conf/hdfs_conf.xml");
+        Path file = new Path("hdfs_conf.xml");
         config.addResource(file);
         return config;
     }
